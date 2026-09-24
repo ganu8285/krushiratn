@@ -54,13 +54,13 @@
                         <span class="brand-accent">कृषिरत्न</span>
                         <span class="brand-subtitle">Krushiratna</span>
                     </h1>
-                    <span class="brand-sub-badge">🍇 द्राक्ष बाग व्यवस्थापन SaaS</span>
+                    <span class="brand-sub-badge">🌱 द्राक्ष • कांदा • तूर • मका • डाळिंब • पेरू व्यवस्थापन SaaS</span>
                 </div>
             </div>
 
             <div class="login-heading-block">
                 <h2 class="login-main-title">लॉगिन करा (Sign In)</h2>
-                <p class="login-subtitle">द्राक्ष बागायतदार व ॲडमिन डॅशबोर्ड व्यवस्थापन</p>
+                <p class="login-subtitle">बागायतदार, शेतकरी व ॲडमिन डॅशबोर्ड व्यवस्थापन</p>
             </div>
 
             <!-- Demo Role Selectors -->
@@ -123,9 +123,9 @@
                 <div class="brand-meta-box">
                     <div class="brand-title-line">
                         <span class="brand-accent">कृषिरत्न</span>
-                        <span class="brand-subtitle">Grape SaaS</span>
+                        <span class="brand-subtitle" id="sidebar-brand-subtitle">Grape SaaS</span>
                     </div>
-                    <span class="brand-sub-badge">द्राक्ष बाग व्यवस्थापन</span>
+                    <span class="brand-sub-badge" id="sidebar-crop-badge">द्राक्ष बाग व्यवस्थापन</span>
                     <div class="brand-status-line">
                         <span class="pulse-indicator"></span>
                         <span class="farm-name-text" id="sidebar-farm-title">सह्याद्री द्राक्ष ऑर्चर्ड्स</span>
@@ -152,13 +152,13 @@
                     </div>
                 </button>
 
-                <!-- 2. Grape Orchard Management -->
+                <!-- 2. Grape / Crop Orchard Management -->
                 <button type="button" class="side-nav-btn" data-target="grape-orchard" id="nav-tab-grape">
                     <div class="side-btn-left">
-                        <i data-lucide="grape" class="side-btn-icon"></i>
+                        <i data-lucide="grape" class="side-btn-icon" id="sidebar-tab2-icon"></i>
                         <div class="side-btn-text-group">
-                            <span class="side-btn-title">2. द्राक्ष बाग व्यवस्थापन</span>
-                            <span class="side-btn-sub">Grape Orchard Mgmt</span>
+                            <span class="side-btn-title" id="sidebar-tab2-title">2. द्राक्ष बाग व्यवस्थापन</span>
+                            <span class="side-btn-sub" id="sidebar-tab2-sub">Grape Orchard Mgmt</span>
                         </div>
                     </div>
                     <span class="nav-badge-pill purple" id="badge-plot-count">3 प्लॉट</span>
@@ -254,8 +254,8 @@
                     <div class="side-btn-left">
                         <i data-lucide="trending-up" class="side-btn-icon"></i>
                         <div class="side-btn-text-group">
-                            <span class="side-btn-title">10. द्राक्ष बाजारभाव</span>
-                            <span class="side-btn-sub">Mandi & APMC Rates</span>
+                            <span class="side-btn-title" id="sidebar-tab10-title">10. द्राक्ष बाजारभाव</span>
+                            <span class="side-btn-sub" id="sidebar-tab10-sub">Mandi & APMC Rates</span>
                         </div>
                     </div>
                     <span class="nav-badge-pill emerald">Live भाव</span>
@@ -320,6 +320,60 @@
                 </div>
 
                 <div class="top-header-right">
+                    <!-- Crop Selector Dropdown (Luxury Pill Trigger) -->
+                    <div class="crop-select-pill-box" id="top-crop-selector-container">
+                        <button type="button" class="crop-select-trigger" id="crop-selector-btn"
+                            aria-label="Select Active Crop" title="पीक निवडा / Switch Crop">
+                            <span class="crop-trigger-emoji" id="current-crop-emoji">🍇</span>
+                            <span class="crop-trigger-label" id="current-crop-label">द्राक्ष (Grapes)</span>
+                            <i data-lucide="chevron-down" style="width: 14px; height: 14px; margin-left: 2px;"></i>
+                        </button>
+                        <div class="crop-dropdown-menu" id="crop-dropdown-menu">
+                            <button type="button" class="crop-opt-btn active" data-crop="grapes">
+                                <span class="crop-opt-emoji">🍇</span>
+                                <div class="crop-opt-text">
+                                    <span class="crop-opt-name">द्राक्ष (Grapes)</span>
+                                    <span class="crop-opt-sub">Nashik & Sangli Vineyards</span>
+                                </div>
+                            </button>
+                            <button type="button" class="crop-opt-btn" data-crop="onion">
+                                <span class="crop-opt-emoji">🧅</span>
+                                <div class="crop-opt-text">
+                                    <span class="crop-opt-name">कांदा (Onion)</span>
+                                    <span class="crop-opt-sub">Lasalgaon & Kalwan Belt</span>
+                                </div>
+                            </button>
+                            <button type="button" class="crop-opt-btn" data-crop="tur">
+                                <span class="crop-opt-emoji">🌱</span>
+                                <div class="crop-opt-text">
+                                    <span class="crop-opt-name">तूर (Tur / Pigeon Pea)</span>
+                                    <span class="crop-opt-sub">Marathwada & Vidarbha</span>
+                                </div>
+                            </button>
+                            <button type="button" class="crop-opt-btn" data-crop="corn">
+                                <span class="crop-opt-emoji">🌽</span>
+                                <div class="crop-opt-text">
+                                    <span class="crop-opt-name">मका (Corn / Maize)</span>
+                                    <span class="crop-opt-sub">Khandesh & Niphad Belt</span>
+                                </div>
+                            </button>
+                            <button type="button" class="crop-opt-btn" data-crop="pomegranate">
+                                <span class="crop-opt-emoji">🍎</span>
+                                <div class="crop-opt-text">
+                                    <span class="crop-opt-name">डाळिंब (Pomegranate)</span>
+                                    <span class="crop-opt-sub">Solapur & Sangola Orchards</span>
+                                </div>
+                            </button>
+                            <button type="button" class="crop-opt-btn" data-crop="guava">
+                                <span class="crop-opt-emoji">🍈</span>
+                                <div class="crop-opt-text">
+                                    <span class="crop-opt-name">पेरू (Guava / Amrud)</span>
+                                    <span class="crop-opt-sub">Taiwan Pink & Sardar L-49</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- Language Toggle Button (English / Marathi) -->
                     <div class="lang-toggle-btn-group">
                         <button type="button" class="lang-btn active" data-lang-val="mr"
@@ -328,9 +382,9 @@
                             English</button>
                     </div>
 
-                    <div class="supabase-status-pill" title="Supabase Cloud Live Connected">
+                    <div class="supabase-status-pill" id="supabase-status-pill" title="Supabase Cloud Live Connected (Click to Refresh)">
                         <span class="status-dot"></span>
-                        <span>Supabase: <strong>Live Connected</strong></span>
+                        <span id="supabase-status-text">Supabase: <strong>Live Connected</strong></span>
                     </div>
 
                     <button type="button" class="header-logout-btn" id="btn-header-logout">
@@ -350,9 +404,9 @@
                 <section class="app-view active" id="view-dashboard">
                     <div class="view-header">
                         <div class="view-header-left">
-                            <h1>🌿 द्राक्ष बाग मुख्य डॅशबोर्ड</h1>
-                            <p class="view-header-desc">सह्याद्री द्राक्ष ऑर्चर्ड्स - आजच्या शेती कामांची व परिस्थितीची
-                                थेट नोंद</p>
+                            <h1 id="dash-header-title">🌿 द्राक्ष बाग मुख्य डॅशबोर्ड</h1>
+                            <p class="view-header-desc" id="dash-header-desc">सह्याद्री द्राक्ष ऑर्चर्ड्स - आजच्या शेती
+                                कामांची व परिस्थितीची थेट नोंद</p>
                         </div>
                         <div class="view-header-actions">
                             <button class="header-btn btn-primary" id="btn-dash-quick-irrigation">
@@ -361,6 +415,19 @@
                             <button class="header-btn btn-secondary" id="btn-dash-quick-spray">
                                 <i data-lucide="bug"></i> फवारणी नोंद
                             </button>
+                        </div>
+                    </div>
+
+                    <!-- Quick Crop Switcher Bar (Interactive 6 Crop Switcher) -->
+                    <div class="crop-quick-switch-bar">
+                        <div class="crop-bar-title">
+                            <span class="crop-bar-label"><i data-lucide="layers"></i> <span
+                                    id="crop-bar-title-text">सक्रिय पीक निवडा (Select Crop)</span></span>
+                            <span class="crop-bar-sub" id="crop-bar-sub-text">द्राक्ष • कांदा • तूर • मका • डाळिंब •
+                                पेरू (सर्व 6 पिकांसाठी स्वतंत्र व्यवस्थापन)</span>
+                        </div>
+                        <div class="crop-pills-grid" id="dashboard-crop-pills">
+                            <!-- Populated dynamically by app.js -->
                         </div>
                     </div>
 
@@ -494,8 +561,9 @@
                 <section class="app-view" id="view-grape-orchard">
                     <div class="view-header">
                         <div class="view-header-left">
-                            <h1>🍇 द्राक्ष बाग व्यवस्थापन (Grape Orchard Management)</h1>
-                            <p class="view-header-desc">प्लॉटनुसार वाण, लागवड अंतर, छाटणी तारखा, घड/काडी व्यवस्थापन व
+                            <h1 id="crop-tab2-header-title">🍇 द्राक्ष बाग व्यवस्थापन (Grape Orchard Management)</h1>
+                            <p class="view-header-desc" id="crop-tab2-header-desc">प्लॉटनुसार वाण, लागवड अंतर, छाटणी
+                                तारखा, घड/काडी व्यवस्थापन व
                                 अपेक्षित उत्पादन</p>
                         </div>
                         <div class="view-header-actions">
@@ -727,8 +795,8 @@
                         </div>
                     </div>
 
-                    <!-- Grape Common Pests & Diseases Reference Bar -->
-                    <div class="kpi-grid">
+                    <!-- Common Pests & Diseases Reference Bar (Crop Specific) -->
+                    <div class="kpi-grid" id="pest-advisory-cards-container">
                         <div class="kpi-card">
                             <div class="kpi-card-top">
                                 <div class="kpi-icon-wrap rose"><i data-lucide="shield-alert"></i></div>
@@ -1010,7 +1078,8 @@
                         <div class="card">
                             <div class="card-header">
                                 <div class="card-title-group">
-                                    <h3><i data-lucide="shopping-cart"></i> द्राक्ष विक्री नोंदी (Sales)</h3>
+                                    <h3 id="fin-sales-heading"><i data-lucide="shopping-cart"></i> द्राक्ष विक्री नोंदी
+                                        (Sales)</h3>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -1244,8 +1313,9 @@
                 <section class="app-view" id="view-mandi-rates">
                     <div class="view-header">
                         <div class="view-header-left">
-                            <h1>📈 थेट द्राक्ष बाजारभाव व APMC मार्केट दर</h1>
-                            <p class="view-header-desc">नाशिक (पिंपळगाव), सांगली (तासगाव), सोलापूर, पुणे व मुंबई वाशी
+                            <h1 id="mandi-header-title">📈 थेट द्राक्ष बाजारभाव व APMC मार्केट दर</h1>
+                            <p class="view-header-desc" id="mandi-header-desc">नाशिक (पिंपळगाव), सांगली (तासगाव),
+                                सोलापूर, पुणे व मुंबई वाशी
                                 मार्केटमधील ताज्या द्राक्ष लिलाव नोंदी</p>
                         </div>
                         <div class="view-header-actions">
@@ -1258,8 +1328,8 @@
                         </div>
                     </div>
 
-                    <!-- Mandi KPI Overview Grid -->
-                    <div class="kpi-grid">
+                    <!-- Mandi KPI Overview Grid (Dynamic Crop Specific) -->
+                    <div class="kpi-grid" id="mandi-kpi-grid">
                         <!-- 1. Highest Rate -->
                         <div class="kpi-card">
                             <div class="kpi-card-top">
@@ -1355,7 +1425,7 @@
                                         <tr>
                                             <th>तारीख</th>
                                             <th>बाजार समिती (APMC)</th>
-                                            <th>द्राक्ष वाण (Variety)</th>
+                                            <th id="mandi-th-variety">द्राक्ष वाण (Variety)</th>
                                             <th>प्रत / दर्जा</th>
                                             <th>आवक</th>
                                             <th>किमान भाव (₹/kg)</th>
@@ -1724,7 +1794,7 @@
     <div class="modal-overlay" id="modal-add-plot">
         <div class="modal-card">
             <div class="modal-header">
-                <div class="modal-title"><i data-lucide="grape"></i> नवीन द्राक्ष प्लॉट जोडा</div>
+                <div class="modal-title" id="modal-plot-title"><i data-lucide="sprout"></i> नवीन शेत / प्लॉट जोडा</div>
                 <button type="button" class="modal-close-btn" data-close-modal="modal-add-plot"><i
                         data-lucide="x"></i></button>
             </div>
@@ -1732,58 +1802,66 @@
                 <div class="modal-body">
                     <div class="form-row">
                         <div class="form-group">
+                            <label class="form-label">पीक निवडा (Select Crop) *</label>
+                            <select id="plot-crop-select" class="form-control" required>
+                                <option value="grapes">🍇 द्राक्ष (Grapes)</option>
+                                <option value="onion">🧅 कांदा (Onion)</option>
+                                <option value="tur">🌱 तूर (Tur / Pigeon Pea)</option>
+                                <option value="corn">🌽 मका (Corn / Maize)</option>
+                                <option value="pomegranate">🍎 डाळिंब (Pomegranate)</option>
+                                <option value="guava">🍈 पेरू (Guava)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label class="form-label">प्लॉटचे नाव *</label>
                             <input type="text" id="plot-name" class="form-control" placeholder="उदा. साऊथ ब्लॉक 2"
                                 required>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">द्राक्ष वाण *</label>
-                            <select id="plot-variety" class="form-control" required>
-                                <option value="Super Sonaka (सुपर सोनका)">Super Sonaka (सुपर सोनका)</option>
-                                <option value="Manik Chaman (मणिक चमन)">Manik Chaman (मणिक चमन)</option>
-                                <option value="Thompson Seedless (थॉमसन सीडलेस)">Thompson Seedless (थॉमसन)</option>
-                                <option value="Sharad Seedless (शरद सीडलेस)">Sharad Seedless (काळे द्राक्ष)</option>
-                                <option value="Jumbo Seedless (जम्बो)">Jumbo Seedless (जम्बो)</option>
-                                <option value="Crimson Seedless (क्रिम्सन)">Crimson Seedless (क्रिम्सन)</option>
-                            </select>
-                        </div>
                     </div>
                     <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" id="modal-plot-variety-label">पीक वाण (Variety) *</label>
+                            <select id="plot-variety" class="form-control" required>
+                                <option value="Super Sonaka (सुपर सोनका)">Super Sonaka (सुपर सोनका)</option>
+                            </select>
+                        </div>
                         <div class="form-group">
                             <label class="form-label">क्षेत्र (एकर) *</label>
                             <input type="number" step="0.1" id="plot-acres" class="form-control" placeholder="उदा. 3.5"
                                 required>
                         </div>
+                    </div>
+                    <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">लागवड अंतर (Spacing)</label>
                             <input type="text" id="plot-spacing" class="form-control"
-                                placeholder="उदा. 10 x 6 ft किंवा 9 x 5 ft" value="10 x 6 ft">
+                                placeholder="उदा. 10 x 6 ft किंवा 15 x 10 cm" value="10 x 6 ft">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" id="modal-yield-label">अपेक्षित उत्पादन (टन / क्विंटल)</label>
+                            <input type="number" step="0.5" id="plot-expected-yield" class="form-control"
+                                placeholder="उदा. 15.0" value="15.0">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">खरड छाटणी तारीख (April)</label>
+                            <label class="form-label" id="modal-date1-label">खरड छाटणी / पेरणी तारीख (Date 1)</label>
                             <input type="date" id="plot-foundation-date" class="form-control">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">गोड/फळ छाटणी तारीख (Oct)</label>
+                            <label class="form-label" id="modal-date2-label">गोड छाटणी / काढणी तारीख (Date 2)</label>
                             <input type="date" id="plot-fruit-date" class="form-control">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">काड्या संख्या/झाड</label>
+                            <label class="form-label" id="modal-count1-label">काड्या संख्या / झाडे संख्या</label>
                             <input type="number" id="plot-canes" class="form-control" placeholder="42" value="42">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">घड संख्या/झाड</label>
+                            <label class="form-label" id="modal-count2-label">घड / फळे / कणसे संख्या</label>
                             <input type="number" id="plot-bunches" class="form-control" placeholder="48" value="48">
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">अपेक्षित उत्पादन (टन)</label>
-                        <input type="number" step="0.5" id="plot-expected-yield" class="form-control"
-                            placeholder="उदा. 15.0" value="15.0">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -2131,7 +2209,8 @@
     <div class="modal-overlay" id="modal-add-sale">
         <div class="modal-card">
             <div class="modal-header">
-                <div class="modal-title"><i data-lucide="shopping-bag"></i> द्राक्ष विक्री नोंद</div>
+                <div class="modal-title"><i data-lucide="shopping-bag"></i> <span id="modal-sale-title">द्राक्ष विक्री
+                        नोंद</span></div>
                 <button type="button" class="modal-close-btn" data-close-modal="modal-add-sale"><i
                         data-lucide="x"></i></button>
             </div>
@@ -2154,7 +2233,7 @@
                                 placeholder="उदा. सह्याद्री फार्म्स / अमोल ट्रेडर्स" required>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">द्राक्ष प्रत (Grade) *</label>
+                            <label class="form-label" id="modal-sale-grade-label">प्रत / दर्जा (Grade) *</label>
                             <select id="sale-grade" class="form-control" required>
                                 <option value="Export Quality (A+)">Export Quality (A+)</option>
                                 <option value="Domestic Super (A)">Domestic Super (A)</option>
@@ -2165,11 +2244,11 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">विक्री वजन (kg) *</label>
+                            <label class="form-label" id="modal-sale-qty-label">विक्री वजन (kg / क्विंटल) *</label>
                             <input type="number" id="sale-kg" class="form-control" placeholder="उदा. 2500" required>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">दर प्रति किलो (₹/kg) *</label>
+                            <label class="form-label" id="modal-sale-rate-label">दर प्रति एकक (₹) *</label>
                             <input type="number" id="sale-rate" class="form-control" placeholder="उदा. 85" required>
                         </div>
                     </div>

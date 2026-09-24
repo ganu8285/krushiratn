@@ -10,13 +10,46 @@ const SUPABASE_URL = 'https://vbmekqrmphyoumfvqlwb.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZibWVrcXJtcGh5b3VtZnZxbHdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwNDc4MDAsImV4cCI6MjEwNTYyMzgwMH0.KbkZDKj9_-HN5WK66hv15vCC2-ria6QsOMupG_pAC1Y';
 
 let supabaseClient = null;
-if (window.supabase) {
-    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+function getSupabaseClient() {
+    if (!supabaseClient && window.supabase) {
+        try {
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch (e) {
+            console.error('Failed to init Supabase client:', e);
+        }
+    }
+    return supabaseClient;
 }
+getSupabaseClient();
+
+// Dynamic Supabase Connection Status Pill Indicator
+function updateSupabaseStatus(status) {
+    const pill = document.getElementById('supabase-status-pill');
+    const text = document.getElementById('supabase-status-text');
+    if (!pill || !text) return;
+
+    const isMr = appState.activeLang === 'mr';
+    pill.classList.remove('syncing', 'offline');
+
+    if (status === 'connected') {
+        text.innerHTML = isMr ? 'Supabase: <strong>थेट कनेक्टेड</strong>' : 'Supabase: <strong>Live Connected</strong>';
+        pill.title = isMr ? 'Supabase क्लाउड थेट जोडलेले आहे. क्लिक करून रिफ्रेश करा.' : 'Supabase Cloud is live connected. Click to refresh.';
+    } else if (status === 'syncing') {
+        pill.classList.add('syncing');
+        text.innerHTML = isMr ? 'Supabase: <strong>सिंक होत आहे...</strong>' : 'Supabase: <strong>Syncing...</strong>';
+        pill.title = isMr ? 'डेटा सिंक होत आहे...' : 'Data syncing...';
+    } else {
+        pill.classList.add('offline');
+        text.innerHTML = isMr ? 'Supabase: <strong>ऑफलाइन (लोकल)</strong>' : 'Supabase: <strong>Offline (Local)</strong>';
+        pill.title = isMr ? 'क्लाउड कनेक्शन उपलब्ध नाही. लोकल डेटा वापरला जात आहे.' : 'Cloud connection unavailable. Local fallback data active.';
+    }
+}
+
 
 // Master Local State
 let appState = {
     activeLang: localStorage.getItem('krushi_lang') || 'mr',
+    activeCrop: localStorage.getItem('krushi_active_crop') || 'grapes',
     currentTab: 'dashboard',
     farm: {
         id: '636ddc54-66ab-4b44-8037-47ca0331c9ff',
@@ -268,6 +301,884 @@ const FALLBACK_REMINDERS = [
     { id: 'rem-6', category: 'पेमेंट', category_en: 'Payment', title: 'मजूर आठवडा हजेरी पेमेंट (12 कामगार - ₹24,500)', title_en: 'Weekly Labor Wage Payment (12 workers - ₹24,500)', due_date: '2026-09-25', status: 'pending', priority: 'High', notes: 'छाटणी व बांधणी मजुरीचे UPI द्वारे पेमेंट' }
 ];
 
+// ==========================================================================
+// MULTI-CROP CONFIGURATION ENGINE (Grapes, Onion, Tur, Corn, Pomegranate, Guava)
+// ==========================================================================
+const CROPS_CONFIG = {
+    grapes: {
+        id: 'grapes',
+        name_mr: 'द्राक्ष',
+        name_en: 'Grapes',
+        emoji: '🍇',
+        icon: 'grape',
+        subtitle_mr: 'सह्याद्री द्राक्ष ऑर्चर्ड्स',
+        subtitle_en: 'Sahyadri Grape Orchards',
+        badge_mr: 'द्राक्ष बाग',
+        badge_en: 'Grape Orchard',
+        tagline_mr: 'द्राक्ष बाग व घड व्यवस्थापन',
+        tagline_en: 'Vineyard & Canopy Management',
+        tab2Title_mr: '🍇 २. द्राक्ष बाग व्यवस्थापन (Grape Orchard Management)',
+        tab2Title_en: '🍇 2. Grape Orchard Management',
+        tab2Desc_mr: 'प्लॉटनुसार वाण, लागवड अंतर, छाटणी तारखा, घड/काडी व्यवस्थापन व अपेक्षित उत्पादन',
+        tab2Desc_en: 'Plot-wise varieties, spacing, pruning dates, canes/bunches & expected yield',
+        tab10Title_mr: '📈 थेट द्राक्ष बाजारभाव व APMC मार्केट दर',
+        tab10Title_en: '📈 Grape Mandi & APMC Market Rates',
+        tab10Desc_mr: 'नाशिक (पिंपळगाव), सांगली (तासगाव), सोलापूर, पुणे व मुंबई वाशी मार्केटमधील ताज्या द्राक्ष लिलाव नोंदी',
+        tab10Desc_en: 'Nashik, Sangli (Tasgaon), Solapur, Pune & Mumbai APMC grape auctions',
+        salesHeading_mr: '💰 द्राक्ष विक्री नोंदी (Grape Harvest Sales)',
+        salesHeading_en: '💰 Grape Harvest Sales',
+        metricLabels: {
+            date1_mr: 'खरड छाटणी तारीख (April Pruning)',
+            date1_en: 'Foundation Pruning Date',
+            date2_mr: 'गोड छाटणी तारीख (Fruit Pruning)',
+            date2_en: 'Fruit Pruning Date',
+            count1_mr: 'काड्या संख्या / झाड (Canes/Vine)',
+            count1_en: 'Canes / Vine',
+            count2_mr: 'घड संख्या / झाड (Bunches/Vine)',
+            count2_en: 'Bunches / Vine',
+            yieldUnit_mr: 'टन',
+            yieldUnit_en: 'Tonnes',
+            rateUnit_mr: 'प्रति किलो (₹/kg)',
+            rateUnit_en: 'per kg (₹/kg)',
+            varietyTitle_mr: 'द्राक्ष वाण',
+            varietyTitle_en: 'Grape Variety'
+        },
+        varieties: [
+            'Super Sonaka (सुपर सोनका)',
+            'Thompson Seedless (थॉमसन)',
+            'Manik Chaman (मणिक चमन)',
+            'Sharad Seedless (शरद)',
+            'Red Globe (रेड ग्लोब)',
+            'Crimson Seedless'
+        ],
+        grades: [
+            'Export Quality (A+)',
+            'Domestic Super (A)',
+            'Local Market (B)',
+            'बेदाणा / Raisins (C)'
+        ],
+        plots: FALLBACK_PLOTS,
+        irrigationLogs: FALLBACK_IRRIGATION,
+        fertilizerLogs: FALLBACK_FERTILIZER,
+        sprayLogs: FALLBACK_SPRAYS,
+        laborLogs: FALLBACK_LABOR,
+        expenses: FALLBACK_EXPENSES,
+        sales: FALLBACK_SALES,
+        reminders: FALLBACK_REMINDERS,
+        pests: [
+            { name_mr: 'उदबत्या (Flea Beetle)', name_en: 'Flea Beetle', badge: 'गंभीर कीड', badge_cls: 'danger', desc_mr: 'फुटीच्या काळात कोवळ्या कोंबांना व डोळ्यांना छिद्रे पाडते. पाने चाळणी होतात व वाढ खुंटते.', chemical: 'Spinotoram 11.7 SC @ 0.35 ml/L किंवा Lambda Cyhalothrin', stage_mr: 'कोंब फुटणे ते 5 पाने अवस्था' },
+            { name_mr: 'थ्रीप्स (Thrips)', name_en: 'Thrips', badge: 'फूलकळी कीड', badge_cls: 'danger', desc_mr: 'फुलोरा व मणी सेटिंगच्या वेळी रस शोषून फळावर डाग/कवडी पाडते. मण्यांचा दर्जा घसरतो.', chemical: 'Fipronil 80 WG @ 0.15 gm/L किंवा Spinosad 45 SC @ 0.3 ml/L', stage_mr: 'फुलोरा व मणी सेटिंग' },
+            { name_mr: 'डाऊनी मिल्ड्यू / केवडा (Downy Mildew)', name_en: 'Downy Mildew', badge: 'बुरशीजन्य रोग', badge_cls: 'warning', desc_mr: 'पानांच्या खालच्या बाजूला पांढरी बुरशी व वर पिवळे तेलकट डाग पडतात. घड कुजतात.', chemical: 'Dimethomorph 50 WP @ 1 gm/L + Mancozeb किंवा Profiler @ 2.5 gm/L', stage_mr: 'ढगाळ हवामान व सतत पाऊस' },
+            { name_mr: 'पावडरी मिल्ड्यू / भुरी (Powdery Mildew)', name_en: 'Powdery Mildew', badge: 'फळ डाग रोग', badge_cls: 'warning', desc_mr: 'मण्यांवर व पानांवर पांढरी भुकटी जमा होते. वाढत्या मण्यांची साल तडकते.', chemical: 'Difenoconazole 25 EC @ 0.5 ml/L किंवा सल्फर 80 WDG @ 2 gm/L', stage_mr: 'मणी विकास व साखर उतरताना' }
+        ],
+        mandi_markets: [
+            { id: 'all', name_mr: 'सर्व मार्केट्स (All)', name_en: 'All Markets' },
+            { id: 'पिंपळगाव', name_mr: 'पिंपळगाव बसवंत', name_en: 'Pimpalgaon' },
+            { id: 'तासगाव', name_mr: 'तासगाव (सांगली)', name_en: 'Tasgaon' },
+            { id: 'पंढरपूर', name_mr: 'पंढरपूर (सोलापूर)', name_en: 'Pandharpur' },
+            { id: 'पुणे', name_mr: 'पुणे गुलटेकडी', name_en: 'Pune APMC' },
+            { id: 'मुंबई', name_mr: 'मुंबई वाशी APMC', name_en: 'Vashi APMC' }
+        ],
+        mandi_kpis: [
+            { label: 'उच्चतम एक्सपोर्ट दर', val: '₹160', unit: '/ किलो', sub: 'मुंबई वाशी व पिंपळगाव', icon: 'award', cls: 'emerald' },
+            { label: 'सरासरी भाव (Modal)', val: '₹92', unit: '/ किलो', sub: 'टेबल ग्रेप्स (मेट्रो व स्थानिक)', icon: 'bar-chart-2', cls: 'blue' },
+            { label: 'बेदाणा द्राक्ष दर', val: '₹58', unit: '/ किलो', sub: 'तासगाव व पंढरपूर सौदे', icon: 'sun', cls: 'amber' },
+            { label: 'दैनिक आवक (Arrivals)', val: '8,450', unit: 'क्रेट्स', sub: 'प्रमुख महाराष्ट्र APMC', icon: 'truck', cls: 'purple' }
+        ],
+        mandi: [
+            { date: '2026-09-22', market: 'पिंपळगाव बसवंत (नाशिक)', variety: 'Super Sonaka (सुपर सोनका)', grade: 'Export Grade A+ (18mm+)', arrivals: '2,400 क्रेट्स', min: 130, max: 145, modal: 140, trend: 'up' },
+            { date: '2026-09-22', market: 'तासगाव (सांगली)', variety: 'Manik Chaman (माणिक चमन)', grade: 'Table Grape Grade A', arrivals: '1,850 क्रेट्स', min: 85, max: 95, modal: 90, trend: 'stable' },
+            { date: '2026-09-22', market: 'पिंपळगाव बसवंत (नाशिक)', variety: 'Thompson Seedless (थॉमसन)', grade: 'Local Table Grapes', arrivals: '1,200 क्रेट्स', min: 75, max: 85, modal: 80, trend: 'down' },
+            { date: '2026-09-22', market: 'तासगाव (सांगली)', variety: 'Thompson (थॉमसन बेदाणा)', grade: 'Resin / बेदाणा प्रत (22°Bx)', arrivals: '3,100 क्रेट्स', min: 52, max: 62, modal: 58, trend: 'up' },
+            { date: '2026-09-22', market: 'पंढरपूर (सोलापूर)', variety: 'Super Sonaka (सुपर सोनका)', grade: 'Sweet Table Quality', arrivals: '950 क्रेट्स', min: 90, max: 105, modal: 98, trend: 'stable' },
+            { date: '2026-09-22', market: 'पुणे गुलटेकडी (Pune APMC)', variety: 'Sharad Seedless (शरद काळे)', grade: 'Metro Super Quality', arrivals: '780 क्रेट्स', min: 110, max: 130, modal: 120, trend: 'up' },
+            { date: '2026-09-22', market: 'मुंबई वाशी APMC (Vashi)', variety: 'Jumbo Black Seedless', grade: 'Premium Box Pack (5kg)', arrivals: '1,450 बॉक्स', min: 125, max: 140, modal: 135, trend: 'up' },
+            { date: '2026-09-22', market: 'मुंबई वाशी APMC (Vashi)', variety: 'Red Globe (रेड ग्लोब)', grade: 'Jumbo Berry Export', arrivals: '620 बॉक्स', min: 140, max: 160, modal: 150, trend: 'stable' }
+        ]
+    },
+
+    onion: {
+        id: 'onion',
+        name_mr: 'कांदा',
+        name_en: 'Onion',
+        emoji: '🧅',
+        icon: 'layers',
+        subtitle_mr: 'सह्याद्री कांदा फार्म्स व साठवणूक चाळ',
+        subtitle_en: 'Sahyadri Commercial Onion Farms & Storage',
+        badge_mr: 'कांदा शेती',
+        badge_en: 'Onion Farm',
+        tagline_mr: 'कांदा पीक व चाळ साठवणूक',
+        tagline_en: 'Commercial Onion & Storage Operations',
+        tab2Title_mr: '🧅 २. कांदा शेती व्यवस्थापन (Commercial Onion Management)',
+        tab2Title_en: '🧅 2. Commercial Onion Management',
+        tab2Desc_mr: 'प्लॉटनुसार कांदा वाण, पुनर्लागवड तारीख, कंद आकार (mm), खत नियोजन व चाळ साठवणूक',
+        tab2Desc_en: 'Plot-wise onion varieties, transplant dates, bulb size (mm) and storage management',
+        tab10Title_mr: '📈 थेट कांदा बाजारभाव व APMC मार्केट दर',
+        tab10Title_en: '📈 Live Onion Mandi & APMC Market Rates',
+        tab10Desc_mr: 'लासलगाव, येवला, पिंपळगाव, सोलापूर, अहमदनगर व पुणे कृषी उत्पन्न बाजार समित्यांचे आजचे दर',
+        tab10Desc_en: 'Lasalgaon, Yeola, Pimpalgaon, Solapur, Ahmednagar & Pune APMC onion auctions',
+        salesHeading_mr: '💰 कांदा विक्री नोंदी (Onion Harvest Sales)',
+        salesHeading_en: '💰 Onion Harvest Sales',
+        metricLabels: {
+            date1_mr: 'रोप पुनर्लागवड तारीख (Transplant Date)',
+            date1_en: 'Transplant Date',
+            date2_mr: 'काढणी अपेक्षित तारीख (Harvest Date)',
+            date2_en: 'Expected Harvest Date',
+            count1_mr: 'सरासरी कंद आकार (Avg Bulb Size mm)',
+            count1_en: 'Avg Bulb Size (mm)',
+            count2_mr: 'झाडे संख्या / एकर (Plant Population)',
+            count2_en: 'Plant Pop. / Acre',
+            yieldUnit_mr: 'क्विंटल',
+            yieldUnit_en: 'Quintals',
+            rateUnit_mr: 'प्रति क्विंटल (₹/Qtl)',
+            rateUnit_en: 'per Qtl (₹/Qtl)',
+            varietyTitle_mr: 'कांदा वाण',
+            varietyTitle_en: 'Onion Variety'
+        },
+        varieties: [
+            'Bhima Kiran (भीमा किरण - उन्हाळी)',
+            'Bhima Super (भीमा सुपर - रांगडा)',
+            'Alert Red (ॲलर्ट रेड - खरीप)',
+            'Bhima Red (भीमा रेड)',
+            'Phule Samarth (फुले समर्थ)',
+            'AgriFound Light Red'
+        ],
+        grades: [
+            'Super Golta (55mm+ A+)',
+            'Medium Golta (45-55mm A)',
+            'Golti (35-45mm B)',
+            'Chilta / Reject (C)'
+        ],
+        plots: [
+            {
+                id: 'onion-p1',
+                name: 'प्लॉट १ - भीमा किरण (उन्हाळी कांदा चाळ)',
+                name_en: 'Plot 1 - Bhima Kiran (Rabi Onion Storage)',
+                crop_variety: 'Bhima Kiran (भीमा किरण)',
+                acres: 3.5,
+                spacing: '15 x 10 cm',
+                foundation_pruning_date: '2026-07-20',
+                fruit_pruning_date: '2026-11-25',
+                canes_per_vine: 58,
+                bunches_per_vine: 180000,
+                expected_yield_tonnes: 140
+            },
+            {
+                id: 'onion-p2',
+                name: 'प्लॉट २ - भीमा सुपर (रांगडा कांदा)',
+                name_en: 'Plot 2 - Bhima Super (Late Kharif)',
+                crop_variety: 'Bhima Super (भीमा सुपर)',
+                acres: 2.5,
+                spacing: '15 x 10 cm',
+                foundation_pruning_date: '2026-08-10',
+                fruit_pruning_date: '2026-12-15',
+                canes_per_vine: 52,
+                bunches_per_vine: 175000,
+                expected_yield_tonnes: 95
+            },
+            {
+                id: 'onion-p3',
+                name: 'प्लॉट ३ - ॲलर्ट रेड (खरीप लाल कांदा)',
+                name_en: 'Plot 3 - Alert Red (Kharif Red Onion)',
+                crop_variety: 'Alert Red (ॲलर्ट रेड)',
+                acres: 2.0,
+                spacing: '15 x 10 cm',
+                foundation_pruning_date: '2026-06-15',
+                fruit_pruning_date: '2026-10-10',
+                canes_per_vine: 50,
+                bunches_per_vine: 185000,
+                expected_yield_tonnes: 75
+            }
+        ],
+        irrigationLogs: [
+            { id: 'on-irr-1', plot_id: 'onion-p1', log_date: '2026-09-22', duration_hours: 3.0, water_liters: 32000, water_source: 'ठिबक सिंचन (Drip)', ec_level: 0.65, ph_level: 6.9, nutrients_n: 4.1, nutrients_ca: 3.2, nutrients_mg: 1.8 },
+            { id: 'on-irr-2', plot_id: 'onion-p2', log_date: '2026-09-20', duration_hours: 2.5, water_liters: 28000, water_source: 'तुषार सिंचन (Sprinkler)', ec_level: 0.70, ph_level: 7.0, nutrients_n: 3.8, nutrients_ca: 3.0, nutrients_mg: 1.5 }
+        ],
+        fertilizerLogs: [
+            { id: 'on-fert-1', plot_id: 'onion-p1', log_date: '2026-09-21', fertilizer_name: '00:52:34 (MKP) + सल्फर 90%', dose_amount: 15, application_method: 'Drip', cost: 3600 },
+            { id: 'on-fert-2', plot_id: 'onion-p2', log_date: '2026-09-18', fertilizer_name: '13:00:45 (Potassium Nitrate)', dose_amount: 20, application_method: 'Drip', cost: 4200 }
+        ],
+        sprayLogs: [
+            { id: 'on-sp-1', plot_id: 'onion-p1', log_date: '2026-09-21', pest_disease_name: 'थ्रीप्स व जांभळा करपा (Thrips & Blotch)', chemical_or_fertilizer: 'Fipronil 5 SC + Custodia (Azoxystrobin + Difenoconazole)', dose_per_liter: 1.5, total_water_liters: 250, next_spray_date: '2026-09-29', cost: 4800 },
+            { id: 'on-sp-2', plot_id: 'onion-p3', log_date: '2026-09-17', pest_disease_name: 'स्टेमफिलियम ब्लाइट (Stemphylium)', chemical_or_fertilizer: 'Nativo (Tebuconazole + Trifloxystrobin)', dose_per_liter: 0.6, total_water_liters: 200, next_spray_date: '2026-09-26', cost: 3900 }
+        ],
+        laborLogs: [
+            { id: 'on-lab-1', plot_id: 'onion-p1', log_date: '2026-09-20', activity: 'खुरपणी (Weeding) व रोपांची निगा', worker_names: 'सुनीता, मंदा, कमल व 7 मजूर', male_workers: 2, female_workers: 8, wage_per_worker: 350, total_cost: 3200, payment_status: 'Paid' },
+            { id: 'on-lab-2', plot_id: 'onion-p2', log_date: '2026-09-18', activity: 'पुनर्लागवड व गादीवाफा तयार करणे', worker_names: 'ज्ञानेश्वर, रामभाऊ व मजूर टोळी', male_workers: 5, female_workers: 5, wage_per_worker: 400, total_cost: 3800, payment_status: 'Paid' }
+        ],
+        expenses: [
+            { id: 'on-exp-1', plot_id: 'onion-p1', log_date: '2026-09-21', category: 'खते', category_en: 'Fertilizers', amount: 18500, description: 'सल्फर, 00:52:34 व पोटॅश खते खरेदी' },
+            { id: 'on-exp-2', plot_id: 'onion-p1', log_date: '2026-09-19', category: 'औषधे', category_en: 'Chemicals', amount: 14200, description: 'कस्टोडिया, फिप्रोनिल व स्टीकर खरेदी' },
+            { id: 'on-exp-3', plot_id: 'onion-p2', log_date: '2026-09-18', category: 'मजुरी', category_en: 'Labor', amount: 24500, description: 'कांदा पुनर्लागवड व खुरपणी मजुरी हजेरी' },
+            { id: 'on-exp-4', plot_id: 'onion-p3', log_date: '2026-09-15', category: 'पाणी/वीज', category_en: 'Water/Power', amount: 8200, description: 'तुषार सिंचन स्प्रिंकलर नोझल व वीज बिल' },
+            { id: 'on-exp-5', plot_id: 'onion-p1', log_date: '2026-09-12', category: 'वाहतूक', category_en: 'Transport', amount: 9500, description: 'लासलगाव मार्केट कांदा गोणी वाहतूक भाडे' },
+            { id: 'on-exp-6', plot_id: 'onion-p2', log_date: '2026-09-10', category: 'इतर खर्च', category_en: 'Other', amount: 7800, description: 'कांदा चाळ जाळी व ताडपत्री खरेदी' }
+        ],
+        sales: [
+            { id: 'on-sale-1', plot_id: 'onion-p3', sale_date: '2026-09-20', buyer_name: 'शांतीलाल सोहनलाल अँड कंपनी, लासलगाव APMC', grade: 'Super Golta (55mm+)', quantity_kg: 8500, rate_per_kg: 28, total_revenue: 238000 },
+            { id: 'on-sale-2', plot_id: 'onion-p3', sale_date: '2026-09-18', buyer_name: 'किरण कांदा ट्रेडर्स, येवला मार्केट', grade: 'Medium Golta (45-55mm)', quantity_kg: 6200, rate_per_kg: 23, total_revenue: 142600 }
+        ],
+        reminders: [
+            { id: 'on-rem-1', category: 'फवारणी', category_en: 'Spray', title: 'थ्रीप्स व जांभळा करपा प्रतिबंधक फवारणी', title_en: 'Thrips & Purple Blotch Spray', due_date: '2026-09-24', status: 'pending', priority: 'High', notes: 'Fipronil + Nativo + सिलिकॉन स्टीकर' },
+            { id: 'on-rem-2', category: 'खत', category_en: 'Fertilizer', title: '00:00:50 (SOP) आणि बोरॉन खत मात्रा ठिबकमधून', title_en: '00:00:50 SOP & Boron fertigation', due_date: '2026-09-25', status: 'pending', priority: 'Medium', notes: 'कंदाचा आकार, चकाकी व वजन वाढवण्यासाठी' },
+            { id: 'on-rem-3', category: 'सिंचन', category_en: 'Irrigation', title: 'कांदा काढणीपूर्व ८ दिवस आधी पाणी बंद करणे', title_en: 'Stop irrigation 8 days prior to harvest', due_date: '2026-09-28', status: 'pending', priority: 'High', notes: 'कांदा चाळीत सडू नये म्हणून पाणी तोडणे आवश्यक' },
+            { id: 'on-rem-4', category: 'काढणी', category_en: 'Harvest', title: 'प्लॉट ३ - कांदा उपटणी व शेतात वाळवणे (Curing)', title_en: 'Plot 3 - Harvesting & Field Curing', due_date: '2026-10-05', status: 'pending', priority: 'High', notes: 'पातीसह ५ दिवस शेतात सुकवणे' }
+        ],
+        pests: [
+            { name_mr: 'थ्रीप्स / बोकड्या (Onion Thrips)', name_en: 'Onion Thrips', badge: 'रसशोषक कीड', badge_cls: 'danger', desc_mr: 'पानांच्या बेचक्यात राहून रस शोषून घेतात. पानांवर चंदेरी पांढरे पट्टे पडतात व पाने वाकडी होतात.', chemical: 'Fipronil 5 SC @ 1.5 ml/L किंवा Spinetoram 11.7 SC @ 0.4 ml/L', stage_mr: 'रोपवाटिका व पुनर्लागवडीनंतर 30-70 दिवस' },
+            { name_mr: 'जांभळा करपा (Purple Blotch)', name_en: 'Purple Blotch', badge: 'बुरशीजन्य रोग', badge_cls: 'danger', desc_mr: 'पानांवर पांढुरके चट्टे पडून नंतर मध्यभागी जांभळा किंवा तपकिरी रंग येतो. पाती सुकतात.', chemical: 'Custodia (Azoxystrobin + Difenoconazole) @ 1.5 ml/L किंवा Nativo @ 0.6 gm/L', stage_mr: 'ढगाळ हवामान, आर्द्रता व पाऊस' },
+            { name_mr: 'स्टेमफिलियम ब्लाइट (Stemphylium Blight)', name_en: 'Stemphylium Leaf Blight', badge: 'पातीचा करपा', badge_cls: 'warning', desc_mr: 'पानांच्या टोकाकडून पिवळे चट्टे पडत खाली पसरतात. कांद्याची वाढ थांबते.', chemical: 'Mancozeb 75 WP @ 2.5 gm/L किंवा Propiconazole 25 EC @ 1 ml/L', stage_mr: 'कंद फुगवणी अवस्था' },
+            { name_mr: 'कंद कुज / कांदा सड (Basal Rot / Bulb Rot)', name_en: 'Basal / Fusarium Rot', badge: 'जमीन बुरशी', badge_cls: 'warning', desc_mr: 'कांद्याची मुळे कुजतात व कंदाच्या बुडाशी पांढरी बुरशी वाढते. कांदा साठवणीत सडतो.', chemical: 'Trichoderma viride @ 2.5 kg/एकर शेणखतात किंवा Carbendazim ड्रेंचिंग', stage_mr: 'जास्त पाणी साचल्यास किंवा काढणीवेळी' }
+        ],
+        mandi_markets: [
+            { id: 'all', name_mr: 'सर्व मार्केट्स (All)', name_en: 'All Markets' },
+            { id: 'लासलगाव', name_mr: 'लासलगाव APMC', name_en: 'Lasalgaon' },
+            { id: 'येवला', name_mr: 'येवला APMC', name_en: 'Yeola' },
+            { id: 'पिंपळगाव', name_mr: 'पिंपळगाव बसवंत', name_en: 'Pimpalgaon' },
+            { id: 'सोलापूर', name_mr: 'सोलापूर APMC', name_en: 'Solapur' },
+            { id: 'पुणे', name_mr: 'पुणे गुलटेकडी', name_en: 'Pune APMC' }
+        ],
+        mandi_kpis: [
+            { label: 'लासलगाव उच्चतम भाव', val: '₹3,150', unit: '/ क्विंटल', sub: 'Super Golta 55mm+ लिलाव', icon: 'award', cls: 'emerald' },
+            { label: 'सरासरी मॉडेल भाव (Modal)', val: '₹2,680', unit: '/ क्विंटल', sub: 'महाराष्ट्र प्रमुख कांदा मंड्या', icon: 'bar-chart-2', cls: 'blue' },
+            { label: 'मध्यम कांदा भाव (Medium)', val: '₹2,250', unit: '/ क्विंटल', sub: '40-50mm सरासरी लिलाव', icon: 'sun', cls: 'amber' },
+            { label: 'दैनिक आवक (Daily Arrivals)', val: '74,800', unit: 'क्विंटल', sub: 'लासलगाव, येवला, सोलापूर', icon: 'truck', cls: 'purple' }
+        ],
+        mandi: [
+            { date: '2026-09-22', market: 'लासलगाव (आशियातील सर्वात मोठी कांदा मंडी)', variety: 'Red Onion (उन्हाळी कांदा)', grade: 'Super Golta (55mm+)', arrivals: '18,500 क्विंटल', min: 2400, max: 3150, modal: 2850, trend: 'up' },
+            { date: '2026-09-22', market: 'येवला APMC (नाशिक)', variety: 'Red Onion (लाल कांदा)', grade: 'Medium Golta (45mm+)', arrivals: '12,200 क्विंटल', min: 2100, max: 2800, modal: 2550, trend: 'up' },
+            { date: '2026-09-22', market: 'पिंपळगाव बसवंत (नाशिक)', variety: 'Pol Onion (रांगडा कांदा)', grade: 'Export Quality Extra Bold', arrivals: '9,400 क्विंटल', min: 2350, max: 3000, modal: 2750, trend: 'stable' },
+            { date: '2026-09-22', market: 'सोलापूर APMC', variety: 'Local Red (गावरान कांदा)', grade: 'Golta Grade A', arrivals: '14,800 क्विंटल', min: 1800, max: 2650, modal: 2300, trend: 'down' },
+            { date: '2026-09-22', market: 'पुणे गुलटेकडी (Pune APMC)', variety: 'Super Red Onion', grade: 'Grade 1 Box / Bag', arrivals: '8,900 क्विंटल', min: 2500, max: 3200, modal: 2900, trend: 'up' },
+            { date: '2026-09-22', market: 'अहमदनगर APMC', variety: 'Garva Red (उन्हाळी)', grade: 'Medium Size', arrivals: '11,000 क्विंटल', min: 2000, max: 2700, modal: 2450, trend: 'stable' }
+        ]
+    },
+
+    tur: {
+        id: 'tur',
+        name_mr: 'तूर',
+        name_en: 'Tur / Pigeon Pea',
+        emoji: '🌱',
+        icon: 'sprout',
+        subtitle_mr: 'सह्याद्री डाळ व कडधान्य प्रकल्प',
+        subtitle_en: 'Sahyadri High-Yield Pulses & Grain Estate',
+        badge_mr: 'तूर शेती',
+        badge_en: 'Tur Crop',
+        tagline_mr: 'तूर पीक व डाळ मिल व्यवस्थापन',
+        tagline_en: 'Pigeon Pea & Dal Processing Estate',
+        tab2Title_mr: '🌱 २. तूर पीक व्यवस्थापन (Tur / Pigeon Pea Management)',
+        tab2Title_en: '🌱 2. Tur (Pigeon Pea) Management',
+        tab2Desc_mr: 'प्लॉटनुसार तूर वाण, पेरणी अंतर, शेंडा खुडणी (Nipping), घाटे संख्या व उत्पादन',
+        tab2Desc_en: 'Varieties, sowing spacing, apical nipping, pod setting & yield analytics',
+        tab10Title_mr: '📈 थेट तूर बाजारभाव व हमीभाव (MSP Mandi Rates)',
+        tab10Title_en: '📈 Tur Mandi Rates & MSP Auctions',
+        tab10Desc_mr: 'लातूर, अकोला, वाशीम, जालना, नागपूर व सोलापूर डाळ मिल लिलाव दर',
+        tab10Desc_en: 'Latur, Akola, Washim, Jalna, Nagpur & Solapur Tur/Dal Mandi rates',
+        salesHeading_mr: '💰 तूर विक्री नोंदी (Tur Harvest Sales)',
+        salesHeading_en: '💰 Tur Harvest Sales',
+        metricLabels: {
+            date1_mr: 'पेरणी / टोकण तारीख (Sowing Date)',
+            date1_en: 'Sowing Date',
+            date2_mr: '१ ली शेंडा खुडणी तारीख (1st Nipping Date)',
+            date2_en: '1st Nipping Date',
+            count1_mr: 'फांद्या संख्या / झाड (Branches/Plant)',
+            count1_en: 'Branches / Plant',
+            count2_mr: 'घाटे संख्या / झाड (Pods/Plant)',
+            count2_en: 'Pods / Plant',
+            yieldUnit_mr: 'क्विंटल',
+            yieldUnit_en: 'Quintals',
+            rateUnit_mr: 'प्रति क्विंटल (₹/Qtl)',
+            rateUnit_en: 'per Qtl (₹/Qtl)',
+            varietyTitle_mr: 'तूर वाण',
+            varietyTitle_en: 'Tur Variety'
+        },
+        varieties: [
+            'BDN-711 (गोदावरी - जलद वाढ)',
+            'Maruti ICP-8863 (मारुती - मर प्रतिकार)',
+            'BSMR-736 (विपुल वाण)',
+            'Asha ICPL-87119 (आशा)',
+            'Phule Rajeshwari (फुले राजेश्वरी)',
+            'BDN-708 (अमोल)'
+        ],
+        grades: [
+            'Super Bold Red (A+)',
+            'Medium Shiny (A)',
+            'Local Mill Quality (B)',
+            'Mixed / Moisture (C)'
+        ],
+        plots: [
+            {
+                id: 'tur-p1',
+                name: 'प्लॉट १ - BDN-711 (गोदावरी - ठिबक पद्धत)',
+                name_en: 'Plot 1 - BDN-711 (Drip Fertigated)',
+                crop_variety: 'BDN-711 (गोदावरी)',
+                acres: 4.0,
+                spacing: '6 x 1.5 ft',
+                foundation_pruning_date: '2026-06-25',
+                fruit_pruning_date: '2026-08-10',
+                canes_per_vine: 44,
+                bunches_per_vine: 620,
+                expected_yield_tonnes: 48
+            },
+            {
+                id: 'tur-p2',
+                name: 'प्लॉट २ - मारुती ICP-8863 (मर रोग प्रतिकारक्षम)',
+                name_en: 'Plot 2 - Maruti ICP-8863 (Wilt Resistant)',
+                crop_variety: 'Maruti ICP-8863 (मारुती)',
+                acres: 3.5,
+                spacing: '5 x 1 ft',
+                foundation_pruning_date: '2026-06-28',
+                fruit_pruning_date: '2026-08-14',
+                canes_per_vine: 38,
+                bunches_per_vine: 540,
+                expected_yield_tonnes: 38
+            },
+            {
+                id: 'tur-p3',
+                name: 'प्लॉट ३ - BSMR-736 (विपुल वाण)',
+                name_en: 'Plot 3 - BSMR-736 (Vipul Variety)',
+                crop_variety: 'BSMR-736 (विपुल)',
+                acres: 3.0,
+                spacing: '6 x 2 ft',
+                foundation_pruning_date: '2026-07-02',
+                fruit_pruning_date: '2026-08-20',
+                canes_per_vine: 50,
+                bunches_per_vine: 710,
+                expected_yield_tonnes: 42
+            }
+        ],
+        irrigationLogs: [
+            { id: 'tur-irr-1', plot_id: 'tur-p1', log_date: '2026-09-21', duration_hours: 2.0, water_liters: 22000, water_source: 'ठिबक सिंचन (Drip)', ec_level: 0.60, ph_level: 7.1, nutrients_n: 2.8, nutrients_ca: 3.5, nutrients_mg: 1.6 },
+            { id: 'tur-irr-2', plot_id: 'tur-p2', log_date: '2026-09-18', duration_hours: 1.5, water_liters: 18000, water_source: 'पाट पाणी (Furrow)', ec_level: 0.65, ph_level: 7.2, nutrients_n: 2.5, nutrients_ca: 3.2, nutrients_mg: 1.4 }
+        ],
+        fertilizerLogs: [
+            { id: 'tur-fert-1', plot_id: 'tur-p1', log_date: '2026-09-20', fertilizer_name: '12:61:00 (MAP) + रायझोबियम जीवाणू', dose_amount: 12, application_method: 'Drip Fertigation', cost: 2400 },
+            { id: 'tur-fert-2', plot_id: 'tur-p3', log_date: '2026-09-16', fertilizer_name: '00:52:34 (MKP) फुलोरा वाढीसाठी', dose_amount: 15, application_method: 'Drip', cost: 2800 }
+        ],
+        sprayLogs: [
+            { id: 'tur-sp-1', plot_id: 'tur-p1', log_date: '2026-09-22', pest_disease_name: 'घाटे अळी (Helicoverpa Pod Borer)', chemical_or_fertilizer: 'Emamectin Benzoate 5 SG @ 0.4 gm/L + neem oil', dose_per_liter: 0.4, total_water_liters: 200, next_spray_date: '2026-10-02', cost: 2900 },
+            { id: 'tur-sp-2', plot_id: 'tur-p2', log_date: '2026-09-19', pest_disease_name: 'शेंगमाशी व पिसारी पतंग (Plume Moth)', chemical_or_fertilizer: 'Chlorantraniliprole 18.5 SC (Coragen) @ 0.3 ml/L', dose_per_liter: 0.3, total_water_liters: 180, next_spray_date: '2026-09-30', cost: 3800 }
+        ],
+        laborLogs: [
+            { id: 'tur-lab-1', plot_id: 'tur-p1', log_date: '2026-09-20', activity: 'तूर शेंडा खुडणी (Apical Nipping) २ री वेळ', worker_names: 'छाया, मंगल व ६ महिला मजूर', male_workers: 1, female_workers: 7, wage_per_worker: 350, total_cost: 2800, payment_status: 'Paid' },
+            { id: 'tur-lab-2', plot_id: 'tur-p3', log_date: '2026-09-15', activity: 'बैलजोडी डवरणी व आंतरमशागत', worker_names: 'पांडुरंग व १ गडी', male_workers: 2, female_workers: 0, wage_per_worker: 600, total_cost: 1200, payment_status: 'Paid' }
+        ],
+        expenses: [
+            { id: 'tur-exp-1', plot_id: 'tur-p1', log_date: '2026-09-20', category: 'औषधे', category_en: 'Chemicals', amount: 8400, description: 'कोराजन, प्रोक्लेम व निंबोळी अर्क खरेदी' },
+            { id: 'tur-exp-2', plot_id: 'tur-p2', log_date: '2026-09-18', category: 'खते', category_en: 'Fertilizers', amount: 9600, description: 'डीएपी, गंधक व बोरॉन सूक्ष्म अन्नद्रव्ये' },
+            { id: 'tur-exp-3', plot_id: 'tur-p1', log_date: '2026-09-15', category: 'मजुरी', category_en: 'Labor', amount: 12500, description: 'तूर शेंडा खुडणी व डवरणी मजुरी' },
+            { id: 'tur-exp-4', plot_id: 'tur-p3', log_date: '2026-09-10', category: 'पाणी/वीज', category_en: 'Water/Power', amount: 4500, description: 'ठिबक फिल्टर फ्लशिंग व पंप ऑइल' },
+            { id: 'tur-exp-5', plot_id: 'tur-p1', log_date: '2026-09-05', category: 'वाहतूक', category_en: 'Transport', amount: 5200, description: 'लातूर डाळ मिल मार्केट माल वाहतूक' },
+            { id: 'tur-exp-6', plot_id: 'tur-p2', log_date: '2026-09-02', category: 'इतर खर्च', category_en: 'Other', amount: 3500, description: 'फेरोमोन कामगंध सापळे व चिकट ट्रॅप्स' }
+        ],
+        sales: [
+            { id: 'tur-sale-1', plot_id: 'tur-p1', sale_date: '2026-09-19', buyer_name: 'लातूर डाळ मिल असोसिएशन (Latur Dal Mill)', grade: 'Super Bold Red (A+)', quantity_kg: 3400, rate_per_kg: 108, total_revenue: 367200 },
+            { id: 'tur-sale-2', plot_id: 'tur-p2', sale_date: '2026-09-15', buyer_name: 'अकोला दाल इंडस्ट्रीज प्रा. लि.', grade: 'Medium Shiny (A)', quantity_kg: 2800, rate_per_kg: 102, total_revenue: 285600 }
+        ],
+        reminders: [
+            { id: 'tur-rem-1', category: 'छाटणी', category_en: 'Pruning', title: 'तूर शेंडा खुडणी (३० व ५५ दिवसांनी) आवश्यक', title_en: 'Apical tip nipping at 30 & 55 days', due_date: '2026-09-25', status: 'pending', priority: 'High', notes: 'शेंडा खुडल्याने फांद्यांची संख्या तिपटीने वाढते' },
+            { id: 'tur-rem-2', category: 'फवारणी', category_en: 'Spray', title: 'फुलोरा अवस्थेत घाटे अळी प्रतिबंधक फवारणी', title_en: 'Pod borer preventive spray at flowering', due_date: '2026-09-28', status: 'pending', priority: 'High', notes: 'Coragen @ 60 ml प्रति एकर २०० लिटर पाण्यात' },
+            { id: 'tur-rem-3', category: 'खत', category_en: 'Fertilizer', title: 'फुलोऱ्याच्या वेळी बोरॉन २०% + ००:५२:३४ फवारणी', title_en: 'Boron 20% + 00:52:34 foliar spray', due_date: '2026-10-02', status: 'pending', priority: 'Medium', notes: 'फूलगळ रोखण्यासाठी व घाटे फुगवणीसाठी' }
+        ],
+        pests: [
+            { name_mr: 'घाटे अळी (Helicoverpa Pod Borer)', name_en: 'Gram Pod Borer', badge: 'प्रमुख कीड', badge_cls: 'danger', desc_mr: 'अळी फुलांचे व कोवळ्या घाट्यांचे नुकसान करते. घाट्याला गोलाकार छिद्र पाडून आतले दाणे खाते.', chemical: 'Chlorantraniliprole 18.5 SC (Coragen) @ 0.3 ml/L किंवा Emamectin Benzoate 5 SG @ 0.4 gm/L', stage_mr: 'कळी अवस्था, फुलोरा व घाटे भरण्याची वेळ' },
+            { name_mr: 'शेंगमाशी (Pod Fly)', name_en: 'Tur Pod Fly', badge: 'अंतर्गत कीड', badge_cls: 'danger', desc_mr: 'माशी घाट्याच्या आवरणात अंडी घालते. आतील अळी दाणे पोखरून खाते. बाहेरून छिद्र दिसत नाही.', chemical: 'Dimethoate 30 EC @ 1.7 ml/L किंवा Monocrotophos', stage_mr: 'घाटे तयार होण्याचा काळ' },
+            { name_mr: 'पिसारी पतंग (Plume Moth)', name_en: 'Plume Moth', badge: 'पाने व कळ्या', badge_cls: 'warning', desc_mr: 'हिरवट तपकिरी अळ्या कळ्या व शेंगा कुरतडतात. विष्ठा घाट्यांवर दिसते.', chemical: 'Proclaim (Emamectin Benzoate) @ 0.4 gm/L किंवा Indoxacarb 14.5 SC @ 0.8 ml/L', stage_mr: 'फुलोरा अवस्था' },
+            { name_mr: 'मर रोग व वांझ रोग (Fusarium Wilt & SMD)', name_en: 'Wilt & Sterility Mosaic', badge: 'संसर्गजन्य', badge_cls: 'warning', desc_mr: 'झाडे पिवळी पडून अचानक सुकतात. मुळांजवळ खोड कापल्यास काळ्या वाहिन्या दिसतात.', chemical: 'Trichoderma @ 2 kg/एकर किंवा कार्बेंडाझिम 2 gm/L ड्रेंचिंग + प्रतिकारक्षम वाण (BSMR-736)', stage_mr: 'सुरुवातीची वाढ व फुलोरा' }
+        ],
+        mandi_markets: [
+            { id: 'all', name_mr: 'सर्व मार्केट्स (All)', name_en: 'All Markets' },
+            { id: 'लातूर', name_mr: 'लातूर APMC', name_en: 'Latur' },
+            { id: 'अकोला', name_mr: 'अकोला APMC', name_en: 'Akola' },
+            { id: 'वाशीम', name_mr: 'वाशीम APMC', name_en: 'Washim' },
+            { id: 'जालना', name_mr: 'जालना APMC', name_en: 'Jalna' },
+            { id: 'नागपूर', name_mr: 'नागपूर APMC', name_en: 'Nagpur' }
+        ],
+        mandi_kpis: [
+            { label: 'लातूर उच्चतम भाव', val: '₹11,450', unit: '/ क्विंटल', sub: 'Super Bold Dry Quality', icon: 'award', cls: 'emerald' },
+            { label: 'सरासरी मॉडेल भाव (Modal)', val: '₹10,380', unit: '/ क्विंटल', sub: 'महाराष्ट्र डाळ मिल सौदे', icon: 'bar-chart-2', cls: 'blue' },
+            { label: 'शासकीय हमीभाव (MSP)', val: '₹7,550', unit: '/ क्विंटल', sub: 'केंद्र शासन हमीभाव २०२६', icon: 'sun', cls: 'amber' },
+            { label: 'दैनिक आवक (Daily Arrivals)', val: '47,200', unit: 'पोती', sub: 'लातूर, अकोला, वाशीम', icon: 'truck', cls: 'purple' }
+        ],
+        mandi: [
+            { date: '2026-09-22', market: 'लातूर कृषी उत्पन्न बाजार समिती (Latur APMC)', variety: 'Red Tur (लाल तूर - मारुती)', grade: 'Super Bold (12% आर्द्रता)', arrivals: '14,200 पोती', min: 9800, max: 11450, modal: 10800, trend: 'up' },
+            { date: '2026-09-22', market: 'अकोला APMC (विदर्भ)', variety: 'White / Red Tur (तूर)', grade: 'Mill Quality Grade A', arrivals: '9,800 पोती', min: 9400, max: 10900, modal: 10350, trend: 'up' },
+            { date: '2026-09-22', market: 'वाशीम APMC', variety: 'Red Tur (लाल तूर)', grade: 'Clean Bold Dry', arrivals: '6,400 पोती', min: 9500, max: 10750, modal: 10200, trend: 'stable' },
+            { date: '2026-09-22', market: 'जालना APMC (मराठवाडा)', variety: 'Maruti Tur (मारुती तूर)', grade: 'Super Export Bold', arrivals: '5,100 पोती', min: 9700, max: 11100, modal: 10500, trend: 'up' },
+            { date: '2026-09-22', market: 'नागपूर कळमना APMC', variety: 'Nagpur Dal Quality', grade: 'Grade 1 Dry', arrivals: '7,200 पोती', min: 9300, max: 10600, modal: 10100, trend: 'stable' },
+            { date: '2026-09-22', market: 'सोलापूर APMC', variety: 'Gajanan Red Tur', grade: 'Standard Quality', arrivals: '4,500 पोती', min: 9200, max: 10400, modal: 9950, trend: 'down' }
+        ]
+    },
+
+    corn: {
+        id: 'corn',
+        name_mr: 'मका',
+        name_en: 'Corn / Maize',
+        emoji: '🌽',
+        icon: 'wheat',
+        subtitle_mr: 'सह्याद्री हायब्रिड मका व सायलेज फार्म्स',
+        subtitle_en: 'Sahyadri Commercial Corn & Silage Operations',
+        badge_mr: 'मका शेती',
+        badge_en: 'Corn Farm',
+        tagline_mr: 'हायब्रिड मका व सायलेज प्रकल्प',
+        tagline_en: 'Commercial Hybrid Corn & Silage Estate',
+        tab2Title_mr: '🌽 २. मका शेती व्यवस्थापन (Commercial Corn Management)',
+        tab2Title_en: '🌽 2. Commercial Corn Management',
+        tab2Desc_mr: 'हायब्रिड मका वाण, झाडे संख्या, लष्करी अळी नियंत्रण व सायलेज/दाणे उत्पादन',
+        tab2Desc_en: 'Hybrid varieties, cob counts, Fall Armyworm control & grain/silage yield',
+        tab10Title_mr: '📈 थेट मका बाजारभाव व पोल्ट्री फीड दर',
+        tab10Title_en: '📈 Corn Mandi Rates & Poultry Feed Demand',
+        tab10Desc_mr: 'निफाड, येवला, मालेगाव, शिर्डी, सांगली व धुळे बाजार समिती आजचे दर',
+        tab10Desc_en: 'Niphad, Yeola, Malegaon, Shirdi, Sangli & Dhule APMC maize rates',
+        salesHeading_mr: '💰 मका विक्री नोंदी (Corn / Maize Sales)',
+        salesHeading_en: '💰 Corn / Maize Sales',
+        metricLabels: {
+            date1_mr: 'मका पेरणी तारीख (Sowing Date)',
+            date1_en: 'Sowing Date',
+            date2_mr: 'कणीस तोडणी / सायलेज तारीख (Harvest Date)',
+            date2_en: 'Harvest / Silage Date',
+            count1_mr: 'झाडे संख्या / एकर (Plant Pop.)',
+            count1_en: 'Plant Pop. / Acre',
+            count2_mr: 'कणसे संख्या / झाड (Cobs/Plant)',
+            count2_en: 'Cobs / Plant',
+            yieldUnit_mr: 'क्विंटल',
+            yieldUnit_en: 'Quintals',
+            rateUnit_mr: 'प्रति क्विंटल (₹/Qtl)',
+            rateUnit_en: 'per Qtl (₹/Qtl)',
+            varietyTitle_mr: 'मका वाण',
+            varietyTitle_en: 'Corn Variety'
+        },
+        varieties: [
+            'Pioneer P3396 (पायोनियर हायब्रिड)',
+            'Dekalb 9108 (डिकॅल्ब)',
+            'Sugar-75 Sweet Corn (स्वीट कॉर्न)',
+            'Syngenta NK-6240 (सिंजेंटा)',
+            'Advanta PAC-751 (अॅडव्हान्टा)',
+            'Kaveri 50 (कावेरी)'
+        ],
+        grades: [
+            'Poultry Grade Yellow (A+)',
+            'Commercial Grain (A)',
+            'Starch Factory Dry (B)',
+            'Silage Fodder Green (C)'
+        ],
+        plots: [
+            {
+                id: 'corn-p1',
+                name: 'प्लॉट १ - पायोनियर P3396 (पिवळा हायब्रिड मका)',
+                name_en: 'Plot 1 - Pioneer P3396 (Yellow Hybrid)',
+                crop_variety: 'Pioneer P3396 (पायोनियर)',
+                acres: 4.5,
+                spacing: '2 x 0.75 ft',
+                foundation_pruning_date: '2026-06-20',
+                fruit_pruning_date: '2026-10-15',
+                canes_per_vine: 24000,
+                bunches_per_vine: 2,
+                expected_yield_tonnes: 155
+            },
+            {
+                id: 'corn-p2',
+                name: 'प्लॉट २ - डिकॅल्ब 9108 (दाणे व सायलेज)',
+                name_en: 'Plot 2 - Dekalb 9108 (Grain & Silage)',
+                crop_variety: 'Dekalb 9108 (डिकॅल्ब)',
+                acres: 3.5,
+                spacing: '2 x 0.75 ft',
+                foundation_pruning_date: '2026-06-25',
+                fruit_pruning_date: '2026-10-20',
+                canes_per_vine: 23500,
+                bunches_per_vine: 2,
+                expected_yield_tonnes: 120
+            },
+            {
+                id: 'corn-p3',
+                name: 'प्लॉट ३ - Sugar-75 (स्वीट कॉर्न - फ्रेश मार्केट)',
+                name_en: 'Plot 3 - Sugar-75 Sweet Corn (Fresh Market)',
+                crop_variety: 'Sugar-75 Sweet Corn',
+                acres: 2.5,
+                spacing: '2.5 x 1 ft',
+                foundation_pruning_date: '2026-07-05',
+                fruit_pruning_date: '2026-09-30',
+                canes_per_vine: 18000,
+                bunches_per_vine: 2,
+                expected_yield_tonnes: 85
+            }
+        ],
+        irrigationLogs: [
+            { id: 'crn-irr-1', plot_id: 'corn-p1', log_date: '2026-09-22', duration_hours: 2.5, water_liters: 35000, water_source: 'ठिबक सिंचन', ec_level: 0.70, ph_level: 7.0, nutrients_n: 5.5, nutrients_ca: 3.8, nutrients_mg: 2.0 },
+            { id: 'crn-irr-2', plot_id: 'corn-p3', log_date: '2026-09-19', duration_hours: 2.0, water_liters: 24000, water_source: 'पाट पाणी (Furrow)', ec_level: 0.68, ph_level: 6.9, nutrients_n: 4.8, nutrients_ca: 3.4, nutrients_mg: 1.8 }
+        ],
+        fertilizerLogs: [
+            { id: 'crn-fert-1', plot_id: 'corn-p1', log_date: '2026-09-20', fertilizer_name: 'युरिया (Urea) + 24:24:00', dose_amount: 45, application_method: 'Top Dressing', cost: 1850 },
+            { id: 'crn-fert-2', plot_id: 'corn-p3', log_date: '2026-09-17', fertilizer_name: '13:00:45 (Potassium Nitrate) दाणे भरणीसाठी', dose_amount: 25, application_method: 'Drip', cost: 3200 }
+        ],
+        sprayLogs: [
+            { id: 'crn-sp-1', plot_id: 'corn-p1', log_date: '2026-09-21', pest_disease_name: 'लष्करी अळी (Fall Armyworm - FAW)', chemical_or_fertilizer: 'Spinetoram 11.7 SC @ 0.5 ml/L पोंग्यात फवारणी', dose_per_liter: 0.5, total_water_liters: 220, next_spray_date: '2026-09-29', cost: 3400 },
+            { id: 'crn-sp-2', plot_id: 'corn-p2', log_date: '2026-09-18', pest_disease_name: 'खोडकिडा व लष्करी अळी', chemical_or_fertilizer: 'Coragen (Chlorantraniliprole) @ 0.4 ml/L', dose_per_liter: 0.4, total_water_liters: 200, next_spray_date: '2026-09-28', cost: 4100 }
+        ],
+        laborLogs: [
+            { id: 'crn-lab-1', plot_id: 'corn-p3', log_date: '2026-09-21', activity: 'स्वीट कॉर्न कणसे तोडणी व पॅकिंग', worker_names: 'कैलास, बाळू व 6 मजूर', male_workers: 4, female_workers: 4, wage_per_worker: 400, total_cost: 3200, payment_status: 'Paid' },
+            { id: 'crn-lab-2', plot_id: 'corn-p1', log_date: '2026-09-16', activity: 'युरिया खत घालणे व माती लावणे', worker_names: 'दिनकर व मजूर', male_workers: 3, female_workers: 3, wage_per_worker: 380, total_cost: 2280, payment_status: 'Paid' }
+        ],
+        expenses: [
+            { id: 'crn-exp-1', plot_id: 'corn-p1', log_date: '2026-09-20', category: 'खते', category_en: 'Fertilizers', amount: 14500, description: 'युरिया, पोटॅश व 10:26:26 खतांची खरेदी' },
+            { id: 'crn-exp-2', plot_id: 'corn-p1', log_date: '2026-09-18', category: 'औषधे', category_en: 'Chemicals', amount: 9800, description: 'डेलिगेट, कोराजन व कीटकनाशक खरेदी' },
+            { id: 'crn-exp-3', plot_id: 'corn-p3', log_date: '2026-09-15', category: 'मजुरी', category_en: 'Labor', amount: 16500, description: 'कणीस तोडणी, पोती भरणे व मजुरी' },
+            { id: 'crn-exp-4', plot_id: 'corn-p2', log_date: '2026-09-12', category: 'पाणी/वीज', category_en: 'Water/Power', amount: 5600, description: 'मोटर दुरुस्ती व वीज बिल' },
+            { id: 'crn-exp-5', plot_id: 'corn-p1', log_date: '2026-09-08', category: 'वाहतूक', category_en: 'Transport', amount: 8200, description: 'पोल्ट्री फीड कंपनीपर्यंत मका वाहतूक' },
+            { id: 'crn-exp-6', plot_id: 'corn-p3', log_date: '2026-09-05', category: 'इतर खर्च', category_en: 'Other', amount: 4200, description: 'स्वीट कॉर्न क्रेट्स व ज्यूट पोती' }
+        ],
+        sales: [
+            { id: 'crn-sale-1', plot_id: 'corn-p1', sale_date: '2026-09-21', buyer_name: 'प्रिमियर पोल्ट्री फीड्स लि., नाशिक', grade: 'Poultry Grade Yellow (A+)', quantity_kg: 9200, rate_per_kg: 24.5, total_revenue: 225400 },
+            { id: 'crn-sale-2', plot_id: 'corn-p3', sale_date: '2026-09-18', buyer_name: 'मेट्रो कॅश अँड कॅरी, मुंबई (Sweet Corn)', grade: 'Sweet Corn Fresh Grade', quantity_kg: 4800, rate_per_kg: 32.0, total_revenue: 153600 }
+        ],
+        reminders: [
+            { id: 'crn-rem-1', category: 'फवारणी', category_en: 'Spray', title: 'लष्करी अळी (FAW) पोंग्यात औषध सोडणे', title_en: 'Fall armyworm whorl application', due_date: '2026-09-24', status: 'pending', priority: 'High', notes: 'Spinetoram 11.7 SC @ 0.5 ml/L थेट मक्याच्या पोंग्यात फवारावे' },
+            { id: 'crn-rem-2', category: 'खत', category_en: 'Fertilizer', title: 'कणीस निसवताना युरिया व पोटॅश दुसरा डोस देणे', title_en: '2nd Dose Urea & Potash at tasseling', due_date: '2026-09-27', status: 'pending', priority: 'Medium', notes: 'कणसाचा आकार व दाण्यांचे वजन वाढवण्यासाठी' },
+            { id: 'crn-rem-3', category: 'काढणी', category_en: 'Harvest', title: 'स्वीट कॉर्न काढणी (मिल्क स्टेज - Milk Stage)', title_en: 'Sweet corn picking at milk stage', due_date: '2026-09-30', status: 'pending', priority: 'High', notes: 'कणसाचे केस तपकिरी झाल्यावर लगेच तोडणी करावी' }
+        ],
+        pests: [
+            { name_mr: 'अमेरिकन लष्करी अळी (Fall Armyworm - FAW)', name_en: 'Fall Armyworm (FAW)', badge: 'अत्यंत घातक कीड', badge_cls: 'danger', desc_mr: 'अळी मक्याच्या पोंग्यात राहून कोवळी पाने कुरतडते. पानांना मोठी छिद्रे पडतात व विष्ठा पोंग्यात साचते.', chemical: 'Spinetoram 11.7 SC (Delegate) @ 0.5 ml/L किंवा Chlorantraniliprole @ 0.4 ml/L थेट पोंग्यात', stage_mr: 'उगवणीनंतर १५ ते ४५ दिवस' },
+            { name_mr: 'खोडकिडा (Stem Borer - Chilo partellus)', name_en: 'Maize Stem Borer', badge: 'खोड पोखरणी', badge_cls: 'danger', desc_mr: 'अळी खोडात शिरून वाढणारा शेंडा खाते, त्यामुळे झाडाचा मधला भाग वाळतो (Dead Heart).', chemical: 'Cartap Hydrochloride 4G किंवा Carbofuran 3G पोंग्यात टाकणे', stage_mr: 'रोप अवस्था ते गुडघाभर वाढ' },
+            { name_mr: 'तुडतुडे व मावा (Corn Aphids & Leafhoppers)', name_en: 'Maize Aphids', badge: 'रस शोषक', badge_cls: 'warning', desc_mr: 'पानांमधून व कणसाच्या आवरणातून रस शोषतात. चिकट द्रव स्त्रवतात, त्यामुळे काळी बुरशी येते.', chemical: 'Thiamethoxam 25 WG @ 0.3 gm/L किंवा Imidacloprid @ 0.5 ml/L', stage_mr: 'कणीस तयार होण्याची अवस्था' },
+            { name_mr: 'तुरा करपा व तांबेरा (Maydis Leaf Blight & Rust)', name_en: 'Blight & Rust', badge: 'बुरशीजन्य रोग', badge_cls: 'warning', desc_mr: 'पानांवर लांबट तपकिरी चट्टे पडतात. तांबेरा रोगात पानांवर विटकरी रंगाचे फोड येतात.', chemical: 'Azoxystrobin + Difenoconazole (Amistar Top) @ 1 ml/L किंवा Mancozeb @ 2.5 gm/L', stage_mr: 'ढगाळ हवामान व उच्च आर्द्रता' }
+        ],
+        mandi_markets: [
+            { id: 'all', name_mr: 'सर्व मार्केट्स (All)', name_en: 'All Markets' },
+            { id: 'निफाड', name_mr: 'निफाड APMC', name_en: 'Niphad' },
+            { id: 'मालेगाव', name_mr: 'मालेगाव APMC', name_en: 'Malegaon' },
+            { id: 'येवला', name_mr: 'येवला APMC', name_en: 'Yeola' },
+            { id: 'धुळे', name_mr: 'धुळे APMC', name_en: 'Dhule' },
+            { id: 'सांगली', name_mr: 'सांगली APMC', name_en: 'Sangli' }
+        ],
+        mandi_kpis: [
+            { label: 'निफाड उच्चतम भाव', val: '₹2,540', unit: '/ क्विंटल', sub: 'Poultry Grade Dry (<14%)', icon: 'award', cls: 'emerald' },
+            { label: 'सरासरी मॉडेल भाव (Modal)', val: '₹2,385', unit: '/ क्विंटल', sub: 'महाराष्ट्र मका बाजार समित्या', icon: 'bar-chart-2', cls: 'blue' },
+            { label: 'शासकीय हमीभाव (MSP)', val: '₹2,225', unit: '/ क्विंटल', sub: 'मका हमीभाव २०२६ दर', icon: 'sun', cls: 'amber' },
+            { label: 'दैनिक आवक (Daily Arrivals)', val: '35,900', unit: 'पोती', sub: 'निफाड, मालेगाव, धुळे', icon: 'truck', cls: 'purple' }
+        ],
+        mandi: [
+            { date: '2026-09-22', market: 'निफाड APMC (नाशिक)', variety: 'Yellow Hybrid Corn (पिवळा मका)', grade: 'Poultry Grade Dry (<14% ओलावा)', arrivals: '8,500 पोती', min: 2250, max: 2540, modal: 2420, trend: 'up' },
+            { date: '2026-09-22', market: 'मालेगाव APMC (नाशिक)', variety: 'Commercial Maize', grade: 'Clean Grain Grade A', arrivals: '6,200 पोती', min: 2180, max: 2490, modal: 2380, trend: 'up' },
+            { date: '2026-09-22', market: 'येवला APMC', variety: 'Hybrid Yellow', grade: 'Standard Quality', arrivals: '5,400 पोती', min: 2150, max: 2460, modal: 2350, trend: 'stable' },
+            { date: '2026-09-22', market: 'धुळे APMC (खान्देश)', variety: 'Feed Maize Grade 1', arrivals: '7,100 पोती', min: 2200, max: 2510, modal: 2400, trend: 'up' },
+            { date: '2026-09-22', market: 'सांगली APMC', variety: 'Silage / Hybrid Corn', grade: 'Grade A Dry', arrivals: '4,800 पोती', min: 2220, max: 2500, modal: 2390, trend: 'stable' },
+            { date: '2026-09-22', market: 'शिर्डी / राहाता APMC', variety: 'Yellow Star Maize', grade: 'Direct Mill Dry', arrivals: '3,900 पोती', min: 2190, max: 2470, modal: 2360, trend: 'down' }
+        ]
+    },
+
+    pomegranate: {
+        id: 'pomegranate',
+        name_mr: 'डाळिंब',
+        name_en: 'Pomegranate',
+        emoji: '🍎',
+        icon: 'apple',
+        subtitle_mr: 'सह्याद्री भगवा डाळिंब ऑर्चर्ड्स',
+        subtitle_en: 'Sahyadri Bhagwa Commercial Pomegranate Estate',
+        badge_mr: 'डाळिंब बाग',
+        badge_en: 'Pomegranate Orchard',
+        tagline_mr: 'भगवा डाळिंब व बहार व्यवस्थापन',
+        tagline_en: 'Bhagwa Pomegranate & Bahar Treatment',
+        tab2Title_mr: '🍎 २. डाळिंब बाग व्यवस्थापन (Commercial Pomegranate Management)',
+        tab2Title_en: '🍎 2. Commercial Pomegranate Management',
+        tab2Desc_mr: 'प्लॉटनुसार वाण, बहार व्यवस्थापन (मृग/हस्त), तेल्या रोग नियंत्रण व फळे संख्या',
+        tab2Desc_en: 'Bhagwa variety, Bahar treatment, Bacterial Blight (Telya) & fruit thinning',
+        tab10Title_mr: '📈 थेट डाळिंब बाजारभाव व APMC मार्केट दर',
+        tab10Title_en: '📈 Pomegranate Mandi & APMC Market Rates',
+        tab10Desc_mr: 'सोलापूर, सांगोला, पंढरपूर, नाशिक, पुणे व वाशी मार्केटमधील डाळिंब लिलाव नोंदी',
+        tab10Desc_en: 'Solapur, Sangola, Pandharpur, Nashik, Pune & Vashi APMC auctions',
+        salesHeading_mr: '💰 डाळिंब विक्री नोंदी (Pomegranate Sales)',
+        salesHeading_en: '💰 Pomegranate Harvest Sales',
+        metricLabels: {
+            date1_mr: 'बहार ताण सोडणे तारीख (Stress Release Date)',
+            date1_en: 'Bahar Stress Release Date',
+            date2_mr: 'फळ तोडणी तारीख (Harvest Picking Date)',
+            date2_en: 'Harvest Picking Date',
+            count1_mr: 'फळे संख्या / झाड (Fruits/Tree)',
+            count1_en: 'Fruits / Tree',
+            count2_mr: 'सरासरी फळ वजन (Avg Fruit Weight gm)',
+            count2_en: 'Avg Fruit Weight (gm)',
+            yieldUnit_mr: 'टन',
+            yieldUnit_en: 'Tonnes',
+            rateUnit_mr: 'प्रति किलो (₹/kg)',
+            rateUnit_en: 'per kg (₹/kg)',
+            varietyTitle_mr: 'डाळिंब वाण',
+            varietyTitle_en: 'Pomegranate Variety'
+        },
+        varieties: [
+            'Bhagwa Super (भगवा सुपर सिंदूरी)',
+            'Bhagwa Export (भगवा निर्यात)',
+            'Arakta (आरक्ता)',
+            'Ganesh (गणेश)',
+            'Ruby (रुबी)',
+            'Solapur Red'
+        ],
+        grades: [
+            'Export Super Bold (300g+ A+)',
+            'Domestic Grade A (250-300g)',
+            'Medium Table (200-250g B)',
+            'Process / Juice (C)'
+        ],
+        plots: [
+            {
+                id: 'pom-p1',
+                name: 'प्लॉट १ - भगवा सुपर (हस्त बहार - एक्सपोर्ट)',
+                name_en: 'Plot 1 - Bhagwa Super (Hasth Bahar Export)',
+                crop_variety: 'Bhagwa Super (भगवा)',
+                acres: 3.5,
+                spacing: '14 x 10 ft',
+                foundation_pruning_date: '2026-08-15',
+                fruit_pruning_date: '2027-01-20',
+                canes_per_vine: 95,
+                bunches_per_vine: 320,
+                expected_yield_tonnes: 28
+            },
+            {
+                id: 'pom-p2',
+                name: 'प्लॉट २ - भगवा सिंदूरी (मृग बहार)',
+                name_en: 'Plot 2 - Bhagwa Sinduri (Mrig Bahar)',
+                crop_variety: 'Bhagwa Export (भगवा)',
+                acres: 3.0,
+                spacing: '14 x 10 ft',
+                foundation_pruning_date: '2026-05-20',
+                fruit_pruning_date: '2026-11-10',
+                canes_per_vine: 90,
+                bunches_per_vine: 290,
+                expected_yield_tonnes: 22
+            },
+            {
+                id: 'pom-p3',
+                name: 'प्लॉट ३ - आरक्ता (स्थानिक व प्रक्रिया)',
+                name_en: 'Plot 3 - Arakta (Table & Juice)',
+                crop_variety: 'Arakta (आरक्ता)',
+                acres: 2.0,
+                spacing: '12 x 10 ft',
+                foundation_pruning_date: '2026-06-01',
+                fruit_pruning_date: '2026-11-25',
+                canes_per_vine: 85,
+                bunches_per_vine: 270,
+                expected_yield_tonnes: 16
+            }
+        ],
+        irrigationLogs: [
+            { id: 'pom-irr-1', plot_id: 'pom-p1', log_date: '2026-09-22', duration_hours: 2.5, water_liters: 38000, water_source: 'ठिबक सिंचन (Drip)', ec_level: 0.75, ph_level: 6.8, nutrients_n: 3.5, nutrients_ca: 5.2, nutrients_mg: 2.3 },
+            { id: 'pom-irr-2', plot_id: 'pom-p2', log_date: '2026-09-19', duration_hours: 2.0, water_liters: 30000, water_source: 'ठिबक सिंचन', ec_level: 0.72, ph_level: 6.9, nutrients_n: 3.2, nutrients_ca: 4.8, nutrients_mg: 2.0 }
+        ],
+        fertilizerLogs: [
+            { id: 'pom-fert-1', plot_id: 'pom-p1', log_date: '2026-09-20', fertilizer_name: 'कॅल्शियम नायट्रेट + बोरॉन (फळ सेटिंगसाठी)', dose_amount: 25, application_method: 'Drip', cost: 4200 },
+            { id: 'pom-fert-2', plot_id: 'pom-p2', log_date: '2026-09-17', fertilizer_name: '00:52:34 (MKP) + पोटॅशियम शोराइट', dose_amount: 20, application_method: 'Drip', cost: 3900 }
+        ],
+        sprayLogs: [
+            { id: 'pom-sp-1', plot_id: 'pom-p1', log_date: '2026-09-21', pest_disease_name: 'तेल्या रोग व फळकूज (Bacterial Blight)', chemical_or_fertilizer: 'Streptocycline 0.5 gm/L + कॉपर ऑक्सिक्लोराईड (COC) 2.5 gm/L', dose_per_liter: 2.5, total_water_liters: 400, next_spray_date: '2026-09-28', cost: 5800 },
+            { id: 'pom-sp-2', plot_id: 'pom-p2', log_date: '2026-09-18', pest_disease_name: 'फुलकिडे (Thrips) व फळ पोखरणारी सुरवंट', chemical_or_fertilizer: 'Benevia (Cyantraniliprole) @ 1.8 ml/L', dose_per_liter: 1.8, total_water_liters: 350, next_spray_date: '2026-09-29', cost: 6200 }
+        ],
+        laborLogs: [
+            { id: 'pom-lab-1', plot_id: 'pom-p1', log_date: '2026-09-21', activity: 'फळ विरळणी (Fruit Thinning) व झाड स्वच्छता', worker_names: 'सुरेश, दत्ता व 6 महिला मजूर', male_workers: 2, female_workers: 6, wage_per_worker: 400, total_cost: 3200, payment_status: 'Paid' },
+            { id: 'pom-lab-2', plot_id: 'pom-p2', log_date: '2026-09-17', activity: 'फळांना पेपर बॅगिंग (बटर पेपर लावणे)', worker_names: 'सुधाकर व महिला कामगार', male_workers: 2, female_workers: 8, wage_per_worker: 380, total_cost: 3800, payment_status: 'Paid' }
+        ],
+        expenses: [
+            { id: 'pom-exp-1', plot_id: 'pom-p1', log_date: '2026-09-21', category: 'औषधे', category_en: 'Chemicals', amount: 28500, description: 'स्ट्रेप्टोसायक्लिन, बेनेव्हिया व बुरशीनाशके' },
+            { id: 'pom-exp-2', plot_id: 'pom-p1', log_date: '2026-09-19', category: 'खते', category_en: 'Fertilizers', amount: 22000, description: 'कॅल्शियम नायट्रेट, 13:00:45 व सूक्ष्म अन्नद्रव्ये' },
+            { id: 'pom-exp-3', plot_id: 'pom-p2', log_date: '2026-09-16', category: 'मजुरी', category_en: 'Labor', amount: 26800, description: 'डाळिंब विरळणी व बॅगिंग मजुरी हजेरी' },
+            { id: 'pom-exp-4', plot_id: 'pom-p1', log_date: '2026-09-12', category: 'पाणी/वीज', category_en: 'Water/Power', amount: 9200, description: 'ठिबक सिंचन पाइपलाइन व वीज बिल' },
+            { id: 'pom-exp-5', plot_id: 'pom-p2', log_date: '2026-09-08', category: 'वाहतूक', category_en: 'Transport', amount: 14500, description: 'सांगोला व सोलापूर मार्केट क्रेट्स वाहतूक' },
+            { id: 'pom-exp-6', plot_id: 'pom-p3', log_date: '2026-09-05', category: 'इतर खर्च', category_en: 'Other', amount: 11200, description: 'बटर पेपर बॅग्स व फोम नेट खरेदी' }
+        ],
+        sales: [
+            { id: 'pom-sale-1', plot_id: 'pom-p2', sale_date: '2026-09-20', buyer_name: 'अरिहंत डाळिंब एक्सपोर्ट्स, सोलापूर APMC', grade: 'Export Super Bold (300g+)', quantity_kg: 3800, rate_per_kg: 185, total_revenue: 703000 },
+            { id: 'pom-sale-2', plot_id: 'pom-p2', sale_date: '2026-09-17', buyer_name: 'बालाजी फ्रूट्स, सांगोला मार्केट', grade: 'Domestic Grade A (250-300g)', quantity_kg: 2900, rate_per_kg: 135, total_revenue: 391500 }
+        ],
+        reminders: [
+            { id: 'pom-rem-1', category: 'फवारणी', category_en: 'Spray', title: 'तेल्या (Bacterial Blight) प्रतिबंधक बोर्डो फवारणी', title_en: 'Bordeaux 0.5% spray for Telya control', due_date: '2026-09-24', status: 'pending', priority: 'High', notes: 'ढगाळ हवामानात ०.५% बोर्डो मिश्रण किंवा कॉपर हायड्रॉक्साइड' },
+            { id: 'pom-rem-2', category: 'छाटणी', category_en: 'Pruning', title: 'प्लॉट १ - फळ विरळणी (प्रति झाड ८० ते ९० उत्तम फळे)', title_en: 'Plot 1 - Fruit thinning to 80-90 fruits/tree', due_date: '2026-09-26', status: 'pending', priority: 'High', notes: 'जास्त फळे ठेवल्यास आकार लहान राहतो' },
+            { id: 'pom-rem-3', category: 'खत', category_en: 'Fertilizer', title: 'कॅल्शियम व बोरॉन फवारणी (फळ तडकणे रोखण्यासाठी)', title_en: 'Calcium + Boron foliar for fruit cracking', due_date: '2026-09-29', status: 'pending', priority: 'Medium', notes: 'फळाची साल जाड व चमकदार होण्यासाठी' }
+        ],
+        pests: [
+            { name_mr: 'तेल्या रोग (Bacterial Blight - Xanthomonas)', name_en: 'Bacterial Blight (Telya)', badge: 'सर्वात घातक रोग', badge_cls: 'danger', desc_mr: 'पानांवर, फांद्यांवर व फळांवर काळे तेलकट त्रिकोणी डाग पडतात. फळांवर ‘L’ किंवा ‘Y’ आकाराचे तडे जातात.', chemical: 'Streptocycline 0.5 gm/L + COC 2.5 gm/L किंवा 2-Bromo-2-nitropropane-1,3-diol (Bacteromycin) @ 0.5 gm/L', stage_mr: 'पाऊस, धुके व उच्च आर्द्रता' },
+            { name_mr: 'डाळिंब फुलकिडे (Thrips - Scirtothrips)', name_en: 'Pomegranate Thrips', badge: 'फळ डाग कीड', badge_cls: 'danger', desc_mr: 'कोवळ्या फळांच्या सालीवर खरवडून रस शोषतात. फळावर खवलेयुक्त चट्टे पडतात व मार्केट भाव कमी होतो.', chemical: 'Spinetoram 11.7 SC @ 0.4 ml/L किंवा Fipronil 5 SC @ 1.5 ml/L', stage_mr: 'कळी अवस्था व लहान फळ सेटिंग' },
+            { name_mr: 'फळ पोखरणारी सुरवंट / अनाटार (Fruit Borer)', name_en: 'Pomegranate Butterfly / Anar Borer', badge: 'फळ कीड', badge_cls: 'warning', desc_mr: 'फुलपाखरू फळावर अंडी घालते. अळी फळात शिरून दाणे खाते व विष्ठा छिद्रातून बाहेर टाकते.', chemical: 'Cyantraniliprole 10.26 OD (Benevia) @ 1.8 ml/L किंवा फळांना बटर पेपर बॅगिंग करणे', stage_mr: 'फळ लिंबाएवढे असताना' },
+            { name_mr: 'मर रोग (Wilt Complex / Ceratocystis fimbriata)', name_en: 'Pomegranate Wilt', badge: 'मुळांची बुरशी', badge_cls: 'warning', desc_mr: 'झाडाची एक बाजू पिवळी पडून हळूहळू संपूर्ण झाड वाळते. खोड कापल्यास आतील लाकूड काळसर-तपकिरी दिसते.', chemical: 'Propiconazole @ 2 ml/L ड्रेंचिंग + ट्रायकोडर्मा शेणखतातून + नेमाटोड नियंत्रण', stage_mr: 'कधीही (विशेषतः अतिपाण्यामुळे)' }
+        ],
+        mandi_markets: [
+            { id: 'all', name_mr: 'सर्व मार्केट्स (All)', name_en: 'All Markets' },
+            { id: 'सोलापूर', name_mr: 'सोलापूर APMC', name_en: 'Solapur' },
+            { id: 'सांगोला', name_mr: 'सांगोला मार्केट', name_en: 'Sangola' },
+            { id: 'पंढरपूर', name_mr: 'पंढरपूर APMC', name_en: 'Pandharpur' },
+            { id: 'मुंबई', name_mr: 'मुंबई वाशी APMC', name_en: 'Vashi APMC' },
+            { id: 'पुणे', name_mr: 'पुणे गुलटेकडी', name_en: 'Pune APMC' }
+        ],
+        mandi_kpis: [
+            { label: 'सोलापूर उच्चतम भाव', val: '₹210', unit: '/ किलो', sub: 'Bhagwa Super Export 350g+', icon: 'award', cls: 'emerald' },
+            { label: 'सरासरी मॉडेल भाव (Modal)', val: '₹152', unit: '/ किलो', sub: 'महाराष्ट्र डाळिंब सौदे', icon: 'bar-chart-2', cls: 'blue' },
+            { label: 'लोकल टेबल क्वॉलिटी', val: '₹120', unit: '/ किलो', sub: '200-250g सरासरी दर', icon: 'sun', cls: 'amber' },
+            { label: 'दैनिक आवक (Daily Arrivals)', val: '19,900', unit: 'क्रेट्स', sub: 'सोलापूर, सांगोला, वाशी', icon: 'truck', cls: 'purple' }
+        ],
+        mandi: [
+            { date: '2026-09-22', market: 'सोलापूर कृषी उत्पन्न बाजार समिती (Solapur APMC)', variety: 'Bhagwa Super (भगवा सिंदूरी)', grade: 'Export Super (350g+)', arrivals: '3,800 क्रेट्स', min: 140, max: 210, modal: 185, trend: 'up' },
+            { date: '2026-09-22', market: 'सांगोला डाळिंब मार्केट (सोलापूर)', variety: 'Bhagwa Export Grade', grade: 'Grade A (250-300g)', arrivals: '5,200 क्रेट्स', min: 110, max: 165, modal: 145, trend: 'up' },
+            { date: '2026-09-22', market: 'पंढरपूर APMC', variety: 'Bhagwa Table Quality', grade: 'Grade 1 Box Pack', arrivals: '2,600 क्रेट्स', min: 95, max: 140, modal: 125, trend: 'stable' },
+            { date: '2026-09-22', market: 'मुंबई वाशी APMC (Vashi)', variety: 'Bhagwa Super Sinduri', grade: '5kg Master Export Box', arrivals: '4,100 बॉक्स', min: 160, max: 230, modal: 195, trend: 'up' },
+            { date: '2026-09-22', market: 'पुणे गुलटेकडी (Pune APMC)', variety: 'Bhagwa / Arakta', grade: 'Table Quality Grade A', arrivals: '2,400 क्रेट्स', min: 100, max: 155, modal: 135, trend: 'stable' },
+            { date: '2026-09-22', market: 'नाशिक APMC', variety: 'Bhagwa Sinduri', grade: 'Local & Export Grade', arrivals: '1,800 क्रेट्स', min: 105, max: 150, modal: 130, trend: 'down' }
+        ]
+    },
+
+    guava: {
+        id: 'guava',
+        name_mr: 'पेरू',
+        name_en: 'Guava',
+        emoji: '🍈',
+        icon: 'citrus',
+        subtitle_mr: 'सह्याद्री तैवान पिंक पेरू ऑर्चर्ड्स',
+        subtitle_en: 'Sahyadri Ultra-High Density Taiwan Pink Guava Estate',
+        badge_mr: 'पेरू बाग',
+        badge_en: 'Guava Orchard',
+        tagline_mr: 'सघन पेरू लागवड व बॅगिंग तंत्रज्ञान',
+        tagline_en: 'High Density Guava & Fruit Bagging',
+        tab2Title_mr: '🍈 २. पेरू बाग व्यवस्थापन (High-Density Guava Management)',
+        tab2Title_en: '🍈 2. High-Density Guava Management',
+        tab2Desc_mr: 'तैवान पिंक व VNR वाण, सघन लागवड, फोम नेट बॅगिंग, छाटणी व फळे व्यवस्थापन',
+        tab2Desc_en: 'Taiwan Pink & VNR Bihi, ultra high density (UHDP), foam bagging & canopy',
+        tab10Title_mr: '📈 थेट पेरू बाजारभाव व APMC मार्केट दर',
+        tab10Title_en: '📈 Live Guava Mandi & Wholesale Rates',
+        tab10Desc_mr: 'पुणे गुलटेकडी, मुंबई वाशी, नाशिक, अहमदनगर (राहाता) व नागपूर पेरू लिलाव नोंदी',
+        tab10Desc_en: 'Pune, Mumbai Vashi, Nashik, Rahata & Nagpur APMC guava auctions',
+        salesHeading_mr: '💰 पेरू विक्री नोंदी (Guava Harvest Sales)',
+        salesHeading_en: '💰 Guava Harvest Sales',
+        metricLabels: {
+            date1_mr: 'बहार छाटणी / बेंडिंग तारीख (Bending Date)',
+            date1_en: 'Bending / Pruning Date',
+            date2_mr: 'फळ काढणी तारीख (Harvest Date)',
+            date2_en: 'Harvest Picking Date',
+            count1_mr: 'फळे संख्या / झाड (Fruits/Tree)',
+            count1_en: 'Fruits / Tree',
+            count2_mr: 'सरासरी फळ वजन (Fruit Weight gm)',
+            count2_en: 'Avg Fruit Weight (gm)',
+            yieldUnit_mr: 'टन',
+            yieldUnit_en: 'Tonnes',
+            rateUnit_mr: 'प्रति किलो (₹/kg)',
+            rateUnit_en: 'per kg (₹/kg)',
+            varietyTitle_mr: 'पेरू वाण',
+            varietyTitle_en: 'Guava Variety'
+        },
+        varieties: [
+            'Taiwan Pink (तैवान पिंक - गुलाबी गर)',
+            'VNR Bihi (व्ही.एन.आर. बिही - जंबो)',
+            'Sardar L-49 (लखनौ 49 गावरान)',
+            'Allahabad Safeda (सफेदा)',
+            'Arka Kiran (अर्का किरण - लाल)',
+            'Lalit (ललित)'
+        ],
+        grades: [
+            'Foam Bagged Super (400g+ A+)',
+            'Table Fresh Grade A (250-400g)',
+            'Local Market (150-250g B)',
+            'Pulp / Jam Quality (C)'
+        ],
+        plots: [
+            {
+                id: 'gua-p1',
+                name: 'प्लॉट १ - तैवान पिंक (सघन पद्धत - 6x6 ft)',
+                name_en: 'Plot 1 - Taiwan Pink (UHDP 6x6 ft)',
+                crop_variety: 'Taiwan Pink (तैवान पिंक)',
+                acres: 3.0,
+                spacing: '6 x 6 ft',
+                foundation_pruning_date: '2026-05-10',
+                fruit_pruning_date: '2026-10-18',
+                canes_per_vine: 65,
+                bunches_per_vine: 380,
+                expected_yield_tonnes: 32
+            },
+            {
+                id: 'gua-p2',
+                name: 'प्लॉट २ - VNR Bihi (जंबो पेरू - 10x6 ft)',
+                name_en: 'Plot 2 - VNR Bihi (Jumbo 10x6 ft)',
+                crop_variety: 'VNR Bihi (व्ही.एन.आर. बिही)',
+                acres: 2.5,
+                spacing: '10 x 6 ft',
+                foundation_pruning_date: '2026-05-15',
+                fruit_pruning_date: '2026-10-25',
+                canes_per_vine: 50,
+                bunches_per_vine: 520,
+                expected_yield_tonnes: 26
+            },
+            {
+                id: 'gua-p3',
+                name: 'प्लॉट ३ - सरदार L-49 (पारंपारिक गावरान गोड)',
+                name_en: 'Plot 3 - Sardar L-49 (Lucknow 49)',
+                crop_variety: 'Sardar L-49 (सरदार)',
+                acres: 2.0,
+                spacing: '12 x 12 ft',
+                foundation_pruning_date: '2026-06-01',
+                fruit_pruning_date: '2026-11-15',
+                canes_per_vine: 80,
+                bunches_per_vine: 240,
+                expected_yield_tonnes: 18
+            }
+        ],
+        irrigationLogs: [
+            { id: 'gua-irr-1', plot_id: 'gua-p1', log_date: '2026-09-22', duration_hours: 2.0, water_liters: 28000, water_source: 'ठिबक सिंचन (Drip)', ec_level: 0.65, ph_level: 6.9, nutrients_n: 3.8, nutrients_ca: 4.5, nutrients_mg: 2.0 },
+            { id: 'gua-irr-2', plot_id: 'gua-p2', log_date: '2026-09-19', duration_hours: 1.5, water_liters: 22000, water_source: 'ठिबक सिंचन', ec_level: 0.68, ph_level: 7.0, nutrients_n: 3.5, nutrients_ca: 4.2, nutrients_mg: 1.8 }
+        ],
+        fertilizerLogs: [
+            { id: 'gua-fert-1', plot_id: 'gua-p1', log_date: '2026-09-20', fertilizer_name: '13:00:45 (पोटॅशियम नायट्रेट) + बोरॉन', dose_amount: 20, application_method: 'Drip', cost: 3600 },
+            { id: 'gua-fert-2', plot_id: 'gua-p2', log_date: '2026-09-16', fertilizer_name: '00:52:34 (MKP) + चिलेटेड फेरस', dose_amount: 18, application_method: 'Drip', cost: 3400 }
+        ],
+        sprayLogs: [
+            { id: 'gua-sp-1', plot_id: 'gua-p1', log_date: '2026-09-21', pest_disease_name: 'फळमाशी (Fruit Fly) व पिठ्या ढेकूण (Mealybug)', chemical_or_fertilizer: 'Malathion 50 EC @ 2 ml/L + गूळ + मिथाईल युजेनॉल ट्रॅप्स', dose_per_liter: 2.0, total_water_liters: 300, next_spray_date: '2026-09-30', cost: 3800 },
+            { id: 'gua-sp-2', plot_id: 'gua-p2', log_date: '2026-09-17', pest_disease_name: 'अँथ्रॅक्नोज (Anthracnose / फळावर काळे डाग)', chemical_or_fertilizer: 'Copper Oxychloride (COC) @ 2.5 gm/L + कार्बेंडाझिम', dose_per_liter: 2.5, total_water_liters: 250, next_spray_date: '2026-09-28', cost: 3200 }
+        ],
+        laborLogs: [
+            { id: 'gua-lab-1', plot_id: 'gua-p1', log_date: '2026-09-20', activity: 'फोम नेट + प्लास्टिक कव्हर बॅगिंग (Bagging)', worker_names: 'उज्वला, कावेरी व 8 महिला कामगार', male_workers: 1, female_workers: 9, wage_per_worker: 380, total_cost: 3800, payment_status: 'Paid' },
+            { id: 'gua-lab-2', plot_id: 'gua-p2', log_date: '2026-09-15', activity: 'फांद्या वाकवणे (Bending) व शेंडा पिंचिंग', worker_names: 'मारुती व मजूर', male_workers: 4, female_workers: 2, wage_per_worker: 400, total_cost: 2400, payment_status: 'Paid' }
+        ],
+        expenses: [
+            { id: 'gua-exp-1', plot_id: 'gua-p1', log_date: '2026-09-21', category: 'इतर खर्च', category_en: 'Other', amount: 16800, description: 'फोम नेट (Foam Net) व व्हीएनआर कव्हर बॅग्स' },
+            { id: 'gua-exp-2', plot_id: 'gua-p1', log_date: '2026-09-19', category: 'खते', category_en: 'Fertilizers', amount: 15400, description: 'पोटॅशियम शोराइट, मॅग्नेशियम सल्फेट व बोरॉन' },
+            { id: 'gua-exp-3', plot_id: 'gua-p2', log_date: '2026-09-16', category: 'औषधे', category_en: 'Chemicals', amount: 12200, description: 'मॅलाथिऑन, साफ बुरशीनाशक व स्टीकर' },
+            { id: 'gua-exp-4', plot_id: 'gua-p1', log_date: '2026-09-12', category: 'मजुरी', category_en: 'Labor', amount: 19500, description: 'पेरू बॅगिंग व फांद्या वाकवणे मजुरी' },
+            { id: 'gua-exp-5', plot_id: 'gua-p3', log_date: '2026-09-08', category: 'पाणी/वीज', category_en: 'Water/Power', amount: 6200, description: 'ठिबक दुरुस्ती व वीज बिल' },
+            { id: 'gua-exp-6', plot_id: 'gua-p1', log_date: '2026-09-04', category: 'वाहतूक', category_en: 'Transport', amount: 8800, description: 'पुणे गुलटेकडी मार्केट पिकअप भाडे' }
+        ],
+        sales: [
+            { id: 'gua-sale-1', plot_id: 'gua-p1', sale_date: '2026-09-21', buyer_name: 'रिलायन्स फ्रेश / बिगबास्केट वेंडर, पुणे', grade: 'Foam Bagged Super (400g+)', quantity_kg: 2600, rate_per_kg: 72, total_revenue: 187200 },
+            { id: 'gua-sale-2', plot_id: 'gua-p2', sale_date: '2026-09-18', buyer_name: 'शिंदे फ्रूट्स, वाशी नवी मुंबई', grade: 'VNR Jumbo Grade A (500g+)', quantity_kg: 1950, rate_per_kg: 85, total_revenue: 165750 }
+        ],
+        reminders: [
+            { id: 'gua-rem-1', category: 'फवारणी', category_en: 'Spray', title: 'फळमाशी (Fruit Fly) नियंत्रणासाठी मिथाईल युजेनॉल सापळे लावणे', title_en: 'Hang Methyl Eugenol traps for Fruit Fly', due_date: '2026-09-24', status: 'pending', priority: 'High', notes: 'प्रति एकर 6 ते 8 कामगंध सापळे झाडांवर अडकवावेत' },
+            { id: 'gua-rem-2', category: 'छाटणी', category_en: 'Pruning', title: 'पेरू लिंबाएवढा झाल्यावर ३ पदरी फोम नेट बॅगिंग करणे', title_en: '3-layer foam net bagging at lemon size', due_date: '2026-09-27', status: 'pending', priority: 'High', notes: 'फोम नेट + पॉलिथिन + वर्तमानपत्र बॅगिंगमुळे डागरहित चकाकणारे फळ मिळते' },
+            { id: 'gua-rem-3', category: 'खत', category_en: 'Fertilizer', title: 'फळ फुगवणी काळात ००:००:५० आणि बोरॉन ठिबकमधून देणे', title_en: '00:00:50 SOP & Boron fertigation', due_date: '2026-09-30', status: 'pending', priority: 'Medium', notes: 'फळाचा गोडवा व टिकाऊपणा वाढवण्यासाठी' }
+        ],
+        pests: [
+            { name_mr: 'पेरू फळमाशी (Guava Fruit Fly - Bactrocera)', name_en: 'Guava Fruit Fly', badge: 'गंभीर कीड', badge_cls: 'danger', desc_mr: 'माशी पिकणाऱ्या फळाच्या सालीखाली अंडी घालते. आतील अळ्या गरामध्ये फिरून फळ सडवतात. फळ गळते.', chemical: 'मिथाईल युजेनॉल कामगंध ट्रॅप्स लावणे + Malathion 50 EC @ 2 ml/L + गुळाची फवारणी', stage_mr: 'फळ पक्वता व काढणी काळ' },
+            { name_mr: 'पिठ्या ढेकूण (Mealybug)', name_en: 'Guava Mealybug', badge: 'रस शोषक', badge_cls: 'danger', desc_mr: 'पानांवर व फळांवर पांढऱ्या मेणासारख्या आवरणात राहून रस शोषतात. काळी बुरशी पसरते.', chemical: 'Profenofos 50 EC @ 2 ml/L किंवा Buprofezin 25 SC @ 1.5 ml/L + स्टीकर', stage_mr: 'नवीन पालवी व फळ विकास' },
+            { name_mr: 'अँथ्रॅक्नोज / फळ सड (Anthracnose)', name_en: 'Anthracnose', badge: 'बुरशीजन्य डाग', badge_cls: 'warning', desc_mr: 'फळांवर खोलगट काळे किंवा तपकिरी चट्टे पडतात. फळे कडक होतात किंवा मऊ पडून कुजतात.', chemical: 'Copper Oxychloride (COC) @ 2.5 gm/L किंवा Carbendazim 12% + Mancozeb 63% (Saaf) @ 2 gm/L', stage_mr: 'पावसाळा व दमट हवामान' },
+            { name_mr: 'पेरू मर रोग (Guava Wilt - Fusarium)', name_en: 'Guava Wilt', badge: 'खोड व मूळ रोग', badge_cls: 'warning', desc_mr: 'झाडाची पाने पिवळी पडून गळतात व संपूर्ण झाड वाळते. मुळांची कार्यक्षमता नष्ट होते.', chemical: 'Trichoderma viride @ 5 kg शेणखतातून + कार्बेंडाझिम ड्रेंचिंग + पाण्याचा योग्य निचरा', stage_mr: 'पाणी साचल्यास किंवा पावसाळ्यानंतर' }
+        ],
+        mandi_markets: [
+            { id: 'all', name_mr: 'सर्व मार्केट्स (All)', name_en: 'All Markets' },
+            { id: 'पुणे', name_mr: 'पुणे गुलटेकडी', name_en: 'Pune APMC' },
+            { id: 'मुंबई', name_mr: 'मुंबई वाशी APMC', name_en: 'Vashi APMC' },
+            { id: 'राहाता', name_mr: 'राहाता (शिर्डी)', name_en: 'Rahata' },
+            { id: 'नाशिक', name_mr: 'नाशिक APMC', name_en: 'Nashik' },
+            { id: 'नागपूर', name_mr: 'नागपूर APMC', name_en: 'Nagpur' }
+        ],
+        mandi_kpis: [
+            { label: 'मुंबई वाशी उच्चतम भाव', val: '₹98', unit: '/ किलो', sub: 'VNR Jumbo 500g+ Bagged', icon: 'award', cls: 'emerald' },
+            { label: 'तैवान पिंक सरासरी दर', val: '₹76', unit: '/ किलो', sub: 'पुणे व नाशिक फ्रेश लिलाव', icon: 'bar-chart-2', cls: 'blue' },
+            { label: 'सरदार L-49 भाव', val: '₹54', unit: '/ किलो', sub: 'राहाता व स्थानिक मंड्या', icon: 'sun', cls: 'amber' },
+            { label: 'दैनिक आवक (Daily Arrivals)', val: '16,100', unit: 'क्रेट्स', sub: 'पुणे, वाशी, राहाता', icon: 'truck', cls: 'purple' }
+        ],
+        mandi: [
+            { date: '2026-09-22', market: 'पुणे गुलटेकडी (Pune Market Yard)', variety: 'Taiwan Pink (तैवान पिंक)', grade: 'Foam Net Super (400g+)', arrivals: '3,200 क्रेट्स', min: 65, max: 85, modal: 76, trend: 'up' },
+            { date: '2026-09-22', market: 'मुंबई वाशी APMC (Vashi)', variety: 'VNR Jumbo Bihi', grade: 'Extra Bold Super (500g+)', arrivals: '4,500 क्रेट्स', min: 75, max: 98, modal: 88, trend: 'up' },
+            { date: '2026-09-22', market: 'राहाता / शिर्डी APMC (अहमदनगर)', variety: 'Sardar L-49 (लखनौ पेरू)', grade: 'Sweet Table Grade A', arrivals: '2,800 क्रेट्स', min: 45, max: 62, modal: 54, trend: 'stable' },
+            { date: '2026-09-22', market: 'नाशिक APMC', variety: 'Taiwan Pink / Sardar', grade: 'Grade 1 Box Pack', arrivals: '1,900 क्रेट्स', min: 50, max: 72, modal: 62, trend: 'up' },
+            { date: '2026-09-22', market: 'नागपूर कळमना APMC', variety: 'Allahabad Safeda', grade: 'Table Quality', arrivals: '2,200 क्रेट्स', min: 40, max: 58, modal: 48, trend: 'down' },
+            { date: '2026-09-22', market: 'सोलापूर APMC', variety: 'Taiwan Pink Super', grade: 'Foam Pack Grade A', arrivals: '1,500 क्रेट्स', min: 55, max: 75, modal: 66, trend: 'stable' }
+        ]
+    }
+};
+
 // Bilingual Navigation Titles
 const TAB_TITLES = {
     'dashboard': {
@@ -328,8 +1239,9 @@ const TAB_TITLES = {
 };
 
 // Document Ready Bootstrap
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     initLucide();
+    initCropEngine();
     initLanguageToggle();
     initAuth();
     initNavigation();
@@ -337,9 +1249,22 @@ document.addEventListener('DOMContentLoaded', () => {
     initForms();
     initMandiRates();
     initSubsidyCalculator();
+    initSupabasePill();
     setLanguage(appState.activeLang);
-    loadAllData();
+    await loadAllData();
+    if (appState.activeCrop !== 'grapes') {
+        switchCrop(appState.activeCrop, false);
+    }
 });
+
+function initSupabasePill() {
+    const pill = document.getElementById('supabase-status-pill');
+    if (pill) {
+        pill.addEventListener('click', () => {
+            loadAllData(true);
+        });
+    }
+}
 
 function initLucide() {
     if (window.lucide) {
@@ -872,47 +1797,103 @@ async function loadAllData(isManualRefresh = false) {
     if (isManualRefresh) {
         showToast(isMr ? 'सर्व डेटा रिफ्रेश होत आहे...' : 'Refreshing live data...', 'info');
     }
+    updateSupabaseStatus('syncing');
 
-    try {
-        if (supabaseClient) {
+    const client = getSupabaseClient();
+    let isConnected = false;
+
+    if (client) {
+        try {
             // Fetch Plots
-            const { data: plotsData } = await supabaseClient.from('plots').select('*').order('created_at', { ascending: true });
-            appState.plots = (plotsData && plotsData.length > 0) ? plotsData : FALLBACK_PLOTS;
+            const { data: plotsData, error: plotsErr } = await client.from('plots').select('*').order('created_at', { ascending: true });
+            if (!plotsErr && plotsData && plotsData.length > 0) {
+                appState.plots = plotsData;
+                CROPS_CONFIG.grapes.plots = plotsData;
+                isConnected = true;
+            } else if (!appState.plots || appState.plots.length === 0) {
+                appState.plots = FALLBACK_PLOTS;
+            }
 
             // Fetch Irrigation Logs
-            const { data: irrData } = await supabaseClient.from('irrigation_logs').select('*').order('log_date', { ascending: false });
-            appState.irrigationLogs = (irrData && irrData.length > 0) ? irrData : FALLBACK_IRRIGATION;
+            const { data: irrData, error: irrErr } = await client.from('irrigation_logs').select('*').order('log_date', { ascending: false });
+            if (!irrErr && irrData && irrData.length > 0) {
+                appState.irrigationLogs = irrData;
+                CROPS_CONFIG.grapes.irrigationLogs = irrData;
+                isConnected = true;
+            } else if (!appState.irrigationLogs || appState.irrigationLogs.length === 0) {
+                appState.irrigationLogs = FALLBACK_IRRIGATION;
+            }
 
             // Fetch Fertilizer Logs
-            const { data: fertData } = await supabaseClient.from('fertilizer_logs').select('*').order('log_date', { ascending: false });
-            appState.fertilizerLogs = (fertData && fertData.length > 0) ? fertData : FALLBACK_FERTILIZER;
+            const { data: fertData, error: fertErr } = await client.from('fertilizer_logs').select('*').order('log_date', { ascending: false });
+            if (!fertErr && fertData && fertData.length > 0) {
+                appState.fertilizerLogs = fertData;
+                CROPS_CONFIG.grapes.fertilizerLogs = fertData;
+                isConnected = true;
+            } else if (!appState.fertilizerLogs || appState.fertilizerLogs.length === 0) {
+                appState.fertilizerLogs = FALLBACK_FERTILIZER;
+            }
 
             // Fetch Spray Logs
-            const { data: sprayData } = await supabaseClient.from('spray_logs').select('*').order('log_date', { ascending: false });
-            appState.sprayLogs = (sprayData && sprayData.length > 0) ? sprayData : FALLBACK_SPRAYS;
+            const { data: sprayData, error: sprayErr } = await client.from('spray_logs').select('*').order('log_date', { ascending: false });
+            if (!sprayErr && sprayData && sprayData.length > 0) {
+                appState.sprayLogs = sprayData;
+                CROPS_CONFIG.grapes.sprayLogs = sprayData;
+                isConnected = true;
+            } else if (!appState.sprayLogs || appState.sprayLogs.length === 0) {
+                appState.sprayLogs = FALLBACK_SPRAYS;
+            }
 
             // Fetch Labor Logs
-            const { data: labData } = await supabaseClient.from('labour_logs').select('*').order('log_date', { ascending: false });
-            appState.laborLogs = (labData && labData.length > 0) ? labData : FALLBACK_LABOR;
+            const { data: labData, error: labErr } = await client.from('labour_logs').select('*').order('log_date', { ascending: false });
+            if (!labErr && labData && labData.length > 0) {
+                appState.laborLogs = labData;
+                CROPS_CONFIG.grapes.laborLogs = labData;
+                isConnected = true;
+            } else if (!appState.laborLogs || appState.laborLogs.length === 0) {
+                appState.laborLogs = FALLBACK_LABOR;
+            }
 
             // Fetch Expenses
-            const { data: expData } = await supabaseClient.from('expenses').select('*').order('log_date', { ascending: false });
-            appState.expenses = (expData && expData.length > 0) ? expData : FALLBACK_EXPENSES;
+            const { data: expData, error: expErr } = await client.from('expenses').select('*').order('log_date', { ascending: false });
+            if (!expErr && expData && expData.length > 0) {
+                appState.expenses = expData;
+                CROPS_CONFIG.grapes.expenses = expData;
+                isConnected = true;
+            } else if (!appState.expenses || appState.expenses.length === 0) {
+                appState.expenses = FALLBACK_EXPENSES;
+            }
 
             // Fetch Sales
-            const { data: salesData } = await supabaseClient.from('harvest_sales').select('*').order('sale_date', { ascending: false });
-            appState.sales = (salesData && salesData.length > 0) ? salesData : FALLBACK_SALES;
+            const { data: salesData, error: salesErr } = await client.from('harvest_sales').select('*').order('sale_date', { ascending: false });
+            if (!salesErr && salesData && salesData.length > 0) {
+                appState.sales = salesData;
+                CROPS_CONFIG.grapes.sales = salesData;
+                isConnected = true;
+            } else if (!appState.sales || appState.sales.length === 0) {
+                appState.sales = FALLBACK_SALES;
+            }
 
             // Fetch Reminders
-            const { data: remData } = await supabaseClient.from('reminders').select('*').order('due_date', { ascending: true });
-            appState.reminders = (remData && remData.length > 0) ? remData : FALLBACK_REMINDERS;
-        } else {
+            const { data: remData, error: remErr } = await client.from('reminders').select('*').order('due_date', { ascending: true });
+            if (!remErr && remData && remData.length > 0) {
+                appState.reminders = remData;
+                CROPS_CONFIG.grapes.reminders = remData;
+                isConnected = true;
+            } else if (!appState.reminders || appState.reminders.length === 0) {
+                appState.reminders = FALLBACK_REMINDERS;
+            }
+        } catch (err) {
+            console.warn('Supabase fetch issue, using local synced dataset:', err);
             assignFallbackState();
+            isConnected = false;
         }
-    } catch (err) {
-        console.warn('Supabase fetch issue, using local synced dataset:', err);
+    } else {
         assignFallbackState();
+        isConnected = false;
     }
+
+    updateSupabaseStatus(isConnected ? 'connected' : 'offline');
 
     // Populate Select Options across all modals
     populatePlotSelectors();
@@ -934,15 +1915,314 @@ async function loadAllData(isManualRefresh = false) {
     }
 }
 
+// ==========================================================================
+// MULTI-CROP MANAGEMENT ENGINE (Switch Crop, Dynamic UI & Synchronizers)
+// ==========================================================================
+
+function initCropEngine() {
+    // 1. Header Crop Selector Trigger
+    const trigger = document.getElementById('crop-select-trigger');
+    const dropdown = document.getElementById('crop-dropdown-menu');
+
+    if (trigger && dropdown) {
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!trigger.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+    }
+
+    // 2. Dropdown options
+    document.querySelectorAll('.crop-opt-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const cropId = btn.dataset.crop;
+            if (cropId) {
+                switchCrop(cropId, true);
+                if (dropdown) dropdown.classList.remove('active');
+            }
+        });
+    });
+
+    // 3. Modal Crop Selector listener (when changing crop inside Add Plot modal)
+    const modalCropSelect = document.getElementById('plot-crop-select');
+    if (modalCropSelect) {
+        modalCropSelect.addEventListener('change', (e) => {
+            const selectedCrop = e.target.value;
+            updatePlotModalForCrop(selectedCrop);
+        });
+    }
+}
+
+function switchCrop(cropId, notify = true) {
+    if (!CROPS_CONFIG[cropId]) cropId = 'grapes';
+
+    appState.activeCrop = cropId;
+    localStorage.setItem('krushi_active_crop', cropId);
+    const isMr = appState.activeLang === 'mr';
+    const cfg = CROPS_CONFIG[cropId];
+
+    // Load dataset for this crop into active appState
+    appState.plots = cfg.plots;
+    appState.irrigationLogs = cfg.irrigationLogs;
+    appState.fertilizerLogs = cfg.fertilizerLogs;
+    appState.sprayLogs = cfg.sprayLogs;
+    appState.laborLogs = cfg.laborLogs;
+    appState.expenses = cfg.expenses;
+    appState.sales = cfg.sales;
+    appState.reminders = cfg.reminders;
+
+    // Update Header Trigger
+    const triggerEmoji = document.getElementById('crop-trigger-emoji');
+    const triggerLabel = document.getElementById('crop-trigger-label');
+    if (triggerEmoji) triggerEmoji.textContent = cfg.emoji;
+    if (triggerLabel) triggerLabel.textContent = isMr ? cfg.name_mr : cfg.name_en;
+
+    // Update Dropdown Active states
+    document.querySelectorAll('.crop-opt-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.crop === cropId);
+    });
+
+    // Update Dashboard Crop Pills
+    renderDashboardCropPills();
+
+    // Update Sidebar branding
+    const sideSub = document.getElementById('sidebar-brand-subtitle');
+    const sideBadge = document.getElementById('sidebar-crop-badge');
+    if (sideSub) sideSub.textContent = isMr ? cfg.subtitle_mr : cfg.subtitle_en;
+    if (sideBadge) sideBadge.textContent = isMr ? cfg.badge_mr : cfg.badge_en;
+
+    // Update Sidebar Tab 2
+    const sideTab2Title = document.getElementById('sidebar-tab2-title');
+    const sideTab2Sub = document.getElementById('sidebar-tab2-sub');
+    const sideTab2Icon = document.getElementById('sidebar-tab2-icon');
+    if (sideTab2Title) sideTab2Title.textContent = isMr ? `२. ${cfg.name_mr} व्यवस्थापन` : `2. ${cfg.name_en} Mgmt`;
+    if (sideTab2Sub) sideTab2Sub.textContent = isMr ? cfg.tagline_mr : cfg.tagline_en;
+    if (sideTab2Icon) sideTab2Icon.setAttribute('data-lucide', cfg.icon);
+
+    // Update Sidebar Tab 10
+    const sideTab10Title = document.getElementById('sidebar-tab10-title');
+    const sideTab10Sub = document.getElementById('sidebar-tab10-sub');
+    if (sideTab10Title) sideTab10Title.textContent = isMr ? `१०. ${cfg.name_mr} बाजारभाव` : `10. ${cfg.name_en} Mandi`;
+    if (sideTab10Sub) sideTab10Sub.textContent = isMr ? 'APMC & थेट लिलाव' : 'APMC Live Rates';
+
+    // Update Tab 2 View Header
+    const tab2Title = document.getElementById('crop-tab2-header-title');
+    const tab2Desc = document.getElementById('crop-tab2-header-desc');
+    if (tab2Title) tab2Title.textContent = isMr ? cfg.tab2Title_mr : cfg.tab2Title_en;
+    if (tab2Desc) tab2Desc.textContent = isMr ? cfg.tab2Desc_mr : cfg.tab2Desc_en;
+
+    // Update Tab 5 Pest Advisory Cards
+    renderPestAdvisoryCards(cropId);
+
+    // Update Tab 7 Sales Heading
+    const salesHeading = document.getElementById('fin-sales-heading');
+    if (salesHeading) {
+        salesHeading.innerHTML = `<i data-lucide="shopping-cart"></i> ${isMr ? cfg.salesHeading_mr : cfg.salesHeading_en}`;
+    }
+
+    // Update Tab 10 Mandi Headers, KPIs and Market Filter Pills
+    const mandiTitle = document.querySelector('#view-mandi-rates .view-header-left h1');
+    const mandiDesc = document.querySelector('#view-mandi-rates .view-header-desc');
+    const mandiTableTitle = document.querySelector('#view-mandi-rates .card-header .card-title-group h3');
+    const mandiThVariety = document.getElementById('mandi-th-variety');
+
+    if (mandiTitle) mandiTitle.textContent = isMr ? cfg.tab10Title_mr : cfg.tab10Title_en;
+    if (mandiDesc) mandiDesc.textContent = isMr ? cfg.tab10Desc_mr : cfg.tab10Desc_en;
+    if (mandiTableTitle) mandiTableTitle.innerHTML = `<i data-lucide="store"></i> ${isMr ? `प्रमुख APMC बाजार समित्यांचे आजचे ${cfg.name_mr} लिलाव दर` : `Live APMC ${cfg.name_en} Auction Rates`}`;
+    if (mandiThVariety) mandiThVariety.textContent = isMr ? `${cfg.name_mr} वाण (Variety)` : `${cfg.name_en} Variety`;
+
+    renderMandiKpisAndPills(cropId);
+
+    // Update Modals
+    updatePlotModalForCrop(cropId);
+    updateSaleModalForCrop(cropId);
+
+    // Populate and re-render everything
+    populatePlotSelectors();
+    renderDashboardTab();
+    renderGrapeOrchardTab();
+    renderWaterTab();
+    renderFertilizerTab();
+    renderPestDiseaseTab();
+    renderLaborTab();
+    renderFinanceTab();
+    renderReportsTab();
+    renderRemindersTab();
+    renderMandiRatesTable('all', '');
+
+    initLucide();
+
+    if (notify) {
+        showToast(isMr ? `${cfg.emoji} ${cfg.name_mr} पिकाचे संपूर्ण व्यवस्थापन सक्रिय केले!` : `${cfg.emoji} Switched active crop to ${cfg.name_en}!`, 'success');
+    }
+}
+window.switchCrop = switchCrop;
+
+function renderDashboardCropPills() {
+    const container = document.getElementById('dashboard-crop-pills');
+    if (!container) return;
+
+    const isMr = appState.activeLang === 'mr';
+    const crops = Object.values(CROPS_CONFIG);
+
+    container.innerHTML = `
+        <div class="crop-pills-grid">
+            ${crops.map(c => `
+                <div class="crop-pill-card ${c.id === appState.activeCrop ? 'active' : ''}" data-crop="${c.id}" onclick="switchCrop('${c.id}', true)">
+                    <span class="crop-pill-emoji">${c.emoji}</span>
+                    <div class="crop-pill-info">
+                        <span class="crop-pill-title">${isMr ? c.name_mr : c.name_en}</span>
+                        <span class="crop-pill-meta">${c.plots.length} ${isMr ? 'प्लॉट' : 'Plots'} • ${c.plots.reduce((acc, p) => acc + (parseFloat(p.acres) || 0), 0)} ${isMr ? 'एकर' : 'Ac'}</span>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+function renderPestAdvisoryCards(cropId) {
+    const container = document.getElementById('pest-advisory-cards-container');
+    if (!container) return;
+
+    const cfg = CROPS_CONFIG[cropId] || CROPS_CONFIG.grapes;
+    const isMr = appState.activeLang === 'mr';
+
+    container.innerHTML = (cfg.pests || []).map(p => `
+        <div class="kpi-card">
+            <div class="kpi-card-top">
+                <div class="kpi-icon-wrap rose"><i data-lucide="shield-alert"></i></div>
+                <span class="kpi-badge ${p.badge_cls || 'danger'}">${p.badge}</span>
+            </div>
+            <div class="kpi-label">${isMr ? p.name_mr : p.name_en}</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary); margin: 0.35rem 0;">${p.desc_mr}</div>
+            <div style="font-size: 0.8rem; background: var(--emerald-subtle); color: var(--emerald-deep); padding: 0.4rem 0.6rem; border-radius: 6px; font-weight: 600; margin-top: 0.4rem;">
+                💊 ${p.chemical}
+            </div>
+            <div class="kpi-subtext" style="margin-top: 0.35rem;">अवस्था: <strong>${p.stage_mr}</strong></div>
+        </div>
+    `).join('');
+
+    initLucide();
+}
+
+function renderMandiKpisAndPills(cropId) {
+    const kpiGrid = document.getElementById('mandi-kpi-grid');
+    const pillsContainer = document.getElementById('mandi-market-filter-pills');
+    const cfg = CROPS_CONFIG[cropId] || CROPS_CONFIG.grapes;
+    const isMr = appState.activeLang === 'mr';
+
+    if (kpiGrid && cfg.mandi_kpis) {
+        kpiGrid.innerHTML = cfg.mandi_kpis.map(k => `
+            <div class="kpi-card">
+                <div class="kpi-card-top">
+                    <div class="kpi-icon-wrap ${k.cls}"><i data-lucide="${k.icon}"></i></div>
+                    <span class="kpi-badge ${k.cls === 'emerald' ? 'positive' : k.cls === 'blue' ? 'info' : k.cls === 'amber' ? 'warning' : ''}">${isMr ? 'दर विश्लेषण' : 'Rate Insight'}</span>
+                </div>
+                <div class="kpi-label">${k.label}</div>
+                <div class="kpi-value-row">
+                    <span class="kpi-number">${k.val}</span>
+                    <span class="kpi-unit">${k.unit}</span>
+                </div>
+                <div class="kpi-subtext">${k.sub}</div>
+            </div>
+        `).join('');
+    }
+
+    if (pillsContainer && cfg.mandi_markets) {
+        pillsContainer.innerHTML = cfg.mandi_markets.map((m, idx) => `
+            <button type="button" class="filter-pill ${idx === 0 ? 'active' : ''}" data-mandi-filter="${m.id}">
+                ${isMr ? m.name_mr : m.name_en}
+            </button>
+        `).join('');
+
+        // Re-attach filter listeners
+        pillsContainer.querySelectorAll('.filter-pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                pillsContainer.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                const marketFilter = pill.dataset.mandiFilter;
+                const searchKeyword = document.getElementById('mandi-search-input')?.value.trim() || '';
+                renderMandiRatesTable(marketFilter, searchKeyword);
+            });
+        });
+    }
+
+    initLucide();
+}
+
+function updatePlotModalForCrop(cropId) {
+    const cfg = CROPS_CONFIG[cropId] || CROPS_CONFIG.grapes;
+    const isMr = appState.activeLang === 'mr';
+    const m = cfg.metricLabels;
+
+    const modalTitle = document.getElementById('modal-plot-title');
+    if (modalTitle) modalTitle.innerHTML = `<i data-lucide="sprout"></i> ${isMr ? `नवीन ${cfg.name_mr} प्लॉट जोडा` : `Add New ${cfg.name_en} Plot`}`;
+
+    const cropSelect = document.getElementById('plot-crop-select');
+    if (cropSelect && cropSelect.value !== cropId) cropSelect.value = cropId;
+
+    const varietyLabel = document.getElementById('modal-plot-variety-label');
+    if (varietyLabel) varietyLabel.textContent = isMr ? `${m.varietyTitle_mr} *` : `${m.varietyTitle_en} *`;
+
+    const varietySelect = document.getElementById('plot-variety');
+    if (varietySelect) {
+        varietySelect.innerHTML = cfg.varieties.map(v => `<option value="${v}">${v}</option>`).join('');
+    }
+
+    const yieldLabel = document.getElementById('modal-yield-label');
+    if (yieldLabel) yieldLabel.textContent = isMr ? `अपेक्षित उत्पादन (${m.yieldUnit_mr})` : `Expected Yield (${m.yieldUnit_en})`;
+
+    const date1Label = document.getElementById('modal-date1-label');
+    if (date1Label) date1Label.textContent = isMr ? m.date1_mr : m.date1_en;
+
+    const date2Label = document.getElementById('modal-date2-label');
+    if (date2Label) date2Label.textContent = isMr ? m.date2_mr : m.date2_en;
+
+    const count1Label = document.getElementById('modal-count1-label');
+    if (count1Label) count1Label.textContent = isMr ? m.count1_mr : m.count1_en;
+
+    const count2Label = document.getElementById('modal-count2-label');
+    if (count2Label) count2Label.textContent = isMr ? m.count2_mr : m.count2_en;
+
+    initLucide();
+}
+
+function updateSaleModalForCrop(cropId) {
+    const cfg = CROPS_CONFIG[cropId] || CROPS_CONFIG.grapes;
+    const isMr = appState.activeLang === 'mr';
+
+    const modalSaleTitle = document.getElementById('modal-sale-title');
+    if (modalSaleTitle) modalSaleTitle.textContent = isMr ? `${cfg.name_mr} विक्री नोंद` : `${cfg.name_en} Harvest Sale`;
+
+    const gradeSelect = document.getElementById('sale-grade');
+    if (gradeSelect) {
+        gradeSelect.innerHTML = cfg.grades.map(g => `<option value="${g}">${g}</option>`).join('');
+    }
+
+    const qtyLabel = document.getElementById('modal-sale-qty-label');
+    if (qtyLabel) qtyLabel.textContent = isMr ? `विक्री वजन (${cfg.metricLabels.yieldUnit_mr} / kg) *` : `Sale Quantity (${cfg.metricLabels.yieldUnit_en} / kg) *`;
+
+    const rateLabel = document.getElementById('modal-sale-rate-label');
+    if (rateLabel) rateLabel.textContent = isMr ? `दर (${cfg.metricLabels.rateUnit_mr}) *` : `Rate (${cfg.metricLabels.rateUnit_en}) *`;
+}
+
 function assignFallbackState() {
-    appState.plots = FALLBACK_PLOTS;
-    appState.irrigationLogs = FALLBACK_IRRIGATION;
-    appState.fertilizerLogs = FALLBACK_FERTILIZER;
-    appState.sprayLogs = FALLBACK_SPRAYS;
-    appState.laborLogs = FALLBACK_LABOR;
-    appState.expenses = FALLBACK_EXPENSES;
-    appState.sales = FALLBACK_SALES;
-    appState.reminders = FALLBACK_REMINDERS;
+    const cropId = appState.activeCrop || 'grapes';
+    const cfg = CROPS_CONFIG[cropId] || CROPS_CONFIG.grapes;
+    appState.plots = cfg.plots;
+    appState.irrigationLogs = cfg.irrigationLogs;
+    appState.fertilizerLogs = cfg.fertilizerLogs;
+    appState.sprayLogs = cfg.sprayLogs;
+    appState.laborLogs = cfg.laborLogs;
+    appState.expenses = cfg.expenses;
+    appState.sales = cfg.sales;
+    appState.reminders = cfg.reminders;
 }
 
 function populatePlotSelectors() {
@@ -1075,6 +2355,9 @@ function renderGrapeOrchardTab() {
     const container = document.getElementById('grape-plots-container');
     if (!container) return;
 
+    const cfg = CROPS_CONFIG[appState.activeCrop] || CROPS_CONFIG.grapes;
+    const m = cfg.metricLabels;
+
     container.innerHTML = appState.plots.map(p => `
         <div class="plot-card">
             <div>
@@ -1082,8 +2365,8 @@ function renderGrapeOrchardTab() {
                     <div>
                         <h3 class="plot-title">${isMr ? p.name : (p.name_en || p.name)}</h3>
                         <div class="plot-variety-badge">
-                            <i data-lucide="grape" style="width: 13px; height: 13px;"></i>
-                            <span>${isMr ? 'वाण' : 'Variety'}: ${p.crop_variety}</span>
+                            <span style="font-size: 1.1rem; line-height: 1;">${cfg.emoji}</span>
+                            <span>${isMr ? m.varietyTitle_mr : m.varietyTitle_en}: <strong>${p.crop_variety}</strong></span>
                         </div>
                     </div>
                     <span class="badge-status success">${p.acres} ${isMr ? 'एकर' : 'Acres'}</span>
@@ -1096,34 +2379,36 @@ function renderGrapeOrchardTab() {
                     </div>
                     <div class="plot-detail-item">
                         <span class="detail-label">${isMr ? 'अपेक्षित उत्पादन' : 'Expected Yield'}</span>
-                        <span class="detail-value" style="color: var(--emerald-primary);">${p.expected_yield_tonnes || 15} ${isMr ? 'टन' : 'Tonnes'}</span>
+                        <span class="detail-value" style="color: var(--emerald-primary);">${p.expected_yield_tonnes || 15} ${isMr ? m.yieldUnit_mr : m.yieldUnit_en}</span>
                     </div>
                     <div class="plot-detail-item">
-                        <span class="detail-label">${isMr ? 'काड्या संख्या / झाड' : 'Canes / Vine'}</span>
-                        <span class="detail-value">${p.canes_per_vine || 42} ${isMr ? 'काड्या' : 'canes'}</span>
+                        <span class="detail-label">${isMr ? m.count1_mr : m.count1_en}</span>
+                        <span class="detail-value">${p.canes_per_vine ? p.canes_per_vine.toLocaleString('en-IN') : 42}</span>
                     </div>
                     <div class="plot-detail-item">
-                        <span class="detail-label">${isMr ? 'घड संख्या / झाड' : 'Bunches / Vine'}</span>
-                        <span class="detail-value">${p.bunches_per_vine || 48} ${isMr ? 'घड' : 'bunches'}</span>
+                        <span class="detail-label">${isMr ? m.count2_mr : m.count2_en}</span>
+                        <span class="detail-value">${p.bunches_per_vine ? p.bunches_per_vine.toLocaleString('en-IN') : 48}</span>
                     </div>
                 </div>
 
                 <div class="pruning-timeline">
                     <div>
-                        <strong style="color: var(--amber-deep);">${isMr ? 'खरड छाटणी:' : 'April Pruning:'}</strong> ${p.foundation_pruning_date || '15 April'}
+                        <strong style="color: var(--amber-deep);">${isMr ? (m.date1_mr.split('(')[0].trim() + ':') : (m.date1_en.split('(')[0].trim() + ':')}</strong> ${p.foundation_pruning_date || 'N/A'}
                     </div>
                     <div>
-                        <strong style="color: var(--emerald-deep);">${isMr ? 'गोड/फळ छाटणी:' : 'Fruit Pruning:'}</strong> ${p.fruit_pruning_date || '10 Oct'}
+                        <strong style="color: var(--emerald-deep);">${isMr ? (m.date2_mr.split('(')[0].trim() + ':') : (m.date2_en.split('(')[0].trim() + ':')}</strong> ${p.fruit_pruning_date || 'N/A'}
                     </div>
                 </div>
             </div>
 
             <div class="plot-card-footer" style="margin-top: 1rem;">
-                <span>${isMr ? 'सिंचन: ठिबक प्रणाली' : 'System: Drip Irrigation'}</span>
+                <span>${isMr ? 'सिंचन: ठिबक / सूक्ष्म प्रणाली' : 'System: Drip / Micro Irrigation'}</span>
                 <button class="filter-pill" onclick="quickLogForPlot('${p.id}')">${isMr ? 'सिंचन/खत द्या' : 'Irrigate / Feed'}</button>
             </div>
         </div>
     `).join('');
+
+    initLucide();
 }
 
 function quickLogForPlot(plotId) {
@@ -1248,6 +2533,7 @@ function calculateElementalNPK(fertilizerName, doseKg) {
 // ==========================================================================
 function renderPestDiseaseTab() {
     const isMr = appState.activeLang === 'mr';
+    renderPestAdvisoryCards(appState.activeCrop);
     const tbody = document.getElementById('pest-spray-table-body');
     if (!tbody) return;
 
@@ -1482,9 +2768,11 @@ async function toggleReminderStatus(reminderId) {
     showToast(item.status === 'completed' ? (isMr ? 'काम पूर्ण झाले! 🎉' : 'Task marked complete! 🎉') : (isMr ? 'काम प्रलंबित चिन्हांकित केले.' : 'Task marked pending.'), 'info');
 
     // Update Supabase in background
-    if (supabaseClient) {
+    const client = getSupabaseClient();
+    if (client) {
         try {
-            await supabaseClient.from('reminders').update({ status: item.status }).eq('id', reminderId);
+            const { error } = await client.from('reminders').update({ status: item.status }).eq('id', reminderId);
+            if (error) console.error('Failed to sync reminder status to Supabase:', error);
         } catch (err) {
             console.error('Failed to sync reminder status to Supabase:', err);
         }
@@ -1550,9 +2838,13 @@ function initForms() {
     document.getElementById('form-add-plot')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const plotName = document.getElementById('plot-name').value.trim();
+        const chosenCrop = document.getElementById('plot-crop-select')?.value || appState.activeCrop;
+        const cfg = CROPS_CONFIG[chosenCrop] || CROPS_CONFIG.grapes;
+
         const newPlot = {
             id: 'plot-' + Date.now(),
             farm_id: appState.farm.id,
+            crop: chosenCrop,
             name: plotName,
             name_en: plotName,
             crop_variety: document.getElementById('plot-variety').value,
@@ -1565,30 +2857,41 @@ function initForms() {
             expected_yield_tonnes: parseFloat(document.getElementById('plot-expected-yield').value) || 15
         };
 
-        appState.plots.push(newPlot);
+        if (chosenCrop === appState.activeCrop) {
+            appState.plots.push(newPlot);
+        } else {
+            cfg.plots.push(newPlot);
+            switchCrop(chosenCrop, false);
+        }
+
         populatePlotSelectors();
         renderDashboardTab();
         renderGrapeOrchardTab();
         renderReportsTab();
         closeModal('modal-add-plot');
         e.target.reset();
-        showToast(isMr() ? 'नवीन द्राक्ष प्लॉट यशस्वीपणे जोडला!' : 'New grape plot added successfully!', 'success');
+        showToast(isMr() ? `नवीन ${cfg.name_mr} प्लॉट यशस्वीपणे जोडला!` : `New ${cfg.name_en} plot added successfully!`, 'success');
 
-        if (supabaseClient) {
+        const client = getSupabaseClient();
+        if (client) {
             try {
-                const { data } = await supabaseClient.from('plots').insert([{
+                const { data, error } = await client.from('plots').insert([{
                     farm_id: appState.farm.id,
                     name: newPlot.name,
                     crop_variety: newPlot.crop_variety,
                     acres: newPlot.acres,
                     spacing: newPlot.spacing,
-                    foundation_pruning_date: newPlot.foundation_pruning_date,
-                    fruit_pruning_date: newPlot.fruit_pruning_date,
+                    foundation_pruning_date: newPlot.foundation_pruning_date || null,
+                    fruit_pruning_date: newPlot.fruit_pruning_date || null,
                     canes_per_vine: newPlot.canes_per_vine,
                     bunches_per_vine: newPlot.bunches_per_vine,
                     expected_yield_tonnes: newPlot.expected_yield_tonnes
                 }]).select();
-                if (data && data[0]) newPlot.id = data[0].id;
+                if (error) console.error('Supabase error inserting plot:', error);
+                if (data && data[0]) {
+                    newPlot.id = data[0].id;
+                    populatePlotSelectors();
+                }
             } catch (err) {
                 console.error('Supabase error inserting plot:', err);
             }
@@ -1618,9 +2921,10 @@ function initForms() {
         closeModal('modal-add-irrigation');
         showToast(isMr() ? 'सिंचन नोंद यशस्वीपणे सेव्ह झाली!' : 'Irrigation log saved successfully!', 'success');
 
-        if (supabaseClient) {
+        const client = getSupabaseClient();
+        if (client) {
             try {
-                await supabaseClient.from('irrigation_logs').insert([{
+                const { data, error } = await client.from('irrigation_logs').insert([{
                     plot_id: log.plot_id,
                     log_date: log.log_date,
                     duration_hours: log.duration_hours,
@@ -1631,7 +2935,9 @@ function initForms() {
                     nutrients_n: log.nutrients_n,
                     nutrients_ca: log.nutrients_ca,
                     nutrients_mg: log.nutrients_mg
-                }]);
+                }]).select();
+                if (error) console.error('Supabase error inserting irrigation log:', error);
+                if (data && data[0]) log.id = data[0].id;
             } catch (err) {
                 console.error('Supabase error inserting irrigation log:', err);
             }
@@ -1670,9 +2976,26 @@ function initForms() {
             ? `खत नोंद झाली! प्रत्यक्ष घटक: N: ${elemental.n}kg, P: ${elemental.p}kg, K: ${elemental.k}kg`
             : `Fertilizer logged! Actual N: ${elemental.n}kg, P: ${elemental.p}kg, K: ${elemental.k}kg`, 'success');
 
-        if (supabaseClient) {
+        const client = getSupabaseClient();
+        if (client) {
             try {
-                await supabaseClient.from('fertilizer_logs').insert([log]);
+                const { data, error } = await client.from('fertilizer_logs').insert([{
+                    farm_id: log.farm_id,
+                    plot_id: log.plot_id,
+                    log_date: log.log_date,
+                    fertilizer_name: log.fertilizer_name,
+                    dose_amount: log.dose_amount,
+                    dose_unit: log.dose_unit,
+                    application_method: log.application_method,
+                    npk_ratio: log.npk_ratio,
+                    calculated_n_kg: log.calculated_n_kg,
+                    calculated_p_kg: log.calculated_p_kg,
+                    calculated_k_kg: log.calculated_k_kg,
+                    cost: log.cost,
+                    notes: log.notes
+                }]).select();
+                if (error) console.error('Supabase error inserting fertilizer log:', error);
+                if (data && data[0]) log.id = data[0].id;
             } catch (err) {
                 console.error('Supabase error inserting fertilizer log:', err);
             }
@@ -1700,9 +3023,22 @@ function initForms() {
         closeModal('modal-add-spray');
         showToast(isMr() ? 'फवारणी नोंद यशस्वीरित्या सेव्ह झाली!' : 'Spray log saved successfully!', 'success');
 
-        if (supabaseClient) {
+        const client = getSupabaseClient();
+        if (client) {
             try {
-                await supabaseClient.from('spray_logs').insert([log]);
+                const { data, error } = await client.from('spray_logs').insert([{
+                    plot_id: log.plot_id,
+                    log_date: log.log_date,
+                    chemical_or_fertilizer: log.chemical_or_fertilizer,
+                    target_issue: log.pest_disease_name || 'Downy Mildew (केवडा)',
+                    pest_disease_name: log.pest_disease_name,
+                    dose_per_liter: log.dose_per_liter,
+                    total_water_liters: log.total_water_liters,
+                    cost: log.cost,
+                    next_spray_date: log.next_spray_date
+                }]).select();
+                if (error) console.error('Supabase error inserting spray log:', error);
+                if (data && data[0]) log.id = data[0].id;
             } catch (err) {
                 console.error('Supabase error inserting spray log:', err);
             }
@@ -1735,9 +3071,23 @@ function initForms() {
         closeModal('modal-add-labor');
         showToast(isMr() ? `मजूर हजेरी नोंद झाली! एकूण खर्च: ₹${log.total_cost}` : `Labor attendance logged! Total Cost: ₹${log.total_cost}`, 'success');
 
-        if (supabaseClient) {
+        const client = getSupabaseClient();
+        if (client) {
             try {
-                await supabaseClient.from('labour_logs').insert([log]);
+                const { data, error } = await client.from('labour_logs').insert([{
+                    plot_id: log.plot_id,
+                    log_date: log.log_date,
+                    activity: log.activity,
+                    worker_names: log.worker_names,
+                    male_workers: log.male_workers,
+                    female_workers: log.female_workers,
+                    wage_per_worker: log.wage_per_worker,
+                    total_cost: log.total_cost,
+                    payment_status: log.payment_status,
+                    work_description: log.activity
+                }]).select();
+                if (error) console.error('Supabase error inserting labor log:', error);
+                if (data && data[0]) log.id = data[0].id;
             } catch (err) {
                 console.error('Supabase error inserting labor log:', err);
             }
@@ -1766,9 +3116,19 @@ function initForms() {
         closeModal('modal-add-expense');
         showToast(isMr() ? `खर्च नोंद सेव्ह झाली: ₹${log.amount}` : `Expense recorded: ₹${log.amount}`, 'success');
 
-        if (supabaseClient) {
+        const client = getSupabaseClient();
+        if (client) {
             try {
-                await supabaseClient.from('expenses').insert([log]);
+                const { data, error } = await client.from('expenses').insert([{
+                    plot_id: log.plot_id || null,
+                    log_date: log.log_date,
+                    category: log.category,
+                    amount: log.amount,
+                    description: log.description,
+                    payment_mode: log.payment_mode || 'UPI'
+                }]).select();
+                if (error) console.error('Supabase error inserting expense:', error);
+                if (data && data[0]) log.id = data[0].id;
             } catch (err) {
                 console.error('Supabase error inserting expense:', err);
             }
@@ -1781,6 +3141,7 @@ function initForms() {
         const kg = parseFloat(document.getElementById('sale-kg').value) || 0;
         const rate = parseFloat(document.getElementById('sale-rate').value) || 0;
         const total = kg * rate;
+        const cfg = CROPS_CONFIG[appState.activeCrop] || CROPS_CONFIG.grapes;
 
         const sale = {
             id: 'sale-' + Date.now(),
@@ -1799,11 +3160,23 @@ function initForms() {
         renderFinanceTab();
         renderReportsTab();
         closeModal('modal-add-sale');
-        showToast(isMr() ? `द्राक्ष विक्री नोंद झाली! उत्पन्न: ₹${total.toLocaleString('en-IN')}` : `Grape sale recorded! Revenue: ₹${total.toLocaleString('en-IN')}`, 'success');
+        showToast(isMr() ? `${cfg.emoji} ${cfg.name_mr} विक्री नोंद झाली! उत्पन्न: ₹${total.toLocaleString('en-IN')}` : `${cfg.emoji} ${cfg.name_en} sale recorded! Revenue: ₹${total.toLocaleString('en-IN')}`, 'success');
 
-        if (supabaseClient) {
+        const client = getSupabaseClient();
+        if (client) {
             try {
-                await supabaseClient.from('harvest_sales').insert([sale]);
+                const { data, error } = await client.from('harvest_sales').insert([{
+                    plot_id: sale.plot_id || null,
+                    sale_date: sale.sale_date,
+                    buyer_name: sale.buyer_name,
+                    grade: sale.grade,
+                    quantity_kg: sale.quantity_kg,
+                    rate_per_kg: sale.rate_per_kg,
+                    total_revenue: sale.total_revenue,
+                    payment_status: sale.payment_status || 'Received'
+                }]).select();
+                if (error) console.error('Supabase error inserting sale:', error);
+                if (data && data[0]) sale.id = data[0].id;
             } catch (err) {
                 console.error('Supabase error inserting sale:', err);
             }
@@ -1834,9 +3207,21 @@ function initForms() {
         closeModal('modal-add-reminder');
         showToast(isMr() ? 'नवीन स्मरणपत्र यशस्वीरीत्या जोडले!' : 'New reminder task added successfully!', 'success');
 
-        if (supabaseClient) {
+        const client = getSupabaseClient();
+        if (client) {
             try {
-                await supabaseClient.from('reminders').insert([reminder]);
+                const { data, error } = await client.from('reminders').insert([{
+                    farm_id: reminder.farm_id,
+                    plot_id: reminder.plot_id || null,
+                    category: reminder.category,
+                    title: reminder.title,
+                    due_date: reminder.due_date,
+                    status: reminder.status || 'pending',
+                    priority: reminder.priority || 'High',
+                    notes: reminder.notes
+                }]).select();
+                if (error) console.error('Supabase error inserting reminder:', error);
+                if (data && data[0]) reminder.id = data[0].id;
             } catch (err) {
                 console.error('Supabase error inserting reminder:', err);
             }
@@ -2016,13 +3401,16 @@ function initMandiRates() {
     // Refresh button
     document.getElementById('btn-refresh-mandi')?.addEventListener('click', () => {
         const isMr = appState.activeLang === 'mr';
+        const cfg = CROPS_CONFIG[appState.activeCrop] || CROPS_CONFIG.grapes;
         renderMandiRatesTable('all', '');
-        showToast(isMr ? '📈 ताज्या द्राक्ष बाजारभावाची नोंद अद्ययावत केली!' : '📈 Grape Mandi rates refreshed with latest live records!', 'success');
+        showToast(isMr ? `📈 ताज्या ${cfg.name_mr} बाजारभावाची नोंद अद्ययावत केली!` : `📈 ${cfg.name_en} Mandi rates refreshed with latest live records!`, 'success');
     });
 
     // Share button
     document.getElementById('btn-share-mandi-rates')?.addEventListener('click', () => {
-        const shareText = encodeURIComponent(`🍇 *सह्याद्री द्राक्ष ऑर्चर्ड्स - आजचे थेट बाजारभाव*\n\nपिंपळगाव Export Sonaka: ₹145/kg\nतासगाव Manik Chaman: ₹95/kg\nमुंबई Vashi Jumbo Black: ₹140/kg\n\nकृषिरत्न शेती व्यवस्थापन डॅशबोर्ड`);
+        const cfg = CROPS_CONFIG[appState.activeCrop] || CROPS_CONFIG.grapes;
+        const topItem = (cfg.mandi && cfg.mandi[0]) || { market: 'APMC Market', variety: cfg.name_mr, modal: 100 };
+        const shareText = encodeURIComponent(`${cfg.emoji} *${cfg.subtitle_mr} - आजचे थेट ${cfg.name_mr} बाजारभाव*\n\n${topItem.market}: ₹${topItem.modal} (${topItem.variety})\n\nकृषिरत्न शेती व्यवस्थापन डॅशबोर्ड`);
         window.open(`https://api.whatsapp.com/send?text=${shareText}`, '_blank');
     });
 }
@@ -2031,7 +3419,8 @@ function renderMandiRatesTable(marketFilter = 'all', keyword = '') {
     const tbody = document.getElementById('mandi-rates-table-body');
     if (!tbody) return;
 
-    let filtered = MANDI_RATES_DATA;
+    const cfg = CROPS_CONFIG[appState.activeCrop] || CROPS_CONFIG.grapes;
+    let filtered = cfg.mandi || MANDI_RATES_DATA;
     if (marketFilter !== 'all') {
         filtered = filtered.filter(item => item.market.toLowerCase().includes(marketFilter.toLowerCase()));
     }
