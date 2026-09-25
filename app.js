@@ -1673,6 +1673,17 @@ function initAuth() {
         }
     });
 
+    // Splash Quick Action Buttons
+    document.getElementById('btn-splash-quick-login')?.addEventListener('click', () => {
+        if (userInput) userInput.value = 'farmer';
+        if (passInput) passInput.value = 'farmer123';
+        loginForm?.dispatchEvent(new Event('submit'));
+    });
+
+    document.getElementById('btn-splash-open-register')?.addEventListener('click', () => {
+        openModal('modal-register');
+    });
+
     // Check existing session
     if (sessionStorage.getItem('krushi_auth') === 'true') {
         if (loginScreen) {
@@ -3611,35 +3622,197 @@ const PLOT_SPECS = {
 };
 
 function selectActivePlot(plotCode) {
+    if (!plotCode) return;
+    const cleanCode = plotCode.replace(/plot-?/i, '').toUpperCase() || 'A';
+    appState.activeSelectedPlot = cleanCode;
+
     document.querySelectorAll('.plot-pill-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.plot === plotCode);
+        const btnCode = (btn.dataset.plotCode || btn.dataset.plot || '').replace(/plot-?/i, '').toUpperCase();
+        btn.classList.toggle('active', btnCode === cleanCode);
     });
 
-    const p = PLOT_SPECS[plotCode] || PLOT_SPECS['A'];
+    const p = PLOT_SPECS[cleanCode] || PLOT_SPECS['A'];
 
     const setVal = (id, val) => {
         const el = document.getElementById(id);
         if (el) el.textContent = val;
     };
 
-    setVal('plot-detail-selected-name', p.name);
-    setVal('plot-spec-acres', p.acres);
-    setVal('plot-spec-variety', p.variety);
-    setVal('plot-spec-plant-date', p.plantingDate);
-    setVal('plot-spec-spacing', p.spacing);
-    setVal('plot-spec-training', p.training);
-    setVal('plot-spec-prune-date', p.pruningDate);
-    setVal('plot-spec-yield', p.expectedYield);
-    setVal('plot-spec-stage', p.stage);
+    setVal('plot-view-name', `${p.name} (${p.variety})`);
+    setVal('plot-view-status', p.stage);
+    setVal('plot-view-code', `PLOT #${cleanCode}-01`);
+    setVal('plot-view-acres', p.acres);
+    setVal('plot-view-variety', p.variety);
+    setVal('plot-view-plantdate', p.plantingDate);
+    setVal('plot-view-spacing', p.spacing);
+    setVal('plot-view-trellis', p.training);
+    setVal('plot-view-pruning', p.pruningDate);
+    setVal('plot-view-yield', `${p.expectedYield} (${p.yieldKg} kg)`);
+    setVal('plot-view-condition', p.stage);
 
-    ['inpage-irr-plot', 'inpage-fert-plot', 'inpage-spray-plot', 'inpage-expense-plot'].forEach(id => {
+    const histHeader = document.getElementById('history-plot-header-name');
+    if (histHeader) histHeader.textContent = `${p.name} (${p.variety})`;
+
+    ['inpage-irr-plot', 'inpage-fert-plot', 'inpage-spray-plot', 'inpage-expense-plot', 'inpage-income-plot'].forEach(id => {
         const sel = document.getElementById(id);
-        if (sel) sel.value = `प्लॉट ${plotCode}`;
+        if (sel) {
+            for (let i = 0; i < sel.options.length; i++) {
+                if (sel.options[i].value.toUpperCase().includes(cleanCode)) {
+                    sel.selectedIndex = i;
+                    break;
+                }
+            }
+        }
     });
 
-    showToast(`✅ ${p.name} निवडला (${p.variety}, ${p.acres})`, 'info');
+    showToast(`🍇 ${p.name} निवडला (${p.variety}, ${p.acres})`, 'info');
 }
 window.selectActivePlot = selectActivePlot;
+
+function openEditPlotModal() {
+    const plotCode = (appState.activeSelectedPlot || 'A').toUpperCase();
+    const p = PLOT_SPECS[plotCode] || PLOT_SPECS['A'];
+
+    const modalTitle = document.getElementById('modal-plot-title');
+    if (modalTitle) {
+        modalTitle.innerHTML = `<i data-lucide="edit"></i> ${p.name} संपादित करा (Edit Plot Details)`;
+    }
+
+    const nameInput = document.getElementById('plot-name');
+    if (nameInput) nameInput.value = p.name;
+
+    const acresInput = document.getElementById('plot-acres');
+    if (acresInput) acresInput.value = parseFloat(p.acres) || 2.0;
+
+    const varietySelect = document.getElementById('plot-variety');
+    if (varietySelect) {
+        let found = false;
+        for (let i = 0; i < varietySelect.options.length; i++) {
+            if (varietySelect.options[i].value.includes(plotCode) || p.variety.includes(varietySelect.options[i].value)) {
+                varietySelect.selectedIndex = i;
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            const opt = document.createElement('option');
+            opt.value = p.variety;
+            opt.textContent = p.variety;
+            opt.selected = true;
+            varietySelect.appendChild(opt);
+        }
+    }
+
+    openModal('modal-add-plot');
+    showToast(`✏️ ${p.name} संपादन फॉर्म उघडला आहे.`, 'info');
+}
+window.openEditPlotModal = openEditPlotModal;
+
+function filterPlotPhotos(cat) {
+    document.querySelectorAll('#photo-filter-pills .filter-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('onclick')?.includes(cat));
+    });
+    document.querySelectorAll('.plot-photo-card').forEach(card => {
+        if (cat === 'all' || card.dataset.category === cat) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+window.filterPlotPhotos = filterPlotPhotos;
+
+function handlePlotPhotoUpload(input) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const gallery = document.getElementById('plot-photos-gallery');
+            if (gallery) {
+                const card = document.createElement('div');
+                card.className = 'plot-photo-card';
+                card.dataset.category = 'berry';
+                card.innerHTML = `
+                    <div class="plot-photo-media" style="background: url('${e.target.result}') center/cover no-repeat; height: 160px; border-radius: var(--radius-md); position: relative;">
+                        <span class="badge-status success" style="position: absolute; top: 8px; right: 8px;">नवीन फोटो</span>
+                    </div>
+                    <div class="plot-photo-meta" style="padding: 0.75rem 0.25rem 0;">
+                        <div style="font-weight: 700; font-size: 0.9rem; color: var(--text-primary);">${file.name}</div>
+                        <div style="font-size: 0.76rem; color: var(--text-muted); display: flex; justify-content: space-between; margin-top: 4px;">
+                            <span>तारीख: आज</span>
+                            <span>अपलोड यशस्वी</span>
+                        </div>
+                    </div>
+                `;
+                gallery.prepend(card);
+            }
+            showToast(`📸 नवीन फोटो जोडला: ${file.name}`, 'success');
+        };
+        reader.readAsDataURL(file);
+    }
+}
+window.handlePlotPhotoUpload = handlePlotPhotoUpload;
+
+function printPlotHistory() {
+    showToast('🖨️ प्लॉट इतिहास प्रिंट विंडो उघडत आहे...', 'info');
+    setTimeout(() => window.print(), 300);
+}
+window.printPlotHistory = printPlotHistory;
+
+function setIrrigationTime(time) {
+    const isMorning = time === 'सकाळ' || time === 'morning';
+    const mBtn = document.getElementById('irr-time-morning');
+    const eBtn = document.getElementById('irr-time-evening');
+    const hidden = document.getElementById('inpage-irr-time');
+    if (mBtn) mBtn.classList.toggle('active', isMorning);
+    if (eBtn) eBtn.classList.toggle('active', !isMorning);
+    if (hidden) hidden.value = isMorning ? 'सकाळ' : 'संध्याकाळ';
+    showToast(`⏰ सिंचन वेळ निवडली: ${isMorning ? 'सकाळ (Morning)' : 'संध्याकाळ (Evening)'}`, 'info');
+}
+window.setIrrigationTime = setIrrigationTime;
+
+function setFertilizerMethod(method) {
+    const isFertigation = method === 'फर्टिगेशन' || method === 'fertigation';
+    const fBtn = document.getElementById('fert-method-fertigation');
+    const sBtn = document.getElementById('fert-method-soil');
+    const hidden = document.getElementById('inpage-fert-method');
+    if (fBtn) fBtn.classList.toggle('active', isFertigation);
+    if (sBtn) sBtn.classList.toggle('active', !isFertigation);
+    if (hidden) hidden.value = isFertigation ? 'फर्टिगेशन' : 'मुळाशी';
+    showToast(`🌱 खत पद्धत निवडली: ${isFertigation ? 'फर्टिगेशन (ठिबक)' : 'मुळाशी (Soil)'}`, 'info');
+}
+window.setFertilizerMethod = setFertilizerMethod;
+
+function toggleDashboardTask(el) {
+    if (!el) return;
+    const isChecked = el.classList.contains('checked');
+    const badge = el.querySelector('.badge-status');
+    const title = el.querySelector('.today-task-title')?.textContent || 'काम';
+
+    if (isChecked) {
+        el.classList.remove('checked');
+        if (badge) {
+            badge.className = 'badge-status warning';
+            badge.textContent = 'प्रलंबित (Pending)';
+        }
+        showToast(`⏳ ${title} प्रलंबित म्हणून नोंदवले.`, 'info');
+    } else {
+        el.classList.add('checked');
+        if (badge) {
+            badge.className = 'badge-status success';
+            badge.textContent = 'पूर्ण (Done)';
+        }
+        showToast(`✅ ${title} यशस्वीरित्या पूर्ण झाले!`, 'success');
+    }
+
+    const total = document.querySelectorAll('.today-task-item').length;
+    const done = document.querySelectorAll('.today-task-item.checked').length;
+    const pending = total - done;
+    const kpiCount = document.getElementById('dash-pending-tasks');
+    if (kpiCount) kpiCount.textContent = pending;
+    initLucide();
+}
+window.toggleDashboardTask = toggleDashboardTask;
 
 // --- PAGE 5: IRRIGATION IN-PAGE SUBMISSION ---
 function handleInpageIrrigationSubmit(e) {
@@ -3919,14 +4092,65 @@ function initReportBarChart() {
 }
 window.initReportBarChart = initReportBarChart;
 
+function handleSeasonChange(season) {
+    const isPast = season === '2025-26';
+    const prodVal = document.getElementById('dash-report-total-yield');
+    const expVal = document.getElementById('dash-report-total-expense');
+    const saleVal = document.getElementById('dash-report-total-sales');
+    const profitVal = document.getElementById('dash-report-net-profit');
+
+    if (prodVal) prodVal.innerHTML = isPast ? '42,100 <span style="font-size: 0.9rem; font-weight: 500;">किलो</span>' : '47,550 <span style="font-size: 0.9rem; font-weight: 500;">किलो</span>';
+    if (expVal) expVal.textContent = isPast ? '₹ 3,90,000' : '₹ 4,25,000';
+    if (saleVal) saleVal.textContent = isPast ? '₹ 6,10,000' : '₹ 7,15,000';
+    if (profitVal) profitVal.textContent = isPast ? '₹ 2,20,000' : '₹ 2,90,000';
+
+    if (reportChartInstance) {
+        if (isPast) {
+            reportChartInstance.data.datasets[0].data = [11200, 9400, 7800, 5600, 8100];
+        } else {
+            reportChartInstance.data.datasets[0].data = [12500, 10200, 8750, 6300, 9800];
+        }
+        reportChartInstance.update();
+    }
+    showToast(`📅 अहवाल डेटा: हंगाम ${season} लोड केला.`, 'info');
+}
+window.handleSeasonChange = handleSeasonChange;
+
 function switchReportsTab(tab) {
     document.querySelectorAll('#view-reports .filter-pills .filter-pill').forEach(btn => {
         btn.classList.toggle('active', btn.id === `tab-rep-${tab}`);
     });
-    if (tab === 'plotwise' || tab === 'production') {
+
+    if (!reportChartInstance) {
         initReportBarChart();
+        return;
     }
-    showToast(`अहवाल टॅब: ${tab}`, 'info');
+
+    const titleElem = document.querySelector('#view-reports .card-title-group h3');
+    const subElem = document.querySelector('#view-reports .card-title-group .card-subtitle');
+
+    if (tab === 'production' || tab === 'plotwise') {
+        reportChartInstance.data.datasets[0].label = 'उत्पादन (किलो)';
+        reportChartInstance.data.datasets[0].data = [12500, 10200, 8750, 6300, 9800];
+        reportChartInstance.options.scales.y.ticks.callback = function (v) { return v.toLocaleString('en-IN') + ' kg'; };
+        if (titleElem) titleElem.innerHTML = `<i data-lucide="bar-chart-3"></i> प्लॉटनुसार उत्पादन (किलो)`;
+        if (subElem) subElem.textContent = 'हंगाम 2026 - 27 प्लॉटनिहाय द्राक्ष उत्पादन तुलना (A ते E)';
+    } else if (tab === 'expense') {
+        reportChartInstance.data.datasets[0].label = 'एकूण खर्च (₹)';
+        reportChartInstance.data.datasets[0].data = [95000, 82000, 78000, 64000, 106000];
+        reportChartInstance.options.scales.y.ticks.callback = function (v) { return '₹ ' + v.toLocaleString('en-IN'); };
+        if (titleElem) titleElem.innerHTML = `<i data-lucide="receipt"></i> प्लॉटनुसार एकूण खर्च (₹)`;
+        if (subElem) subElem.textContent = 'प्लॉटनिहाय औषध, खत, मजुरी व सिंचन एकूण खर्च तुलना';
+    } else if (tab === 'profit') {
+        reportChartInstance.data.datasets[0].label = 'निव्वळ नफा (₹)';
+        reportChartInstance.data.datasets[0].data = [82000, 68000, 52000, 31000, 57000];
+        reportChartInstance.options.scales.y.ticks.callback = function (v) { return '₹ ' + v.toLocaleString('en-IN'); };
+        if (titleElem) titleElem.innerHTML = `<i data-lucide="trending-up"></i> प्लॉटनुसार निव्वळ नफा (₹)`;
+        if (subElem) subElem.textContent = 'विक्री महसूल वजा खर्च = प्रत्यक्ष निव्वळ नफा मार्जिन';
+    }
+    reportChartInstance.update();
+    initLucide();
+    showToast(`अहवाल विश्लेषण: ${tab === 'production' ? 'उत्पादन' : tab === 'expense' ? 'खर्च' : tab === 'profit' ? 'नफा' : 'प्लॉटनिहाय'}`, 'info');
 }
 window.switchReportsTab = switchReportsTab;
 

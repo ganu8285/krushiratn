@@ -3557,16 +3557,81 @@ textarea.form-control {
     color: var(--emerald-primary);
 }
 
-/* Mobile bottom clearance for bottom nav bar */
+/* ==========================================================================
+   PLOT PHOTO GALLERY & HISTORY TIMELINE STYLES
+   ========================================================================== */
+.plot-photos-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.plot-photo-card {
+    background: #FFFFFF;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 0.65rem;
+    transition: all var(--transition-fast);
+}
+
+.plot-photo-card:hover {
+    border-color: var(--emerald-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.plot-timeline-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin-top: 1rem;
+}
+
+.timeline-entry {
+    display: flex;
+    gap: 1rem;
+    padding: 0.85rem 1.1rem;
+    background: #FFFFFF;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.timeline-entry:hover {
+    border-color: var(--emerald-primary);
+    background: var(--bg-surface);
+}
+
+/* ==========================================================================
+   DEVICE-DEPENDENT OPTIONS (DESKTOP vs MOBILE)
+   ========================================================================== */
+
+/* 1. MOBILE & TABLET SCREENS (<= 1024px) */
 @media (max-width: 1024px) {
     .main-content {
         padding-bottom: 5.5rem !important;
     }
+
+    /* On mobile, left sidebar is hidden; bottom navigation bar is active */
+    .sidebar-left,
+    #sidebar-left {
+        display: none !important;
+    }
+
+    .bottom-nav-bar,
+    #bottom-nav-bar {
+        display: flex !important;
+    }
+
+    /* On mobile, show header logout since sidebar footer is hidden */
+    .header-logout-btn,
+    #btn-header-logout {
+        display: inline-flex !important;
+    }
 }
 
-/* ==========================================================================
-   DESKTOP VIEW (min-width: 1025px): Direct left side menu, NO bottom option
-   ========================================================================== */
+/* 2. DESKTOP VIEW (min-width: 1025px): Direct left side menu, NO bottom bar */
 @media (min-width: 1025px) {
     /* Hide bottom navigation bar completely on desktop */
     .bottom-nav-bar,
@@ -3593,5 +3658,11 @@ textarea.form-control {
 
     .main-content {
         padding-bottom: 2rem !important;
+    }
+
+    /* Eliminate double options on desktop: hide header logout button since sidebar has signout */
+    .header-logout-btn,
+    #btn-header-logout {
+        display: none !important;
     }
 }

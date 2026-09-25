@@ -1933,7 +1933,7 @@
                             <label
                                 style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin: 0;">हंगाम
                                 निवडा:</label>
-                            <select id="reports-season-select" class="form-control"
+                            <select id="reports-season-select" class="form-control" onchange="handleSeasonChange(this.value)"
                                 style="width: auto; padding: 0.4rem 0.8rem; font-weight: 700; background: var(--surface);">
                                 <option value="2026-27" selected>2026 - 27</option>
                                 <option value="2025-26">2025 - 26</option>
@@ -1984,24 +1984,24 @@
                             <div class="reports-summary-grid">
                                 <div class="summary-metric-card">
                                     <div class="summary-metric-label">एकूण उत्पादन</div>
-                                    <div class="summary-metric-val" style="color: var(--emerald-primary);">47,550 <span
+                                    <div class="summary-metric-val" id="dash-report-total-yield" style="color: var(--emerald-primary);">47,550 <span
                                             style="font-size: 0.9rem; font-weight: 500;">किलो</span></div>
                                     <div class="summary-metric-sub">5 प्लॉट्स (10.0 एकर)</div>
                                 </div>
                                 <div class="summary-metric-card">
                                     <div class="summary-metric-label">एकूण खर्च</div>
-                                    <div class="summary-metric-val" style="color: var(--rose-accent);">₹ 4,25,000</div>
+                                    <div class="summary-metric-val" id="dash-report-total-expense" style="color: var(--rose-accent);">₹ 4,25,000</div>
                                     <div class="summary-metric-sub">खते, औषधे, मजुरी व इतर</div>
                                 </div>
                                 <div class="summary-metric-card">
                                     <div class="summary-metric-label">एकूण विक्री</div>
-                                    <div class="summary-metric-val" style="color: #2563EB;">₹ 7,15,000</div>
+                                    <div class="summary-metric-val" id="dash-report-total-sales" style="color: #2563EB;">₹ 7,15,000</div>
                                     <div class="summary-metric-sub">एक्सपोर्ट व लोकल मार्केट</div>
                                 </div>
                                 <div class="summary-metric-card"
                                     style="border: 2px solid rgba(22, 163, 74, 0.4); background: #F0FDF4;">
                                     <div class="summary-metric-label">निव्वळ नफा</div>
-                                    <div class="summary-metric-val"
+                                    <div class="summary-metric-val" id="dash-report-net-profit"
                                         style="color: var(--emerald-deep); font-size: 1.65rem;">₹ 2,90,000</div>
                                     <div class="summary-metric-sub">नफा मार्जिन: 40.5%</div>
                                 </div>
@@ -3271,6 +3271,169 @@
             <div class="modal-footer">
                 <button type="button" class="btn-secondary header-btn" data-close-modal="modal-sync-backup">बंद
                     करा</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: प्लॉट फोटो गॅलरी (Plot Photos Gallery & Visuals) -->
+    <div class="modal-overlay" id="modal-plot-photos">
+        <div class="modal-card modal-lg">
+            <div class="modal-header">
+                <div class="modal-title" id="plot-photos-modal-title">
+                    <i data-lucide="camera"></i> <span>प्लॉट फोटो गॅलरी (Plot Photos & Visual Inspection)</span>
+                </div>
+                <button type="button" class="modal-close-btn" data-close-modal="modal-plot-photos"><i
+                        data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem;">
+                    <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;" id="photo-filter-pills">
+                        <button type="button" class="filter-pill active" onclick="filterPlotPhotos('all')">सर्व फोटो</button>
+                        <button type="button" class="filter-pill" onclick="filterPlotPhotos('berry')">मणी विकास</button>
+                        <button type="button" class="filter-pill" onclick="filterPlotPhotos('canopy')">कॅनॉपी व पाने</button>
+                        <button type="button" class="filter-pill" onclick="filterPlotPhotos('pest')">रोग तपासणी</button>
+                    </div>
+                    <div>
+                        <label for="plot-photo-file-input" class="btn-primary header-btn"
+                            style="cursor: pointer; margin: 0; padding: 0.45rem 0.9rem; font-size: 0.85rem;">
+                            <i data-lucide="upload"></i> <span>+ नवीन फोटो अपलोड करा</span>
+                        </label>
+                        <input type="file" id="plot-photo-file-input" accept="image/*" style="display: none;"
+                            onchange="handlePlotPhotoUpload(this)">
+                    </div>
+                </div>
+
+                <div class="plot-photos-gallery-grid" id="plot-photos-gallery">
+                    <!-- Photo 1: Berry Growth -->
+                    <div class="plot-photo-card" data-category="berry">
+                        <div class="plot-photo-media"
+                            style="background: linear-gradient(135deg, #15803D, #052E16); height: 160px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; position: relative;">
+                            <span style="font-size: 3rem;">🍇</span>
+                            <span class="badge-status success" style="position: absolute; top: 8px; right: 8px;">18 mm मणी</span>
+                        </div>
+                        <div class="plot-photo-meta" style="padding: 0.75rem 0.25rem 0;">
+                            <div style="font-weight: 700; font-size: 0.9rem; color: var(--text-primary);">मणी विकास व फुगवण अवस्था</div>
+                            <div
+                                style="font-size: 0.76rem; color: var(--text-muted); display: flex; justify-content: space-between; margin-top: 4px;">
+                                <span>तारीख: 18/09/2026</span>
+                                <span>प्लॉट A (थॉम्पसन)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Photo 2: Canopy -->
+                    <div class="plot-photo-card" data-category="canopy">
+                        <div class="plot-photo-media"
+                            style="background: linear-gradient(135deg, #047857, #064E3B); height: 160px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; position: relative;">
+                            <span style="font-size: 3rem;">🌿</span>
+                            <span class="badge-status positive" style="position: absolute; top: 8px; right: 8px;">Y Trellis</span>
+                        </div>
+                        <div class="plot-photo-meta" style="padding: 0.75rem 0.25rem 0;">
+                            <div style="font-weight: 700; font-size: 0.9rem; color: var(--text-primary);">कॅनॉपी विस्तार व पाने आच्छादन</div>
+                            <div
+                                style="font-size: 0.76rem; color: var(--text-muted); display: flex; justify-content: space-between; margin-top: 4px;">
+                                <span>तारीख: 12/09/2026</span>
+                                <span>प्लॉट A</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Photo 3: Pest Check -->
+                    <div class="plot-photo-card" data-category="pest">
+                        <div class="plot-photo-media"
+                            style="background: linear-gradient(135deg, #D97706, #78350F); height: 160px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; position: relative;">
+                            <span style="font-size: 3rem;">🔍</span>
+                            <span class="badge-status warning" style="position: absolute; top: 8px; right: 8px;">स्वच्छ पाने</span>
+                        </div>
+                        <div class="plot-photo-meta" style="padding: 0.75rem 0.25rem 0;">
+                            <div style="font-weight: 700; font-size: 0.9rem; color: var(--text-primary);">भुरी व करपा प्रतिबंधक तपासणी</div>
+                            <div
+                                style="font-size: 0.76rem; color: var(--text-muted); display: flex; justify-content: space-between; margin-top: 4px;">
+                                <span>तारीख: 05/09/2026</span>
+                                <span>प्लॉट A</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary header-btn" data-close-modal="modal-plot-photos">बंद करा</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: प्लॉट संपूर्ण इतिहास (Plot History Timeline) -->
+    <div class="modal-overlay" id="modal-plot-history">
+        <div class="modal-card modal-lg">
+            <div class="modal-header">
+                <div class="modal-title" id="plot-history-modal-title">
+                    <i data-lucide="history"></i> <span>प्लॉट संपूर्ण इतिहास व नोंदी (Plot History Timeline)</span>
+                </div>
+                <button type="button" class="modal-close-btn" data-close-modal="modal-plot-history"><i
+                        data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem; background: var(--bg-surface); padding: 0.75rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                    <div>
+                        <div style="font-weight: 800; font-size: 1rem; color: var(--text-primary);" id="history-plot-header-name">प्लॉट A (थॉम्पसन सीडलेस)</div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted);">लागवड: १० जाने २०२२ • क्षेत्र: २.० एकर • नाशिक बेल्ट</div>
+                    </div>
+                    <span class="badge-status success">हंगाम २०२६-२७ सक्रिय</span>
+                </div>
+
+                <div class="plot-timeline-list" id="plot-timeline-container">
+                    <div class="timeline-entry">
+                        <div style="font-size: 1.5rem; padding-top: 2px;">✂️</div>
+                        <div style="flex: 1;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <strong style="color: var(--text-primary);">गोडी छाटणी पूर्ण (Foundation Pruning)</strong>
+                                <span style="font-size: 0.76rem; color: var(--text-muted); font-weight: 600;">१५ ऑक्टो २०२५</span>
+                            </div>
+                            <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;">५-६ डोळे राखून छाटणी, बोर्डो पेस्ट लेप पूर्ण, वेळेवर काम संपन्न.</div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-entry">
+                        <div style="font-size: 1.5rem; padding-top: 2px;">🧪</div>
+                        <div style="flex: 1;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <strong style="color: var(--text-primary);">पहिली डिपिंग (GA3 1st Dipping 10 ppm)</strong>
+                                <span style="font-size: 0.76rem; color: var(--text-muted); font-weight: 600;">२५ ऑक्टो २०२५</span>
+                            </div>
+                            <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;">मणी लांबीसाठी पहिली डिपिंग व विरळणी योग्य पद्धतीने पूर्ण.</div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-entry">
+                        <div style="font-size: 1.5rem; padding-top: 2px;">💧</div>
+                        <div style="flex: 1;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <strong style="color: var(--text-primary);">फर्टिगेशन सायकल व पाणी नोंद</strong>
+                                <span style="font-size: 0.76rem; color: var(--text-muted); font-weight: 600;">१० नोव्हें २०२५</span>
+                            </div>
+                            <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;">0:52:34 खत + बोरॉन १२ किलो ठिबकद्वारे, EC ०.८, pH ७.२ नियंत्रित.</div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-entry">
+                        <div style="font-size: 1.5rem; padding-top: 2px;">💰</div>
+                        <div style="flex: 1;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <strong style="color: var(--text-primary);">काढणी व उच्चांकी विक्री (Record Harvest)</strong>
+                                <span style="font-size: 0.76rem; color: var(--text-muted); font-weight: 600;">२० जाने २०२६</span>
+                            </div>
+                            <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;">१२,५०० किलो उत्पादन @ ₹ ८५/किलो, एकूण उत्पन्न ₹ १०,६२,५००.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="display: flex; justify-content: space-between;">
+                <button type="button" class="btn-primary header-btn" onclick="printPlotHistory()">
+                    <i data-lucide="printer"></i> इतिहास प्रिंट करा
+                </button>
+                <button type="button" class="btn-secondary header-btn" data-close-modal="modal-plot-history">बंद करा</button>
             </div>
         </div>
     </div>
