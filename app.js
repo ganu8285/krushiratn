@@ -1960,19 +1960,35 @@ async function loadAllData(isManualRefresh = false) {
 // MULTI-CROP MANAGEMENT ENGINE (Switch Crop, Dynamic UI & Synchronizers)
 // ==========================================================================
 
+function toggleCropDropdown(e) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    const dropdown = document.getElementById('crop-dropdown-menu');
+    if (dropdown) {
+        dropdown.classList.toggle('show');
+        dropdown.classList.toggle('active');
+    }
+}
+window.toggleCropDropdown = toggleCropDropdown;
+
 function initCropEngine() {
     // 1. Header Crop Selector Trigger
-    const trigger = document.getElementById('crop-select-trigger');
+    const trigger = document.getElementById('crop-selector-btn') || document.getElementById('crop-select-trigger');
     const dropdown = document.getElementById('crop-dropdown-menu');
 
     if (trigger && dropdown) {
-        trigger.addEventListener('click', (e) => {
+        trigger.onclick = (e) => {
+            e.preventDefault();
             e.stopPropagation();
+            dropdown.classList.toggle('show');
             dropdown.classList.toggle('active');
-        });
+        };
 
         document.addEventListener('click', (e) => {
             if (!trigger.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('show');
                 dropdown.classList.remove('active');
             }
         });
@@ -1980,14 +1996,18 @@ function initCropEngine() {
 
     // 2. Dropdown options
     document.querySelectorAll('.crop-opt-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        btn.onclick = (e) => {
+            e.preventDefault();
             e.stopPropagation();
             const cropId = btn.dataset.crop;
             if (cropId) {
                 switchCrop(cropId, true);
-                if (dropdown) dropdown.classList.remove('active');
+                if (dropdown) {
+                    dropdown.classList.remove('show');
+                    dropdown.classList.remove('active');
+                }
             }
-        });
+        };
     });
 
     // 3. Modal Crop Selector listener (when changing crop inside Add Plot modal)
@@ -1998,6 +2018,9 @@ function initCropEngine() {
             updatePlotModalForCrop(selectedCrop);
         });
     }
+
+    // Initialize with active crop
+    renderDashboardCropPills();
 }
 
 function switchCrop(cropId, notify = true) {
@@ -2019,8 +2042,8 @@ function switchCrop(cropId, notify = true) {
     appState.reminders = cfg.reminders;
 
     // Update Header Trigger
-    const triggerEmoji = document.getElementById('crop-trigger-emoji');
-    const triggerLabel = document.getElementById('crop-trigger-label');
+    const triggerEmoji = document.getElementById('current-crop-emoji') || document.getElementById('crop-trigger-emoji');
+    const triggerLabel = document.getElementById('current-crop-label') || document.getElementById('crop-trigger-label');
     if (triggerEmoji) triggerEmoji.textContent = cfg.emoji;
     if (triggerLabel) triggerLabel.textContent = isMr ? cfg.name_mr : cfg.name_en;
 
@@ -2028,6 +2051,13 @@ function switchCrop(cropId, notify = true) {
     document.querySelectorAll('.crop-opt-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.crop === cropId);
     });
+
+    // Close dropdown
+    const dropdown = document.getElementById('crop-dropdown-menu');
+    if (dropdown) {
+        dropdown.classList.remove('show');
+        dropdown.classList.remove('active');
+    }
 
     // Update Dashboard Crop Pills
     renderDashboardCropPills();
@@ -2113,6 +2143,15 @@ function renderDashboardCropPills() {
     const crops = Object.values(CROPS_CONFIG);
 
     container.innerHTML = `
+        <div style="margin-bottom: 0.6rem; display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 0.88rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 0.4rem;">
+                <i data-lucide="sprout" style="width: 16px; height: 16px; color: var(--emerald-primary);"></i>
+                ${isMr ? 'सक्रिय पीक निवडा (Select Crop):' : 'Select Active Crop:'}
+            </span>
+            <span class="kpi-badge positive" style="font-size: 0.75rem;">
+                ${isMr ? '६ पिके उपलब्ध' : '6 Crops Available'}
+            </span>
+        </div>
         <div class="crop-pills-grid">
             ${crops.map(c => `
                 <div class="crop-pill-card ${c.id === appState.activeCrop ? 'active' : ''}" data-crop="${c.id}" onclick="switchCrop('${c.id}', true)">
@@ -2125,6 +2164,7 @@ function renderDashboardCropPills() {
             `).join('')}
         </div>
     `;
+    initLucide();
 }
 
 function renderPestAdvisoryCards(cropId) {
@@ -2386,6 +2426,9 @@ function renderDashboardTab() {
             </tr>
         `).join('');
     }
+
+    // Render Dashboard Crop Selector Pills
+    renderDashboardCropPills();
 }
 
 // ==========================================================================

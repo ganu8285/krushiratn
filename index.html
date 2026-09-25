@@ -352,52 +352,53 @@
                     </div>
                 </div>
 
-                <div class="top-header-right">
-                    <!-- Crop Selector Dropdown (Luxury Pill Trigger) -->
+                <!-- Center Crop Selector Dropdown (Luxury Pill Trigger) -->
+                <div class="top-header-center">
                     <div class="crop-select-pill-box" id="top-crop-selector-container">
                         <button type="button" class="crop-select-trigger" id="crop-selector-btn"
+                            onclick="toggleCropDropdown(event)"
                             aria-label="Select Active Crop" title="पीक निवडा / Switch Crop">
                             <span class="crop-trigger-emoji" id="current-crop-emoji">🍇</span>
                             <span class="crop-trigger-label" id="current-crop-label">द्राक्ष (Grapes)</span>
                             <i data-lucide="chevron-down" style="width: 14px; height: 14px; margin-left: 2px;"></i>
                         </button>
                         <div class="crop-dropdown-menu" id="crop-dropdown-menu">
-                            <button type="button" class="crop-opt-btn active" data-crop="grapes">
+                            <button type="button" class="crop-opt-btn active" data-crop="grapes" onclick="switchCrop('grapes', true)">
                                 <span class="crop-opt-emoji">🍇</span>
                                 <div class="crop-opt-text">
                                     <span class="crop-opt-name">द्राक्ष (Grapes)</span>
                                     <span class="crop-opt-sub">Nashik & Sangli Vineyards</span>
                                 </div>
                             </button>
-                            <button type="button" class="crop-opt-btn" data-crop="onion">
+                            <button type="button" class="crop-opt-btn" data-crop="onion" onclick="switchCrop('onion', true)">
                                 <span class="crop-opt-emoji">🧅</span>
                                 <div class="crop-opt-text">
                                     <span class="crop-opt-name">कांदा (Onion)</span>
                                     <span class="crop-opt-sub">Lasalgaon & Kalwan Belt</span>
                                 </div>
                             </button>
-                            <button type="button" class="crop-opt-btn" data-crop="tur">
+                            <button type="button" class="crop-opt-btn" data-crop="tur" onclick="switchCrop('tur', true)">
                                 <span class="crop-opt-emoji">🌱</span>
                                 <div class="crop-opt-text">
                                     <span class="crop-opt-name">तूर (Tur / Pigeon Pea)</span>
                                     <span class="crop-opt-sub">Marathwada & Vidarbha</span>
                                 </div>
                             </button>
-                            <button type="button" class="crop-opt-btn" data-crop="corn">
+                            <button type="button" class="crop-opt-btn" data-crop="corn" onclick="switchCrop('corn', true)">
                                 <span class="crop-opt-emoji">🌽</span>
                                 <div class="crop-opt-text">
                                     <span class="crop-opt-name">मका (Corn / Maize)</span>
                                     <span class="crop-opt-sub">Khandesh & Niphad Belt</span>
                                 </div>
                             </button>
-                            <button type="button" class="crop-opt-btn" data-crop="pomegranate">
+                            <button type="button" class="crop-opt-btn" data-crop="pomegranate" onclick="switchCrop('pomegranate', true)">
                                 <span class="crop-opt-emoji">🍎</span>
                                 <div class="crop-opt-text">
                                     <span class="crop-opt-name">डाळिंब (Pomegranate)</span>
                                     <span class="crop-opt-sub">Solapur & Sangola Orchards</span>
                                 </div>
                             </button>
-                            <button type="button" class="crop-opt-btn" data-crop="guava">
+                            <button type="button" class="crop-opt-btn" data-crop="guava" onclick="switchCrop('guava', true)">
                                 <span class="crop-opt-emoji">🍈</span>
                                 <div class="crop-opt-text">
                                     <span class="crop-opt-name">पेरू (Guava / Amrud)</span>
@@ -406,7 +407,9 @@
                             </button>
                         </div>
                     </div>
+                </div>
 
+                <div class="top-header-right">
                     <!-- Language Toggle Button (English / Marathi) -->
                     <div class="lang-toggle-btn-group">
                         <button type="button" class="lang-btn active" data-lang-val="mr"
@@ -477,6 +480,9 @@
                             <span>❞</span>
                         </div>
                     </div>
+
+                    <!-- Center Crop Selection on Dashboard (6 Supported Crops) -->
+                    <div id="dashboard-crop-pills" style="margin-bottom: 1.25rem;"></div>
 
                     <!-- Section: महत्त्वाची माहिती या हंगामात (2026-27) -->
                     <div class="dash-season-section-heading">
