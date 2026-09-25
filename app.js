@@ -1257,6 +1257,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initSupabasePill();
     setLanguage(appState.activeLang);
     await loadAllData();
+    renderLaborAttendanceList();
     if (appState.activeCrop !== 'grapes') {
         switchCrop(appState.activeCrop, false);
     }
@@ -1478,7 +1479,6 @@ function switchLanguage(lang) {
         { id: 'nav-tab-sales', mr: ['उत्पादन व विक्री', 'काढणी वजन, दर प्रति किलो व महसूल'], en: ['Production & Sales', 'Harvest, Rate/kg & Revenue'] },
         { id: 'nav-tab-reports', mr: ['रिपोर्ट व विश्लेषण', 'प्लॉटनुसार उत्पादन आलेख व नफा-तोटा'], en: ['Reports & Analytics', 'Yield Charts & Profit-Loss'] },
         { id: 'nav-tab-reminders', mr: ['रिमाइंडर', 'फवारणी व सिंचन कामांचे स्मरणपत्र'], en: ['Reminders', 'Tasks & Spray Alerts'] },
-        { id: 'nav-tab-mandi', mr: ['द्राक्ष बाजारभाव', 'APMC व थेट लिलाव दर'], en: ['Mandi Rates', 'APMC Grape Prices'] },
         { id: 'nav-tab-schemes', mr: ['शासकीय योजना व सबसिडी', 'MahaDBT व शासकीय अनुदान'], en: ['Govt Schemes', 'Subsidies & Grants'] }
     ];
 
@@ -2621,6 +2621,8 @@ function renderLaborTab() {
             <td><span class="badge-status ${log.payment_status === 'Paid' ? 'success' : 'warning'}">${log.payment_status === 'Paid' ? (isMr ? 'दिले (Paid)' : 'Paid') : (isMr ? 'प्रलंबित' : 'Pending')}</span></td>
         </tr>
     `).join('');
+
+    renderLaborAttendanceList();
 }
 
 // ==========================================================================
@@ -4013,6 +4015,133 @@ function handleInpageLaborSubmit(e) {
 }
 window.handleInpageLaborSubmit = handleInpageLaborSubmit;
 
+// --- USER-DEFINED LABOR ATTENDANCE ROSTER ---
+function getCustomWorkers() {
+    try {
+        const saved = localStorage.getItem('krushi_custom_workers');
+        return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function saveCustomWorkers(workers) {
+    localStorage.setItem('krushi_custom_workers', JSON.stringify(workers));
+}
+
+function renderLaborAttendanceList() {
+    const container = document.getElementById('labor-attendance-list');
+    const badge = document.getElementById('attendance-count-badge');
+    if (!container) return;
+
+    const workers = getCustomWorkers();
+
+    if (workers.length === 0) {
+        container.innerHTML = `
+            <div class="empty-workers-notice" style="grid-column: 1 / -1;">
+                <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">👷‍♂️</div>
+                <h4 style="margin: 0 0 0.4rem 0; font-size: 1.05rem; color: var(--text-primary); font-weight: 700;">अद्याप कोणतेही कामगार जोडलेले नाहीत</h4>
+                <p style="margin: 0; font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">कृपया वरील फॉर्ममध्ये आपल्या बागेतील कामगाराचे नाव व काम टाकून <strong>'+ कामगार जोडा'</strong> बटणावर क्लिक करा.</p>
+            </div>
+        `;
+        if (badge) badge.textContent = `० कामगार`;
+        return;
+    }
+
+    const checkedCount = workers.filter(w => w.present).length;
+    if (badge) {
+        badge.textContent = `${checkedCount}/${workers.length} उपस्थित`;
+    }
+
+    container.innerHTML = workers.map(w => {
+        const initial = (w.name || 'म').trim().charAt(0);
+        return `
+            <div class="attendance-check-card ${w.present ? 'checked' : ''}" data-worker-id="${w.id}">
+                <input type="checkbox" ${w.present ? 'checked' : ''} onchange="toggleWorkerAttendance('${w.id}', this.checked)">
+                <div class="worker-avatar">${initial}</div>
+                <div class="worker-info">
+                    <div class="worker-name">${w.name}</div>
+                    <div class="worker-role">${w.role || 'मजूर'}</div>
+                </div>
+                <span class="attendance-status">${w.present ? 'हजर' : 'गैरहजर'}</span>
+                <button type="button" class="worker-del-btn" onclick="removeWorker('${w.id}', event)" title="कामगार काढा">
+                    <i data-lucide="trash-2" style="width: 15px; height: 15px;"></i>
+                </button>
+            </div>
+        `;
+    }).join('');
+
+    initLucide();
+}
+window.renderLaborAttendanceList = renderLaborAttendanceList;
+
+function addNewWorker() {
+    const nameInput = document.getElementById('new-worker-name');
+    const roleInput = document.getElementById('new-worker-role');
+    const name = nameInput?.value?.trim();
+    const role = roleInput?.value?.trim() || 'मजूर';
+
+    if (!name) {
+        showToast('कृपया कामगाराचे नाव टाका!', 'warning');
+        nameInput?.focus();
+        return;
+    }
+
+    const workers = getCustomWorkers();
+    const newWorker = {
+        id: 'worker-' + Date.now(),
+        name: name,
+        role: role,
+        present: true
+    };
+    workers.push(newWorker);
+    saveCustomWorkers(workers);
+
+    if (nameInput) nameInput.value = '';
+    if (roleInput) roleInput.value = '';
+
+    renderLaborAttendanceList();
+    showToast(`✅ ${name} (${role}) कामगार यादीत जोडला!`, 'success');
+}
+window.addNewWorker = addNewWorker;
+
+function removeWorker(id, e) {
+    if (e) e.stopPropagation();
+    let workers = getCustomWorkers();
+    const worker = workers.find(w => w.id === id);
+    const workerName = worker?.name || 'कामगार';
+
+    workers = workers.filter(w => w.id !== id);
+    saveCustomWorkers(workers);
+    renderLaborAttendanceList();
+    showToast(`🗑️ ${workerName} यादीतून काढण्यात आला.`, 'info');
+}
+window.removeWorker = removeWorker;
+
+function toggleWorkerAttendance(id, isChecked) {
+    const workers = getCustomWorkers();
+    const worker = workers.find(w => w.id === id);
+    if (worker) {
+        worker.present = isChecked;
+        saveCustomWorkers(workers);
+    }
+    const card = document.querySelector(`.attendance-check-card[data-worker-id="${id}"]`);
+    if (card) {
+        card.classList.toggle('checked', isChecked);
+        const statusSpan = card.querySelector('.attendance-status');
+        if (statusSpan) {
+            statusSpan.textContent = isChecked ? 'हजर' : 'गैरहजर';
+        }
+    }
+    const checkedCount = workers.filter(w => w.present).length;
+    const badge = document.getElementById('attendance-count-badge');
+    if (badge) {
+        badge.textContent = `${checkedCount}/${workers.length} उपस्थित`;
+    }
+    showToast(`${worker ? worker.name : 'कामगार'}: ${isChecked ? 'हजर' : 'गैरहजर'} नोंदवले`, 'info');
+}
+window.toggleWorkerAttendance = toggleWorkerAttendance;
+
 function toggleAttendanceItem(chk) {
     const card = chk.closest('.attendance-check-card');
     if (card) {
@@ -4028,7 +4157,6 @@ function toggleAttendanceItem(chk) {
     if (badge) {
         badge.textContent = `${checked}/${total} उपस्थित`;
     }
-    showToast(`हजेरी अद्ययावत केली (${checked}/${total} उपस्थित)`, 'info');
 }
 window.toggleAttendanceItem = toggleAttendanceItem;
 

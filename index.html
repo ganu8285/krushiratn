@@ -284,28 +284,7 @@
                     </div>
                 </button>
 
-                <!-- 11. हवामान माहिती -->
-                <button type="button" class="side-nav-btn" id="nav-tab-weather"
-                    onclick="openModal('modal-weather-info')">
-                    <div class="side-btn-left">
-                        <i data-lucide="cloud-sun" class="side-btn-icon"></i>
-                        <div class="side-btn-text-group">
-                            <span class="side-btn-title">हवामान माहिती</span>
-                            <span class="side-btn-sub">तापमान, पाऊस शक्यता व कृषी सल्ला</span>
-                        </div>
-                    </div>
-                </button>
 
-                <!-- 12. मार्केट भाव -->
-                <button type="button" class="side-nav-btn" data-target="mandi-rates" id="nav-tab-mandi">
-                    <div class="side-btn-left">
-                        <i data-lucide="trending-up" class="side-btn-icon"></i>
-                        <div class="side-btn-text-group">
-                            <span class="side-btn-title">मार्केट भाव</span>
-                            <span class="side-btn-sub">पिंपळगाव, तासगाव व वाशी APMC भाव</span>
-                        </div>
-                    </div>
-                </button>
 
                 <!-- 13. सेटिंग्स -->
                 <button type="button" class="side-nav-btn" id="nav-tab-settings"
@@ -772,23 +751,7 @@
                             </div>
                         </div>
 
-                        <!-- 11. हवामान माहिती -->
-                        <div class="menu-module-card" onclick="openModal('modal-weather-info')">
-                            <div class="menu-module-icon-wrap blue"><i data-lucide="cloud-sun"></i></div>
-                            <div class="menu-module-info">
-                                <span class="menu-module-title">हवामान माहिती</span>
-                                <span class="menu-module-desc">तापमान, पाऊस शक्यता व कृषी सल्ला</span>
-                            </div>
-                        </div>
 
-                        <!-- 12. मार्केट भाव -->
-                        <div class="menu-module-card" onclick="switchView('mandi-rates')">
-                            <div class="menu-module-icon-wrap emerald"><i data-lucide="trending-up"></i></div>
-                            <div class="menu-module-info">
-                                <span class="menu-module-title">मार्केट भाव</span>
-                                <span class="menu-module-desc">पिंपळगाव, तासगाव व वाशी APMC भाव</span>
-                            </div>
-                        </div>
 
                         <!-- 13. सेटिंग्स -->
                         <div class="menu-module-card" onclick="openModal('modal-settings')">
@@ -1518,11 +1481,7 @@
                      एकूण खर्च: ₹ 4,800
                      टीप: वेळेवर काम पूर्ण
                      नोंद करा (Button)
-                     आजची हजेरी
-                     राजू पवार (Checked)
-                     सुनिता शिंदे (Checked)
-                     गणेश जाधव (Checked)
-                     विठ्ठल गावडे (Checked)
+                     आजची हजेरी (User Defined Worker Roster)
                      ========================================================= -->
                 <section class="app-view" id="view-labor-mgmt">
                     <div class="view-header">
@@ -1593,53 +1552,35 @@
                         </form>
                     </div>
 
-                    <!-- Attendance Roster Section -->
+                    <!-- User-Defined Attendance Roster Section -->
                     <div class="card" style="margin-top: 1.25rem;">
-                        <div class="card-header">
+                        <div class="card-header" style="flex-wrap: wrap; gap: 0.75rem;">
                             <div class="card-title-group">
                                 <h3><i data-lucide="clipboard-check"></i> आजची हजेरी (20/09/2026)</h3>
-                                <div class="card-subtitle">उपस्थित कामगारांचे हजेरी मार्क करा</div>
+                                <div class="card-subtitle">आपल्या बागेतील कामगारांची नावे जोडा व दैनिक हजेरी नोंदवा</div>
                             </div>
-                            <span class="kpi-badge positive" id="attendance-count-badge">4/4 उपस्थित</span>
+                            <span class="kpi-badge positive" id="attendance-count-badge">० कामगार</span>
                         </div>
                         <div class="card-body">
+                            <!-- Add Worker Form -->
+                            <div class="add-worker-bar">
+                                <input type="text" id="new-worker-name" class="form-control"
+                                    placeholder="कामगाराचे नाव (उदा. मारुती पवार, सुनीता शिंदे)"
+                                    style="flex: 1.5; min-width: 200px;"
+                                    onkeydown="if(event.key==='Enter'){event.preventDefault();addNewWorker();}">
+                                <input type="text" id="new-worker-role" class="form-control"
+                                    placeholder="कामाचा प्रकार / रोल (उदा. छाटणी, फवारणी, बांधणी)"
+                                    style="flex: 1.5; min-width: 200px;"
+                                    onkeydown="if(event.key==='Enter'){event.preventDefault();addNewWorker();}">
+                                <button type="button" class="btn-primary header-btn" onclick="addNewWorker()"
+                                    style="padding: 0.65rem 1.4rem; white-space: nowrap;">
+                                    <i data-lucide="user-plus"></i> + कामगार जोडा
+                                </button>
+                            </div>
+
+                            <!-- Dynamic User-Defined Worker Attendance Grid -->
                             <div class="labor-attendance-grid" id="labor-attendance-list">
-                                <label class="attendance-check-card checked">
-                                    <input type="checkbox" checked onchange="toggleAttendanceItem(this)">
-                                    <div class="worker-avatar">रा</div>
-                                    <div class="worker-info">
-                                        <div class="worker-name">राजू पवार</div>
-                                        <div class="worker-role">कुशल मजूर • छाटणी</div>
-                                    </div>
-                                    <span class="attendance-status">हजर</span>
-                                </label>
-                                <label class="attendance-check-card checked">
-                                    <input type="checkbox" checked onchange="toggleAttendanceItem(this)">
-                                    <div class="worker-avatar">सु</div>
-                                    <div class="worker-info">
-                                        <div class="worker-name">सुनिता शिंदे</div>
-                                        <div class="worker-role">मजूर • काडी बांधणी</div>
-                                    </div>
-                                    <span class="attendance-status">हजर</span>
-                                </label>
-                                <label class="attendance-check-card checked">
-                                    <input type="checkbox" checked onchange="toggleAttendanceItem(this)">
-                                    <div class="worker-avatar">ग</div>
-                                    <div class="worker-info">
-                                        <div class="worker-name">गणेश जाधव</div>
-                                        <div class="worker-role">कुशल मजूर • फवारणी/छाटणी</div>
-                                    </div>
-                                    <span class="attendance-status">हजर</span>
-                                </label>
-                                <label class="attendance-check-card checked">
-                                    <input type="checkbox" checked onchange="toggleAttendanceItem(this)">
-                                    <div class="worker-avatar">वि</div>
-                                    <div class="worker-info">
-                                        <div class="worker-name">विठ्ठल गावडे</div>
-                                        <div class="worker-role">कुशल मजूर • छाटणी</div>
-                                    </div>
-                                    <span class="attendance-status">हजर</span>
-                                </label>
+                                <!-- Populated dynamically by renderLaborAttendanceList() -->
                             </div>
                         </div>
                     </div>
