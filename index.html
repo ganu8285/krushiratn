@@ -1950,7 +1950,7 @@
                                 <div class="card-subtitle">हंगाम 2026 - 27 प्लॉटनिहाय द्राक्ष उत्पादन तुलना (A ते E)
                                 </div>
                             </div>
-                            <span class="kpi-badge positive">एकूण 47,550 kg</span>
+                            <span class="kpi-badge positive" id="report-chart-badge">एकूण 47,550 kg</span>
                         </div>
                         <div class="card-body">
                             <div class="report-bar-chart-container"
@@ -1965,8 +1965,7 @@
                         <div class="card-header">
                             <div class="card-title-group">
                                 <h3><i data-lucide="pie-chart"></i> एकंदर सारांश (Overall Summary)</h3>
-                                <div class="card-subtitle">हंगाम 2026 - 27 सर्व 5 प्लॉट्सचे एकत्रित आर्थिक व उत्पादन
-                                    ताळेबंद</div>
+                                <div class="card-subtitle">हंगाम 2026 - 27 सर्व 5 प्लॉट्सचे एकत्रित आर्थिक व उत्पादन ताळेबंद</div>
                             </div>
                         </div>
                         <div class="card-body">
@@ -1996,6 +1995,22 @@
                                 </div>
                             </div>
 
+                            <!-- 3 Precision Intelligence KPIs -->
+                            <div class="reports-precision-grid">
+                                <div class="precision-chip">
+                                    <span class="precision-chip-label"><i data-lucide="map-pin" style="width: 14px; height: 14px; vertical-align: middle;"></i> खर्च प्रति एकर:</span>
+                                    <span class="precision-chip-val" id="rep-cost-per-acre">₹ 40,476</span>
+                                </div>
+                                <div class="precision-chip">
+                                    <span class="precision-chip-label"><i data-lucide="scale" style="width: 14px; height: 14px; vertical-align: middle;"></i> खर्च प्रति किलो:</span>
+                                    <span class="precision-chip-val" id="rep-cost-per-kg">₹ 8.94</span>
+                                </div>
+                                <div class="precision-chip">
+                                    <span class="precision-chip-label"><i data-lucide="trending-up" style="width: 14px; height: 14px; vertical-align: middle;"></i> निव्वळ नफा मार्जिन:</span>
+                                    <span class="precision-chip-val" id="rep-net-margin">40.5%</span>
+                                </div>
+                            </div>
+
                             <!-- Buttons: PDF डाउनलोड, शेअर करा -->
                             <div class="reports-action-row"
                                 style="margin-top: 1.5rem; display: flex; gap: 0.75rem; justify-content: flex-end; flex-wrap: wrap;">
@@ -2007,6 +2022,38 @@
                                     style="padding: 0.65rem 1.4rem;">
                                     <i data-lucide="share-2"></i> शेअर करा
                                 </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Plot-wise Detailed Breakdown Table -->
+                    <div class="card" id="reports-plot-table-card" style="margin-bottom: 1.25rem;">
+                        <div class="card-header">
+                            <div class="card-title-group">
+                                <h3><i data-lucide="layers"></i> प्लॉटनिहाय तपशीलवार अहवाल (Plot-wise Breakdown)</h3>
+                                <div class="card-subtitle">हंगाम 2026 - 27 सर्व प्लॉट्सचे उत्पादन, विक्री उत्पन्न, खर्च व निव्वळ नफा</div>
+                            </div>
+                            <span class="kpi-badge positive">5 प्लॉट्स सक्रिय</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table-custom">
+                                    <thead>
+                                        <tr>
+                                            <th>प्लॉट नाव</th>
+                                            <th>वाण (Variety)</th>
+                                            <th>क्षेत्र (Acres)</th>
+                                            <th>अपेक्षित उत्पादन</th>
+                                            <th>विक्री वजन (kg)</th>
+                                            <th>एकूण उत्पन्न (₹)</th>
+                                            <th>एकूण खर्च (₹)</th>
+                                            <th>निव्वळ नफा (₹)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="reports-plot-table-body">
+                                        <!-- Populated dynamically by renderReportsTab() -->
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>

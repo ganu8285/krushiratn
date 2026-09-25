@@ -1820,8 +1820,9 @@ function switchView(target) {
 
     if (cleanTarget === 'reports') {
         setTimeout(() => {
+            renderReportsTab();
             if (typeof initReportBarChart === 'function') initReportBarChart();
-        }, 100);
+        }, 80);
     }
 
     initLucide();
@@ -2475,28 +2476,31 @@ function renderWaterTab() {
         const phElem = document.getElementById('water-avg-ph');
         if (phElem) phElem.textContent = avgPh;
 
-        // Nutrients
+        // Nutrients - Safe guards
         const latest = appState.irrigationLogs[0];
         if (latest) {
-            document.getElementById('water-nutrient-n').textContent = `${latest.nutrients_n || 3.2} kg`;
-            document.getElementById('water-nutrient-ca').textContent = `${latest.nutrients_ca || 4.8} kg`;
-            document.getElementById('water-nutrient-mg').textContent = `${latest.nutrients_mg || 2.1} kg`;
+            const nutN = document.getElementById('water-nutrient-n');
+            if (nutN) nutN.textContent = `${latest.nutrients_n || 3.2} kg`;
+            const nutCa = document.getElementById('water-nutrient-ca');
+            if (nutCa) nutCa.textContent = `${latest.nutrients_ca || 4.8} kg`;
+            const nutMg = document.getElementById('water-nutrient-mg');
+            if (nutMg) nutMg.textContent = `${latest.nutrients_mg || 2.1} kg`;
         }
     }
 
     // Table rendering
-    const tbody = document.getElementById('water-logs-table-body');
+    const tbody = document.getElementById('water-logs-table-body') || document.getElementById('inpage-irrigation-tbody');
     if (!tbody) return;
 
     tbody.innerHTML = appState.irrigationLogs.map(log => `
         <tr>
             <td style="font-weight: 600;">${log.log_date}</td>
-            <td>${getPlotName(log.plot_id)}</td>
-            <td><span class="badge-status info">${log.duration_hours} ${isMr ? 'तास' : 'hrs'}</span></td>
-            <td style="font-weight: 700; color: var(--blue-accent);">${(parseFloat(log.water_liters) || 0).toLocaleString('en-IN')} L</td>
-            <td>${log.water_source || (isMr ? 'ठिबक सिंचन' : 'Drip Irrigation')}</td>
-            <td>EC: ${log.ec_level || 0.85} | pH: ${log.ph_level || 6.8}</td>
-            <td>N: ${log.nutrients_n || 3.2}kg, Ca: ${log.nutrients_ca || 4.8}kg, Mg: ${log.nutrients_mg || 2.1}kg</td>
+            <td><span class="badge-status purple">${getPlotName(log.plot_id)}</span></td>
+            <td><span class="badge-status info">${(parseFloat(log.water_liters) || 0).toLocaleString('en-IN')} L</span></td>
+            <td>${log.duration_hours ? `${log.duration_hours} ${isMr ? 'तास' : 'hrs'}` : 'सकाळ'}</td>
+            <td>${log.ec_level || 0.8}</td>
+            <td>${log.ph_level || 7.2}</td>
+            <td>${log.water_source || 'ठिबक सिंचन'}</td>
         </tr>
     `).join('');
 }
@@ -2520,19 +2524,17 @@ function renderFertilizerTab() {
     if (kElem) kElem.innerHTML = `${totalK.toFixed(1)} <span style="font-size: 0.9rem; font-weight: 500;">kg</span>`;
 
     // Table rendering
-    const tbody = document.getElementById('fertilizer-logs-table-body');
+    const tbody = document.getElementById('fertilizer-logs-table-body') || document.getElementById('inpage-fertilizer-tbody');
     if (!tbody) return;
 
     tbody.innerHTML = appState.fertilizerLogs.map(log => `
         <tr>
             <td style="font-weight: 600;">${log.log_date}</td>
-            <td>${getPlotName(log.plot_id)}</td>
+            <td><span class="badge-status purple">${getPlotName(log.plot_id)}</span></td>
             <td style="font-weight: 700; color: var(--emerald-deep);">${log.fertilizer_name}</td>
-            <td>${log.dose_amount} ${log.dose_unit || 'kg/acre'}</td>
-            <td><span class="badge-status info">${log.application_method || 'ठिबक (Drip)'}</span></td>
-            <td><code>${log.npk_ratio || '0:52:34'}</code></td>
-            <td><strong>N: ${log.calculated_n_kg || 0}</strong>, <strong>P: ${log.calculated_p_kg || 0}</strong>, <strong>K: ${log.calculated_k_kg || 0}</strong></td>
-            <td style="font-weight: 700;">₹${(parseFloat(log.cost) || 0).toLocaleString('en-IN')}</td>
+            <td>${log.dose_amount} ${log.dose_unit || 'kg/एकर'}</td>
+            <td><span class="badge-status success">${log.application_method || 'ठिबक (Drip)'}</span></td>
+            <td>${log.note || 'पाण्यातून दिले'}</td>
         </tr>
     `).join('');
 }
@@ -2574,19 +2576,18 @@ function calculateElementalNPK(fertilizerName, doseKg) {
 function renderPestDiseaseTab() {
     const isMr = appState.activeLang === 'mr';
     renderPestAdvisoryCards(appState.activeCrop);
-    const tbody = document.getElementById('pest-spray-table-body');
+    const tbody = document.getElementById('pest-spray-table-body') || document.getElementById('inpage-pest-tbody');
     if (!tbody) return;
 
     tbody.innerHTML = appState.sprayLogs.map(log => `
         <tr>
             <td style="font-weight: 600;">${log.log_date}</td>
-            <td>${getPlotName(log.plot_id)}</td>
+            <td><span class="badge-status purple">${getPlotName(log.plot_id)}</span></td>
             <td><span class="badge-status danger">${log.pest_disease_name || 'थ्रीप्स (Thrips)'}</span></td>
             <td style="font-weight: 700; color: var(--emerald-deep);">${log.chemical_or_fertilizer}</td>
-            <td>${log.dose_per_liter} ml/L</td>
-            <td>${log.total_water_liters} L</td>
-            <td style="color: var(--amber-deep); font-weight: 600;">📅 ${log.next_spray_date || (isMr ? '7 दिवसांनी' : 'In 7 days')}</td>
-            <td style="font-weight: 700;">₹${(parseFloat(log.cost) || 0).toLocaleString('en-IN')}</td>
+            <td>${log.dose_per_liter || '150 ml'}</td>
+            <td><span class="badge-status info">${log.method || 'पंप'}</span></td>
+            <td>${log.next_spray_date ? `📅 ${log.next_spray_date}` : 'नोंद पूर्ण'}</td>
         </tr>
     `).join('');
 }
@@ -2605,22 +2606,19 @@ function renderLaborTab() {
     if (costElem) costElem.textContent = `₹${totalCost.toLocaleString('en-IN')}`;
 
     // Table rendering
-    const tbody = document.getElementById('labor-logs-table-body');
-    if (!tbody) return;
-
-    tbody.innerHTML = appState.laborLogs.map(log => `
-        <tr>
-            <td style="font-weight: 600;">${log.log_date}</td>
-            <td>${getPlotName(log.plot_id)}</td>
-            <td style="font-weight: 700; color: var(--emerald-deep);">${log.activity}</td>
-            <td style="color: var(--text-secondary); font-size: 0.8rem;">${log.worker_names || (isMr ? 'कामगार हजेरी' : 'Attendance roster')}</td>
-            <td><span class="badge-status info">${log.male_workers || 0} ${isMr ? 'पुरुष' : 'Male'}</span></td>
-            <td><span class="badge-status purple">${log.female_workers || 0} ${isMr ? 'महिला' : 'Female'}</span></td>
-            <td>₹${log.wage_per_worker}/${isMr ? 'दिवस' : 'day'}</td>
-            <td style="font-weight: 700;">₹${(parseFloat(log.total_cost) || 0).toLocaleString('en-IN')}</td>
-            <td><span class="badge-status ${log.payment_status === 'Paid' ? 'success' : 'warning'}">${log.payment_status === 'Paid' ? (isMr ? 'दिले (Paid)' : 'Paid') : (isMr ? 'प्रलंबित' : 'Pending')}</span></td>
-        </tr>
-    `).join('');
+    const tbody = document.getElementById('labor-logs-table-body') || document.getElementById('inpage-labor-tbody');
+    if (tbody) {
+        tbody.innerHTML = appState.laborLogs.map(log => `
+            <tr>
+                <td style="font-weight: 600;">${log.log_date}</td>
+                <td><span class="badge-status info">${log.activity}</span></td>
+                <td>${log.worker_names || `${(log.male_workers || 0) + (log.female_workers || 0)} मजूर`}</td>
+                <td>₹ ${log.wage_per_worker || 400}</td>
+                <td><strong style="color: var(--rose-accent);">₹ ${(parseFloat(log.total_cost) || 0).toLocaleString('en-IN')}</strong></td>
+                <td>${log.payment_status === 'Paid' ? (isMr ? 'दिले (Paid)' : 'Paid') : (isMr ? 'वेळेवर काम पूर्ण' : 'Pending')}</td>
+            </tr>
+        `).join('');
+    }
 
     renderLaborAttendanceList();
 }
@@ -2644,7 +2642,7 @@ function renderFinanceTab() {
     const marginElem = document.getElementById('fin-margin-label');
     if (marginElem) marginElem.textContent = `${isMr ? 'नफा मार्जिन:' : 'Margin:'} ${margin}%`;
 
-    // 6 Expense Streams
+    // 6 Expense Streams - Safe guards
     const catMap = { 'खते': 0, 'औषधे': 0, 'मजुरी': 0, 'पाणी/वीज': 0, 'वाहतूक': 0, 'इतर खर्च': 0 };
     appState.expenses.forEach(e => {
         if (catMap.hasOwnProperty(e.category)) {
@@ -2654,37 +2652,43 @@ function renderFinanceTab() {
         }
     });
 
-    document.getElementById('cat-exp-fertilizers').textContent = `₹${catMap['खते'].toLocaleString('en-IN')}`;
-    document.getElementById('cat-exp-sprays').textContent = `₹${catMap['औषधे'].toLocaleString('en-IN')}`;
-    document.getElementById('cat-exp-labor').textContent = `₹${catMap['मजुरी'].toLocaleString('en-IN')}`;
-    document.getElementById('cat-exp-water').textContent = `₹${catMap['पाणी/वीज'].toLocaleString('en-IN')}`;
-    document.getElementById('cat-exp-transport').textContent = `₹${catMap['वाहतूक'].toLocaleString('en-IN')}`;
-    document.getElementById('cat-exp-other').textContent = `₹${catMap['इतर खर्च'].toLocaleString('en-IN')}`;
+    const cFert = document.getElementById('cat-exp-fertilizers');
+    if (cFert) cFert.textContent = `₹${catMap['खते'].toLocaleString('en-IN')}`;
+    const cSpray = document.getElementById('cat-exp-sprays');
+    if (cSpray) cSpray.textContent = `₹${catMap['औषधे'].toLocaleString('en-IN')}`;
+    const cLabor = document.getElementById('cat-exp-labor');
+    if (cLabor) cLabor.textContent = `₹${catMap['मजुरी'].toLocaleString('en-IN')}`;
+    const cWater = document.getElementById('cat-exp-water');
+    if (cWater) cWater.textContent = `₹${catMap['पाणी/वीज'].toLocaleString('en-IN')}`;
+    const cTrans = document.getElementById('cat-exp-transport');
+    if (cTrans) cTrans.textContent = `₹${catMap['वाहतूक'].toLocaleString('en-IN')}`;
+    const cOther = document.getElementById('cat-exp-other');
+    if (cOther) cOther.textContent = `₹${catMap['इतर खर्च'].toLocaleString('en-IN')}`;
 
     // Harvest Sales Table
-    const salesTbody = document.getElementById('fin-sales-table-body');
+    const salesTbody = document.getElementById('fin-sales-table-body') || document.getElementById('inpage-income-table-body');
     if (salesTbody) {
         salesTbody.innerHTML = appState.sales.map(s => `
             <tr>
                 <td style="font-weight: 600;">${s.sale_date}</td>
-                <td>${s.buyer_name}</td>
-                <td><span class="badge-status success">${s.grade}</span></td>
+                <td><span class="badge-status info">${getPlotName(s.plot_id)}</span></td>
+                <td>${s.buyer_name} ${s.grade ? '• ' + s.grade : ''}</td>
                 <td>${(parseFloat(s.quantity_kg) || 0).toLocaleString('en-IN')} kg</td>
-                <td>₹${s.rate_per_kg}/kg</td>
-                <td style="font-weight: 700; color: var(--emerald-primary);">₹${(parseFloat(s.total_revenue) || 0).toLocaleString('en-IN')}</td>
+                <td>₹ ${s.rate_per_kg}</td>
+                <td><strong style="color: var(--emerald-deep);">₹ ${(parseFloat(s.total_revenue) || 0).toLocaleString('en-IN')}</strong></td>
             </tr>
         `).join('');
     }
 
     // Expenses Table
-    const expTbody = document.getElementById('fin-expenses-table-body');
+    const expTbody = document.getElementById('fin-expenses-table-body') || document.getElementById('inpage-expenses-table-body');
     if (expTbody) {
         expTbody.innerHTML = appState.expenses.map(e => `
             <tr>
                 <td style="font-weight: 600;">${e.log_date}</td>
-                <td><span class="badge-status info">${isMr ? e.category : (e.category_en || e.category)}</span></td>
+                <td><span class="badge-status warning">${isMr ? e.category : (e.category_en || e.category)}</span></td>
                 <td>${e.description || '-'}</td>
-                <td style="font-weight: 700; color: var(--rose-accent);">₹${(parseFloat(e.amount) || 0).toLocaleString('en-IN')}</td>
+                <td><strong style="color: var(--rose-accent);">₹ ${(parseFloat(e.amount) || 0).toLocaleString('en-IN')}</strong></td>
             </tr>
         `).join('');
     }
@@ -2695,19 +2699,33 @@ function renderFinanceTab() {
 // ==========================================================================
 function renderReportsTab() {
     const isMr = appState.activeLang === 'mr';
-    const totalAcres = appState.plots.reduce((acc, p) => acc + (parseFloat(p.acres) || 0), 0) || 10.5;
-    const totalExp = appState.expenses.reduce((acc, e) => acc + (parseFloat(e.amount) || 0), 0);
-    const totalSalesKg = appState.sales.reduce((acc, s) => acc + (parseFloat(s.quantity_kg) || 0), 0) || 7250;
-    const totalRevenue = appState.sales.reduce((acc, s) => acc + (parseFloat(s.total_revenue) || 0), 0);
+    const totalAcres = appState.plots.reduce((acc, p) => acc + (parseFloat(p.acres) || 0), 0) || 10.0;
+    const totalExp = appState.expenses.reduce((acc, e) => acc + (parseFloat(e.amount) || 0), 0) || 425000;
+    const totalSalesKg = appState.sales.reduce((acc, s) => acc + (parseFloat(s.quantity_kg) || 0), 0) || 47550;
+    const totalRevenue = appState.sales.reduce((acc, s) => acc + (parseFloat(s.total_revenue) || 0), 0) || 715000;
     const netProfit = totalRevenue - totalExp;
 
-    const costPerAcre = (totalExp / totalAcres).toFixed(0);
-    const costPerKg = (totalExp / totalSalesKg).toFixed(2);
-    const margin = totalRevenue > 0 ? ((netProfit / totalRevenue) * 100).toFixed(1) : '0.0';
+    const costPerAcre = totalAcres > 0 ? (totalExp / totalAcres).toFixed(0) : '0';
+    const costPerKg = totalSalesKg > 0 ? (totalExp / totalSalesKg).toFixed(2) : '0.00';
+    const margin = totalRevenue > 0 ? ((netProfit / totalRevenue) * 100).toFixed(1) : '40.5';
 
-    document.getElementById('rep-cost-per-acre').textContent = `₹${parseFloat(costPerAcre).toLocaleString('en-IN')}`;
-    document.getElementById('rep-cost-per-kg').textContent = `₹${costPerKg}`;
-    document.getElementById('rep-net-margin').textContent = `${margin}%`;
+    // Summary Metric Cards
+    const yElem = document.getElementById('dash-report-total-yield');
+    if (yElem) yElem.innerHTML = `${totalSalesKg.toLocaleString('en-IN')} <span style="font-size: 0.9rem; font-weight: 500;">${isMr ? 'किलो' : 'kg'}</span>`;
+    const expElem = document.getElementById('dash-report-total-expense');
+    if (expElem) expElem.textContent = `₹ ${totalExp.toLocaleString('en-IN')}`;
+    const sElem = document.getElementById('dash-report-total-sales');
+    if (sElem) sElem.textContent = `₹ ${totalRevenue.toLocaleString('en-IN')}`;
+    const pElem = document.getElementById('dash-report-net-profit');
+    if (pElem) pElem.textContent = `₹ ${netProfit.toLocaleString('en-IN')}`;
+
+    // Precision Intelligence KPIs
+    const cpaElem = document.getElementById('rep-cost-per-acre');
+    if (cpaElem) cpaElem.textContent = `₹ ${parseFloat(costPerAcre).toLocaleString('en-IN')}`;
+    const cpkElem = document.getElementById('rep-cost-per-kg');
+    if (cpkElem) cpkElem.textContent = `₹ ${costPerKg}`;
+    const mElem = document.getElementById('rep-net-margin');
+    if (mElem) mElem.textContent = `${margin}%`;
 
     // Plot-wise breakdown table
     const tbody = document.getElementById('reports-plot-table-body');
@@ -4227,6 +4245,8 @@ function handleInpageExpenseSubmit(e) {
         description: `${desc} ${note ? '• ' + note : ''} (${plot})`
     });
     renderDashboardTab();
+    renderFinanceTab();
+    renderReportsTab();
     showToast(`💰 नवीन खर्च नोंदवला: ₹${amount.toLocaleString('en-IN')} (${cat})`, 'success');
 }
 window.handleInpageExpenseSubmit = handleInpageExpenseSubmit;
@@ -4266,6 +4286,8 @@ function handleInpageIncomeSubmit(e) {
         total_revenue: total
     });
     renderDashboardTab();
+    renderFinanceTab();
+    renderReportsTab();
     showToast(`🍇 विक्री नोंद यशस्वी! उत्पन्न: ₹${total.toLocaleString('en-IN')} (${buyer})`, 'success');
 }
 window.handleInpageIncomeSubmit = handleInpageIncomeSubmit;
@@ -4277,84 +4299,99 @@ function initReportBarChart() {
     const canvas = document.getElementById('report-bar-chart');
     if (!canvas) return;
 
+    if (typeof Chart === 'undefined') {
+        console.warn('Chart.js not loaded yet, retrying...');
+        setTimeout(initReportBarChart, 400);
+        return;
+    }
+
     if (reportChartInstance) {
-        reportChartInstance.destroy();
+        try {
+            reportChartInstance.destroy();
+        } catch (err) {
+            console.warn('Chart destroy error:', err);
+        }
+        reportChartInstance = null;
     }
 
     const ctx = canvas.getContext('2d');
-    reportChartInstance = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['प्लॉट A (थॉम्पसन)', 'प्लॉट B (सुपर सोनका)', 'प्लॉट C (माणिक चमन)', 'प्लॉट D (शरद)', 'प्लॉट E (रेड ग्लोब)'],
-            datasets: [{
-                label: 'उत्पादन (किलो)',
-                data: [12500, 10200, 8750, 6300, 9800],
-                backgroundColor: [
-                    'rgba(21, 128, 61, 0.85)',
-                    'rgba(16, 185, 129, 0.85)',
-                    'rgba(59, 130, 246, 0.85)',
-                    'rgba(168, 85, 247, 0.85)',
-                    'rgba(245, 158, 11, 0.85)'
-                ],
-                borderColor: [
-                    '#15803D',
-                    '#10B981',
-                    '#3B82F6',
-                    '#A855F7',
-                    '#F59E0B'
-                ],
-                borderWidth: 1.5,
-                borderRadius: 8,
-                barPercentage: 0.55
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top',
-                    labels: {
-                        font: { family: "'Outfit', sans-serif", weight: '600', size: 12 },
-                        color: '#242B24'
+    try {
+        reportChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['प्लॉट A (थॉम्पसन)', 'प्लॉट B (सुपर सोनका)', 'प्लॉट C (माणिक चमन)', 'प्लॉट D (शरद)', 'प्लॉट E (रेड ग्लोब)'],
+                datasets: [{
+                    label: 'उत्पादन (किलो)',
+                    data: [12500, 10200, 8750, 6300, 9800],
+                    backgroundColor: [
+                        'rgba(21, 128, 61, 0.85)',
+                        'rgba(16, 185, 129, 0.85)',
+                        'rgba(59, 130, 246, 0.85)',
+                        'rgba(168, 85, 247, 0.85)',
+                        'rgba(245, 158, 11, 0.85)'
+                    ],
+                    borderColor: [
+                        '#15803D',
+                        '#10B981',
+                        '#3B82F6',
+                        '#A855F7',
+                        '#F59E0B'
+                    ],
+                    borderWidth: 1.5,
+                    borderRadius: 8,
+                    barPercentage: 0.55
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            font: { family: "'Outfit', sans-serif", weight: '600', size: 12 },
+                            color: '#242B24'
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return ` उत्पादन: ${context.parsed.y.toLocaleString('en-IN')} किलो`;
+                            }
+                        }
                     }
                 },
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            return ` उत्पादन: ${context.parsed.y.toLocaleString('en-IN')} किलो`;
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 15000,
+                        ticks: {
+                            callback: function (value) {
+                                return value.toLocaleString('en-IN') + ' kg';
+                            },
+                            font: { family: "'Outfit', sans-serif", size: 11 },
+                            color: '#556355'
+                        },
+                        grid: {
+                            color: 'rgba(230, 222, 201, 0.4)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: { family: "'Outfit', sans-serif", weight: '600', size: 11 },
+                            color: '#242B24'
+                        },
+                        grid: {
+                            display: false
                         }
                     }
                 }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 15000,
-                    ticks: {
-                        callback: function (value) {
-                            return value.toLocaleString('en-IN') + ' kg';
-                        },
-                        font: { family: "'Outfit', sans-serif", size: 11 },
-                        color: '#556355'
-                    },
-                    grid: {
-                        color: 'rgba(230, 222, 201, 0.4)'
-                    }
-                },
-                x: {
-                    ticks: {
-                        font: { family: "'Outfit', sans-serif", weight: '600', size: 11 },
-                        color: '#242B24'
-                    },
-                    grid: {
-                        display: false
-                    }
-                }
             }
-        }
-    });
+        });
+    } catch (e) {
+        console.error('Error creating report chart:', e);
+    }
 }
 window.initReportBarChart = initReportBarChart;
 
@@ -4365,12 +4402,20 @@ function handleSeasonChange(season) {
     const saleVal = document.getElementById('dash-report-total-sales');
     const profitVal = document.getElementById('dash-report-net-profit');
 
+    const cpaElem = document.getElementById('rep-cost-per-acre');
+    const cpkElem = document.getElementById('rep-cost-per-kg');
+    const mElem = document.getElementById('rep-net-margin');
+
     if (prodVal) prodVal.innerHTML = isPast ? '42,100 <span style="font-size: 0.9rem; font-weight: 500;">किलो</span>' : '47,550 <span style="font-size: 0.9rem; font-weight: 500;">किलो</span>';
     if (expVal) expVal.textContent = isPast ? '₹ 3,90,000' : '₹ 4,25,000';
     if (saleVal) saleVal.textContent = isPast ? '₹ 6,10,000' : '₹ 7,15,000';
     if (profitVal) profitVal.textContent = isPast ? '₹ 2,20,000' : '₹ 2,90,000';
 
-    if (reportChartInstance) {
+    if (cpaElem) cpaElem.textContent = isPast ? '₹ 37,143' : '₹ 40,476';
+    if (cpkElem) cpkElem.textContent = isPast ? '₹ 9.26' : '₹ 8.94';
+    if (mElem) mElem.textContent = isPast ? '36.1%' : '40.5%';
+
+    if (reportChartInstance && reportChartInstance.data && reportChartInstance.data.datasets && reportChartInstance.data.datasets[0]) {
         if (isPast) {
             reportChartInstance.data.datasets[0].data = [11200, 9400, 7800, 5600, 8100];
         } else {
@@ -4389,34 +4434,63 @@ function switchReportsTab(tab) {
 
     if (!reportChartInstance) {
         initReportBarChart();
-        return;
     }
 
     const titleElem = document.querySelector('#view-reports .card-title-group h3');
     const subElem = document.querySelector('#view-reports .card-title-group .card-subtitle');
+    const badgeElem = document.getElementById('report-chart-badge');
+    const plotTableCard = document.getElementById('reports-plot-table-card');
 
-    if (tab === 'production' || tab === 'plotwise') {
-        reportChartInstance.data.datasets[0].label = 'उत्पादन (किलो)';
-        reportChartInstance.data.datasets[0].data = [12500, 10200, 8750, 6300, 9800];
-        reportChartInstance.options.scales.y.ticks.callback = function (v) { return v.toLocaleString('en-IN') + ' kg'; };
-        if (titleElem) titleElem.innerHTML = `<i data-lucide="bar-chart-3"></i> प्लॉटनुसार उत्पादन (किलो)`;
-        if (subElem) subElem.textContent = 'हंगाम 2026 - 27 प्लॉटनिहाय द्राक्ष उत्पादन तुलना (A ते E)';
-    } else if (tab === 'expense') {
-        reportChartInstance.data.datasets[0].label = 'एकूण खर्च (₹)';
-        reportChartInstance.data.datasets[0].data = [95000, 82000, 78000, 64000, 106000];
-        reportChartInstance.options.scales.y.ticks.callback = function (v) { return '₹ ' + v.toLocaleString('en-IN'); };
-        if (titleElem) titleElem.innerHTML = `<i data-lucide="receipt"></i> प्लॉटनुसार एकूण खर्च (₹)`;
-        if (subElem) subElem.textContent = 'प्लॉटनिहाय औषध, खत, मजुरी व सिंचन एकूण खर्च तुलना';
-    } else if (tab === 'profit') {
-        reportChartInstance.data.datasets[0].label = 'निव्वळ नफा (₹)';
-        reportChartInstance.data.datasets[0].data = [82000, 68000, 52000, 31000, 57000];
-        reportChartInstance.options.scales.y.ticks.callback = function (v) { return '₹ ' + v.toLocaleString('en-IN'); };
-        if (titleElem) titleElem.innerHTML = `<i data-lucide="trending-up"></i> प्लॉटनुसार निव्वळ नफा (₹)`;
-        if (subElem) subElem.textContent = 'विक्री महसूल वजा खर्च = प्रत्यक्ष निव्वळ नफा मार्जिन';
+    if (reportChartInstance && reportChartInstance.data && reportChartInstance.data.datasets && reportChartInstance.data.datasets[0]) {
+        if (tab === 'production') {
+            reportChartInstance.data.datasets[0].label = 'उत्पादन (किलो)';
+            reportChartInstance.data.datasets[0].data = [12500, 10200, 8750, 6300, 9800];
+            reportChartInstance.data.datasets[0].backgroundColor = 'rgba(21, 128, 61, 0.85)';
+            reportChartInstance.data.datasets[0].borderColor = '#15803D';
+            reportChartInstance.options.scales.y.ticks.callback = function (v) { return v.toLocaleString('en-IN') + ' kg'; };
+            if (titleElem) titleElem.innerHTML = `<i data-lucide="bar-chart-3"></i> प्लॉटनुसार उत्पादन (किलो)`;
+            if (subElem) subElem.textContent = 'हंगाम 2026 - 27 प्लॉटनिहाय द्राक्ष उत्पादन तुलना (A ते E)';
+            if (badgeElem) badgeElem.textContent = 'एकूण 47,550 kg';
+        } else if (tab === 'expense') {
+            reportChartInstance.data.datasets[0].label = 'एकूण खर्च (₹)';
+            reportChartInstance.data.datasets[0].data = [95000, 82000, 78000, 64000, 106000];
+            reportChartInstance.data.datasets[0].backgroundColor = 'rgba(225, 29, 72, 0.85)';
+            reportChartInstance.data.datasets[0].borderColor = '#E11D48';
+            reportChartInstance.options.scales.y.ticks.callback = function (v) { return '₹ ' + v.toLocaleString('en-IN'); };
+            if (titleElem) titleElem.innerHTML = `<i data-lucide="receipt"></i> प्लॉटनुसार एकूण खर्च (₹)`;
+            if (subElem) subElem.textContent = 'प्लॉटनिहाय औषध, खत, मजुरी व सिंचन एकूण खर्च तुलना';
+            if (badgeElem) badgeElem.textContent = 'एकूण खर्च ₹ 4,25,000';
+        } else if (tab === 'profit') {
+            reportChartInstance.data.datasets[0].label = 'निव्वळ नफा (₹)';
+            reportChartInstance.data.datasets[0].data = [82000, 68000, 52000, 31000, 57000];
+            reportChartInstance.data.datasets[0].backgroundColor = 'rgba(37, 99, 235, 0.85)';
+            reportChartInstance.data.datasets[0].borderColor = '#2563EB';
+            reportChartInstance.options.scales.y.ticks.callback = function (v) { return '₹ ' + v.toLocaleString('en-IN'); };
+            if (titleElem) titleElem.innerHTML = `<i data-lucide="trending-up"></i> प्लॉटनुसार निव्वळ नफा (₹)`;
+            if (subElem) subElem.textContent = 'विक्री महसूल वजा खर्च = प्रत्यक्ष निव्वळ नफा मार्जिन';
+            if (badgeElem) badgeElem.textContent = 'निव्वळ नफा ₹ 2,90,000';
+        } else if (tab === 'plotwise') {
+            reportChartInstance.data.datasets[0].label = 'उत्पादन (किलो)';
+            reportChartInstance.data.datasets[0].data = [12500, 10200, 8750, 6300, 9800];
+            reportChartInstance.data.datasets[0].backgroundColor = [
+                'rgba(21, 128, 61, 0.85)',
+                'rgba(16, 185, 129, 0.85)',
+                'rgba(59, 130, 246, 0.85)',
+                'rgba(168, 85, 247, 0.85)',
+                'rgba(245, 158, 11, 0.85)'
+            ];
+            reportChartInstance.options.scales.y.ticks.callback = function (v) { return v.toLocaleString('en-IN') + ' kg'; };
+            if (titleElem) titleElem.innerHTML = `<i data-lucide="layers"></i> प्लॉटनुसार सर्वसमावेशक तुलना (A ते E)`;
+            if (subElem) subElem.textContent = 'हंगाम 2026 - 27 सर्व 5 प्लॉट्सचे उत्पादन व नफा वितरण';
+            if (badgeElem) badgeElem.textContent = '5 प्लॉट्स सक्रिय';
+            if (plotTableCard) {
+                plotTableCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+        reportChartInstance.update();
     }
-    reportChartInstance.update();
     initLucide();
-    showToast(`अहवाल विश्लेषण: ${tab === 'production' ? 'उत्पादन' : tab === 'expense' ? 'खर्च' : tab === 'profit' ? 'नफा' : 'प्लॉटनिहाय'}`, 'info');
+    showToast(`📊 अहवाल विश्लेषण: ${tab === 'production' ? 'उत्पादन' : tab === 'expense' ? 'खर्च' : tab === 'profit' ? 'नफा' : 'प्लॉटनिहाय ताळेबंद'}`, 'info');
 }
 window.switchReportsTab = switchReportsTab;
 
