@@ -593,8 +593,8 @@
                         </div>
                     </div>
 
-                    <!-- Dashboard Content Split: Today's Tasks & Quick Activities -->
-                    <div class="grid-2col">
+                    <!-- Dashboard Content: Today's Tasks Interactive Checklist -->
+                    <div class="today-tasks-container" style="margin-top: 1rem;">
                         <!-- Today's Tasks Interactive Checklist -->
                         <div class="card">
                             <div class="card-header">
@@ -608,7 +608,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="today-tasks-checklist" id="today-tasks-checklist">
-                                    <!-- 1. सकाळी प्लॉट A - सिंचन (Checked) -->
+                                    <!-- सकाळी प्लॉट A - सिंचन (Checked) -->
                                     <div class="today-task-item checked" data-task-id="task-1"
                                         onclick="toggleDashboardTask(this)">
                                         <div class="today-task-left">
@@ -623,7 +623,7 @@
                                         <span class="badge-status success">पूर्ण (Done)</span>
                                     </div>
 
-                                    <!-- 2. प्लॉट B - फवारणी -->
+                                    <!-- प्लॉट B - फवारणी -->
                                     <div class="today-task-item" data-task-id="task-2"
                                         onclick="toggleDashboardTask(this)">
                                         <div class="today-task-left">
@@ -638,7 +638,7 @@
                                         <span class="badge-status warning">प्रलंबित (Pending)</span>
                                     </div>
 
-                                    <!-- 3. मजूर हजेरी -->
+                                    <!-- मजूर हजेरी -->
                                     <div class="today-task-item" data-task-id="task-3"
                                         onclick="toggleDashboardTask(this)">
                                         <div class="today-task-left">
@@ -652,55 +652,6 @@
                                         </div>
                                         <span class="badge-status warning">प्रलंबित (Pending)</span>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Quick Shortcuts to All 10 Pages -->
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-title-group">
-                                    <h3><i data-lucide="compass" style="color: var(--amber-accent);"></i> जलद विभाग
-                                        नेव्हिगेशन</h3>
-                                    <div class="card-subtitle">कोणत्याही विभागावर थेट जा</div>
-                                </div>
-                                <button type="button" class="filter-pill" onclick="switchView('main-menu')">मेनू
-                                    उघडा</button>
-                            </div>
-                            <div class="card-body">
-                                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem;">
-                                    <button type="button" class="btn-secondary header-btn"
-                                        onclick="switchView('grape-orchard')" style="justify-content: flex-start;">
-                                        <i data-lucide="sprout"></i> <span>प्लॉट तपशील</span>
-                                    </button>
-                                    <button type="button" class="btn-secondary header-btn"
-                                        onclick="switchView('water-mgmt')" style="justify-content: flex-start;">
-                                        <i data-lucide="droplet"></i> <span>सिंचन व्यवस्थापन</span>
-                                    </button>
-                                    <button type="button" class="btn-secondary header-btn"
-                                        onclick="switchView('fertilizer-mgmt')" style="justify-content: flex-start;">
-                                        <i data-lucide="flask-conical"></i> <span>खत व्यवस्थापन</span>
-                                    </button>
-                                    <button type="button" class="btn-secondary header-btn"
-                                        onclick="switchView('pest-disease')" style="justify-content: flex-start;">
-                                        <i data-lucide="bug"></i> <span>कीड व रोग</span>
-                                    </button>
-                                    <button type="button" class="btn-secondary header-btn"
-                                        onclick="switchView('labor-mgmt')" style="justify-content: flex-start;">
-                                        <i data-lucide="users"></i> <span>मजूर हजेरी</span>
-                                    </button>
-                                    <button type="button" class="btn-secondary header-btn"
-                                        onclick="switchView('finance-pnl')" style="justify-content: flex-start;">
-                                        <i data-lucide="indian-rupee"></i> <span>खर्च व उत्पन्न</span>
-                                    </button>
-                                    <button type="button" class="btn-secondary header-btn"
-                                        onclick="switchView('reports')" style="justify-content: flex-start;">
-                                        <i data-lucide="bar-chart-3"></i> <span>रिपोर्ट व विश्लेषण</span>
-                                    </button>
-                                    <button type="button" class="btn-secondary header-btn"
-                                        onclick="switchView('mandi-rates')" style="justify-content: flex-start;">
-                                        <i data-lucide="trending-up"></i> <span>मार्केट भाव</span>
-                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -1692,6 +1643,59 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Recent Labor Records Table Card -->
+                    <div class="card" style="margin-top: 1.25rem;">
+                        <div class="card-header">
+                            <div class="card-title-group">
+                                <h3><i data-lucide="history"></i> अलिकडील मजुरी नोंदी (Recent Labor Records)</h3>
+                                <div class="card-subtitle">तारीख • काम • मजूर संख्या • मजुरी खर्च</div>
+                            </div>
+                            <button type="button" class="filter-pill" onclick="switchView('reports')">पहा सर्व</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table-custom">
+                                    <thead>
+                                        <tr>
+                                            <th>तारीख</th>
+                                            <th>कामाचे प्रकार</th>
+                                            <th>मजूर संख्या</th>
+                                            <th>प्रति मजुरी</th>
+                                            <th>एकूण खर्च (₹)</th>
+                                            <th>टीप</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="inpage-labor-tbody">
+                                        <tr>
+                                            <td><strong>20/09/2026</strong></td>
+                                            <td><span class="badge-status info">छाटणी</span></td>
+                                            <td>12 मजूर</td>
+                                            <td>₹ 400</td>
+                                            <td><strong style="color: var(--rose-accent);">₹ 4,800</strong></td>
+                                            <td>वेळेवर काम पूर्ण</td>
+                                        </tr>
+                                        <tr>
+                                            <td>18/09/2026</td>
+                                            <td><span class="badge-status info">काडी बांधणी</span></td>
+                                            <td>10 मजूर</td>
+                                            <td>₹ 350</td>
+                                            <td><strong style="color: var(--rose-accent);">₹ 3,500</strong></td>
+                                            <td>प्लॉट B काडी बांधणी</td>
+                                        </tr>
+                                        <tr>
+                                            <td>15/09/2026</td>
+                                            <td><span class="badge-status info">डिपिंग / विरळणी</span></td>
+                                            <td>8 मजूर</td>
+                                            <td>₹ 400</td>
+                                            <td><strong style="color: var(--rose-accent);">₹ 3,200</strong></td>
+                                            <td>प्लॉट A डिपिंग</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
 
@@ -1851,7 +1855,7 @@
                     </div>
 
                     <!-- Recent Expenses Table Section -->
-                    <div class="card" style="margin-top: 1.25rem;">
+                    <div class="card" id="finance-expense-table-card" style="margin-top: 1.25rem;">
                         <div class="card-header">
                             <div class="card-title-group">
                                 <h3><i data-lucide="receipt"></i> अलिकडील खर्च</h3>
@@ -1894,6 +1898,50 @@
                                             <td><span class="kpi-badge info">वीज/पाणी</span></td>
                                             <td>विहिरीचे वीज बिल व ठिबक मेंटेनन्स</td>
                                             <td><strong style="color: var(--rose-accent);">₹ 1,200</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Income Table Section (Shown when Income tab is selected) -->
+                    <div class="card" id="finance-income-table-card" style="margin-top: 1.25rem; display: none;">
+                        <div class="card-header">
+                            <div class="card-title-group">
+                                <h3><i data-lucide="trending-up"></i> अलिकडील विक्री / उत्पन्न</h3>
+                            </div>
+                            <a href="javascript:void(0)" class="view-all-link">पहा सर्व</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table-custom">
+                                    <thead>
+                                        <tr>
+                                            <th>तारीख</th>
+                                            <th>प्लॉट</th>
+                                            <th>व्यापारी / खरेदीदार</th>
+                                            <th>वजन (kg)</th>
+                                            <th>दर / kg (₹)</th>
+                                            <th>एकूण रक्कम (₹)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="inpage-income-table-body">
+                                        <tr>
+                                            <td><strong>20/09/2026</strong></td>
+                                            <td><span class="kpi-badge info">प्लॉट A</span></td>
+                                            <td>सह्याद्री फार्म्स / अमोल ट्रेडर्स • Export Quality (A+)</td>
+                                            <td>2,500 kg</td>
+                                            <td>₹ 85</td>
+                                            <td><strong style="color: var(--emerald-deep);">₹ 2,12,500</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>15/09/2026</strong></td>
+                                            <td><span class="kpi-badge info">प्लॉट B</span></td>
+                                            <td>नाशिक अ‍ॅग्रो एक्सपोर्ट्स • सुपर सोनका</td>
+                                            <td>1,800 kg</td>
+                                            <td>₹ 90</td>
+                                            <td><strong style="color: var(--emerald-deep);">₹ 1,62,000</strong></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -2943,12 +2991,12 @@
                         <div class="form-group">
                             <label class="form-label">खर्च विभाग *</label>
                             <select id="exp-category" class="form-control" required>
-                                <option value="खते">1. खते (Fertilizers)</option>
-                                <option value="औषधे">2. औषधे (Chemicals & Sprays)</option>
-                                <option value="मजुरी">3. मजुरी (Labor)</option>
-                                <option value="पाणी/वीज">4. पाणी व वीज (Water/Electricity)</option>
-                                <option value="वाहतूक">5. वाहतूक व क्रेट्स (Transport)</option>
-                                <option value="इतर खर्च">6. इतर खर्च (Miscellaneous)</option>
+                                <option value="खते">खते (Fertilizers)</option>
+                                <option value="औषधे">औषधे (Chemicals & Sprays)</option>
+                                <option value="मजुरी">मजुरी (Labor)</option>
+                                <option value="पाणी/वीज">पाणी व वीज (Water/Electricity)</option>
+                                <option value="वाहतूक">वाहतूक व क्रेट्स (Transport)</option>
+                                <option value="इतर खर्च">इतर खर्च (Miscellaneous)</option>
                             </select>
                         </div>
                         <div class="form-group">

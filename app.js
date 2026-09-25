@@ -317,8 +317,8 @@ const CROPS_CONFIG = {
         badge_en: 'Grape Orchard',
         tagline_mr: 'द्राक्ष बाग व घड व्यवस्थापन',
         tagline_en: 'Vineyard & Canopy Management',
-        tab2Title_mr: '🍇 २. द्राक्ष बाग व्यवस्थापन (Grape Orchard Management)',
-        tab2Title_en: '🍇 2. Grape Orchard Management',
+        tab2Title_mr: '🍇 द्राक्ष बाग व्यवस्थापन (Grape Orchard Management)',
+        tab2Title_en: '🍇 Grape Orchard Management',
         tab2Desc_mr: 'प्लॉटनुसार वाण, लागवड अंतर, छाटणी तारखा, घड/काडी व्यवस्थापन व अपेक्षित उत्पादन',
         tab2Desc_en: 'Plot-wise varieties, spacing, pruning dates, canes/bunches & expected yield',
         tab10Title_mr: '📈 थेट द्राक्ष बाजारभाव व APMC मार्केट दर',
@@ -409,8 +409,8 @@ const CROPS_CONFIG = {
         badge_en: 'Onion Farm',
         tagline_mr: 'कांदा पीक व चाळ साठवणूक',
         tagline_en: 'Commercial Onion & Storage Operations',
-        tab2Title_mr: '🧅 २. कांदा शेती व्यवस्थापन (Commercial Onion Management)',
-        tab2Title_en: '🧅 2. Commercial Onion Management',
+        tab2Title_mr: '🧅 कांदा शेती व्यवस्थापन (Commercial Onion Management)',
+        tab2Title_en: '🧅 Commercial Onion Management',
         tab2Desc_mr: 'प्लॉटनुसार कांदा वाण, पुनर्लागवड तारीख, कंद आकार (mm), खत नियोजन व चाळ साठवणूक',
         tab2Desc_en: 'Plot-wise onion varieties, transplant dates, bulb size (mm) and storage management',
         tab10Title_mr: '📈 थेट कांदा बाजारभाव व APMC मार्केट दर',
@@ -566,8 +566,8 @@ const CROPS_CONFIG = {
         badge_en: 'Tur Crop',
         tagline_mr: 'तूर पीक व डाळ मिल व्यवस्थापन',
         tagline_en: 'Pigeon Pea & Dal Processing Estate',
-        tab2Title_mr: '🌱 २. तूर पीक व्यवस्थापन (Tur / Pigeon Pea Management)',
-        tab2Title_en: '🌱 2. Tur (Pigeon Pea) Management',
+        tab2Title_mr: '🌱 तूर पीक व्यवस्थापन (Tur / Pigeon Pea Management)',
+        tab2Title_en: '🌱 Tur (Pigeon Pea) Management',
         tab2Desc_mr: 'प्लॉटनुसार तूर वाण, पेरणी अंतर, शेंडा खुडणी (Nipping), घाटे संख्या व उत्पादन',
         tab2Desc_en: 'Varieties, sowing spacing, apical nipping, pod setting & yield analytics',
         tab10Title_mr: '📈 थेट तूर बाजारभाव व हमीभाव (MSP Mandi Rates)',
@@ -722,8 +722,8 @@ const CROPS_CONFIG = {
         badge_en: 'Corn Farm',
         tagline_mr: 'हायब्रिड मका व सायलेज प्रकल्प',
         tagline_en: 'Commercial Hybrid Corn & Silage Estate',
-        tab2Title_mr: '🌽 २. मका शेती व्यवस्थापन (Commercial Corn Management)',
-        tab2Title_en: '🌽 2. Commercial Corn Management',
+        tab2Title_mr: '🌽 मका शेती व्यवस्थापन (Commercial Corn Management)',
+        tab2Title_en: '🌽 Commercial Corn Management',
         tab2Desc_mr: 'हायब्रिड मका वाण, झाडे संख्या, लष्करी अळी नियंत्रण व सायलेज/दाणे उत्पादन',
         tab2Desc_en: 'Hybrid varieties, cob counts, Fall Armyworm control & grain/silage yield',
         tab10Title_mr: '📈 थेट मका बाजारभाव व पोल्ट्री फीड दर',
@@ -878,8 +878,8 @@ const CROPS_CONFIG = {
         badge_en: 'Pomegranate Orchard',
         tagline_mr: 'भगवा डाळिंब व बहार व्यवस्थापन',
         tagline_en: 'Bhagwa Pomegranate & Bahar Treatment',
-        tab2Title_mr: '🍎 २. डाळिंब बाग व्यवस्थापन (Commercial Pomegranate Management)',
-        tab2Title_en: '🍎 2. Commercial Pomegranate Management',
+        tab2Title_mr: '🍎 डाळिंब बाग व्यवस्थापन (Commercial Pomegranate Management)',
+        tab2Title_en: '🍎 Commercial Pomegranate Management',
         tab2Desc_mr: 'प्लॉटनुसार वाण, बहार व्यवस्थापन (मृग/हस्त), तेल्या रोग नियंत्रण व फळे संख्या',
         tab2Desc_en: 'Bhagwa variety, Bahar treatment, Bacterial Blight (Telya) & fruit thinning',
         tab10Title_mr: '📈 थेट डाळिंब बाजारभाव व APMC मार्केट दर',
@@ -1034,8 +1034,8 @@ const CROPS_CONFIG = {
         badge_en: 'Guava Orchard',
         tagline_mr: 'सघन पेरू लागवड व बॅगिंग तंत्रज्ञान',
         tagline_en: 'High Density Guava & Fruit Bagging',
-        tab2Title_mr: '🍈 २. पेरू बाग व्यवस्थापन (High-Density Guava Management)',
-        tab2Title_en: '🍈 2. High-Density Guava Management',
+        tab2Title_mr: '🍈 पेरू बाग व्यवस्थापन (High-Density Guava Management)',
+        tab2Title_en: '🍈 High-Density Guava Management',
         tab2Desc_mr: 'तैवान पिंक व VNR वाण, सघन लागवड, फोम नेट बॅगिंग, छाटणी व फळे व्यवस्थापन',
         tab2Desc_en: 'Taiwan Pink & VNR Bihi, ultra high density (UHDP), foam bagging & canopy',
         tab10Title_mr: '📈 थेट पेरू बाजारभाव व APMC मार्केट दर',
@@ -1179,61 +1179,61 @@ const CROPS_CONFIG = {
     }
 };
 
-// Bilingual Navigation Titles
+// Bilingual Navigation Titles (Clean Option Names, No Number Count Prefixes)
 const TAB_TITLES = {
     'dashboard': {
-        mr: { title: '1. डॅशबोर्ड (Dashboard)', sub: 'एकूण क्षेत्र, कामे, पाण्याचा वापर आणि आर्थिक स्थिती' },
-        en: { title: '1. Dashboard (Overview)', sub: 'Total acreage, tasks, water usage and financials' },
+        mr: { title: 'डॅशबोर्ड (Dashboard)', sub: 'एकूण क्षेत्र, कामे, पाण्याचा वापर आणि आर्थिक स्थिती' },
+        en: { title: 'Dashboard (Overview)', sub: 'Total acreage, tasks, water usage and financials' },
         icon: 'layout-dashboard'
     },
     'grape-orchard': {
-        mr: { title: '2. द्राक्ष बाग व्यवस्थापन', sub: 'प्लॉटनुसार वाण, अंतर, छाटणी तारखा व घड/काडी व्यवस्थापन' },
-        en: { title: '2. Grape Orchard Management', sub: 'Plot-wise varieties, spacing, pruning dates & canopy' },
+        mr: { title: 'द्राक्ष बाग व्यवस्थापन', sub: 'प्लॉटनुसार वाण, अंतर, छाटणी तारखा व घड/काडी व्यवस्थापन' },
+        en: { title: 'Grape Orchard Management', sub: 'Plot-wise varieties, spacing, pruning dates & canopy' },
         icon: 'grape'
     },
     'water-mgmt': {
-        mr: { title: '3. पाणी व्यवस्थापन', sub: 'आजचे सिंचन, पाणी लिटर, EC/pH नियंत्रण व N-Ca-Mg पोषक घटक' },
-        en: { title: '3. Water Management', sub: 'Today\'s irrigation, water liters, EC/pH and nutrients' },
+        mr: { title: 'सिंचन व्यवस्थापन (पाणी)', sub: 'आजचे सिंचन, पाणी लिटर, EC/pH नियंत्रण व N-Ca-Mg पोषक घटक' },
+        en: { title: 'Water & Irrigation Management', sub: 'Today\'s irrigation, water liters, EC/pH and nutrients' },
         icon: 'droplet'
     },
     'fertilizer-mgmt': {
-        mr: { title: '4. खत व्यवस्थापन', sub: 'खताचे नाव, मात्रा, फर्टिगेशन नोंद व थेट N-P-K कॅल्क्युलेटर' },
-        en: { title: '4. Fertilizer & Fertigation', sub: 'Fertilizer names, doses, fertigation logs & NPK calc' },
+        mr: { title: 'खत व्यवस्थापन', sub: 'खताचे नाव, मात्रा, फर्टिगेशन नोंद व थेट N-P-K कॅल्क्युलेटर' },
+        en: { title: 'Fertilizer & Fertigation', sub: 'Fertilizer names, doses, fertigation logs & NPK calc' },
         icon: 'flask-conical'
     },
     'pest-disease': {
-        mr: { title: '5. कीड व रोग व्यवस्थापन', sub: 'उदबत्या, थ्रीप्स, केवडा, भुरी फवारणी व पुढील नियोजन' },
-        en: { title: '5. Pest & Disease Management', sub: 'Flea beetle, thrips, mildews, spraying & schedule' },
+        mr: { title: 'कीड व रोग व्यवस्थापन', sub: 'उदबत्या, थ्रीप्स, केवडा, भुरी फवारणी व पुढील नियोजन' },
+        en: { title: 'Pest & Disease Management', sub: 'Flea beetle, thrips, mildews, spraying & schedule' },
         icon: 'bug'
     },
     'labor-mgmt': {
-        mr: { title: '6. मजूर व्यवस्थापन', sub: 'कामगारांची हजेरी, रोजंदारी, छाटणी/विरळणी कामे व मजुरी खर्च' },
-        en: { title: '6. Labor Management', sub: 'Worker roster, daily wage, attendance & labor cost' },
+        mr: { title: 'मजूर व्यवस्थापन', sub: 'कामगारांची हजेरी, रोजंदारी, छाटणी/विरळणी कामे व मजुरी खर्च' },
+        en: { title: 'Labor Management', sub: 'Worker roster, daily wage, attendance & labor cost' },
         icon: 'users'
     },
     'finance-pnl': {
-        mr: { title: '7. खर्च व उत्पन्न', sub: '6 मुख्य खर्च प्रवाह आणि द्राक्ष विक्री आवक व निव्वळ नफा' },
-        en: { title: '7. Expenses & Income (P&L)', sub: '6 expense streams, grape sales revenue & net profit' },
+        mr: { title: 'खर्च व उत्पन्न', sub: 'मुख्य खर्च प्रवाह आणि द्राक्ष विक्री आवक व निव्वळ नफा' },
+        en: { title: 'Expenses & Income (P&L)', sub: 'Expense streams, grape sales revenue & net profit' },
         icon: 'indian-rupee'
     },
     'reports': {
-        mr: { title: '8. अहवाल (Reports)', sub: 'प्रति एकर खर्च, प्रति किलो खर्च, प्लॉट उत्पादन व हंगाम तुलना' },
-        en: { title: '8. Reports & Analytics', sub: 'Cost per acre, cost per kg, plot yield & seasons' },
+        mr: { title: 'अहवाल व विश्लेषण (Reports)', sub: 'प्रति एकर खर्च, प्रति किलो खर्च, प्लॉट उत्पादन व हंगाम तुलना' },
+        en: { title: 'Reports & Analytics', sub: 'Cost per acre, cost per kg, plot yield & seasons' },
         icon: 'bar-chart-3'
     },
     'reminders': {
-        mr: { title: '9. स्मरणपत्रे (Reminders)', sub: 'फवारणी, खत, सिंचन, छाटणी, काढणी व पेमेंट ॲलर्ट्स' },
-        en: { title: '9. Reminders & Alerts', sub: 'Spray, fertilizer, irrigation, pruning & payment alerts' },
+        mr: { title: 'स्मरणपत्रे (Reminders)', sub: 'फवारणी, खत, सिंचन, छाटणी, काढणी व पेमेंट ॲलर्ट्स' },
+        en: { title: 'Reminders & Alerts', sub: 'Spray, fertilizer, irrigation, pruning & payment alerts' },
         icon: 'bell'
     },
     'mandi-rates': {
-        mr: { title: '10. द्राक्ष बाजारभाव (Live Mandi)', sub: 'नाशिक, सांगली, सोलापूर, पुणे व मुंबई वाशी APMC दर' },
-        en: { title: '10. Mandi & APMC Grape Rates', sub: 'Nashik, Sangli, Solapur, Pune & Mumbai APMC auctions' },
+        mr: { title: 'द्राक्ष बाजारभाव (Live Mandi)', sub: 'नाशिक, सांगली, सोलापूर, पुणे व मुंबई वाशी APMC दर' },
+        en: { title: 'Mandi & APMC Grape Rates', sub: 'Nashik, Sangli, Solapur, Pune & Mumbai APMC auctions' },
         icon: 'trending-up'
     },
     'govt-schemes': {
-        mr: { title: '11. शासकीय योजना व सबसिडी', sub: 'MahaDBT ठिबक, NHB कोल्ड स्टोरेज व फळपीक विमा' },
-        en: { title: '11. Government Schemes & Subsidies', sub: 'MahaDBT Drip, NHB Cold Storage & Crop Insurance' },
+        mr: { title: 'शासकीय योजना व सबसिडी', sub: 'MahaDBT ठिबक, NHB कोल्ड स्टोरेज व फळपीक विमा' },
+        en: { title: 'Government Schemes & Subsidies', sub: 'MahaDBT Drip, NHB Cold Storage & Crop Insurance' },
         icon: 'landmark'
     },
     'main-menu': {
@@ -1468,17 +1468,18 @@ function switchLanguage(lang) {
 
     // 2. Sidebar Navigation Items
     const navItems = [
-        { id: 'nav-tab-dashboard', mr: ['1. डॅशबोर्ड', 'Dashboard Overview'], en: ['1. Dashboard', 'Farm Overview'] },
-        { id: 'nav-tab-grape', mr: ['2. द्राक्ष बाग व्यवस्थापन', 'Grape Orchard Mgmt'], en: ['2. Grape Orchard', 'Plot & Canopy Mgmt'] },
-        { id: 'nav-tab-water', mr: ['3. पाणी व्यवस्थापन', 'Water & EC/pH'], en: ['3. Water Management', 'Irrigation & EC/pH'] },
-        { id: 'nav-tab-fertilizer', mr: ['4. खत व्यवस्थापन', 'Fertilizer & NPK'], en: ['4. Fertilizer Mgmt', 'Fertigation & NPK'] },
-        { id: 'nav-tab-pest', mr: ['5. कीड व रोग व्यवस्थापन', 'Pest & Spraying'], en: ['5. Pest & Disease', 'Flea Beetle & Thrips'] },
-        { id: 'nav-tab-labor', mr: ['6. मजूर व्यवस्थापन', 'Labor & Attendance'], en: ['6. Labor Management', 'Attendance & Wages'] },
-        { id: 'nav-tab-finance', mr: ['7. खर्च व उत्पन्न', 'Expenses & Sales'], en: ['7. Financial P&L', 'Expenses & Sales'] },
-        { id: 'nav-tab-reports', mr: ['8. अहवाल (Reports)', 'Cost/Acre & Kg'], en: ['8. Reports & Analytics', 'Cost/Acre & Kg Yield'] },
-        { id: 'nav-tab-reminders', mr: ['9. स्मरणपत्रे (Reminder)', 'Alerts & Schedule'], en: ['9. Reminders', 'Tasks & Alerts'] },
-        { id: 'nav-tab-mandi', mr: ['10. द्राक्ष बाजारभाव', 'APMC & Mandi Rates'], en: ['10. Mandi Rates', 'APMC Grape Prices'] },
-        { id: 'nav-tab-schemes', mr: ['11. शासकीय योजना व सबसिडी', 'MahaDBT & Subsidies'], en: ['11. Govt Schemes', 'Subsidies & Grants'] }
+        { id: 'nav-tab-dashboard', mr: ['डॅशबोर्ड (Dashboard)', 'शेती क्षेत्र व आजची कामे'], en: ['Dashboard', 'Farm Overview & Tasks'] },
+        { id: 'nav-tab-grape', mr: ['द्राक्ष बाग व्यवस्थापन', 'प्लॉट तपशील, वाण, छाटणी व वाढ'], en: ['Grape Orchard', 'Plot & Canopy Mgmt'] },
+        { id: 'nav-tab-water', mr: ['सिंचन व्यवस्थापन (पाणी)', 'पाणी लिटर, वेळ, EC व pH नोंदी'], en: ['Water Management', 'Irrigation & EC/pH'] },
+        { id: 'nav-tab-fertilizer', mr: ['खत व्यवस्थापन', 'NPK खतांचे नियोजन व फर्टिगेशन'], en: ['Fertilizer Mgmt', 'Fertigation & NPK'] },
+        { id: 'nav-tab-pest', mr: ['कीड व रोग व्यवस्थापन', 'थ्रीप्स, भुरी व फवारणी नोंद'], en: ['Pest & Disease', 'Flea Beetle & Thrips'] },
+        { id: 'nav-tab-labor', mr: ['मजूर व्यवस्थापन', 'दैनिक हजेरी, कामाचा प्रकार व मजुरी'], en: ['Labor Management', 'Attendance & Wages'] },
+        { id: 'nav-tab-finance', mr: ['खर्च व हिशेब', 'औषधे, खते, मजुरी व वीज बिल खर्च'], en: ['Expenses & Accounts', 'Supplies, Labor & Power'] },
+        { id: 'nav-tab-sales', mr: ['उत्पादन व विक्री', 'काढणी वजन, दर प्रति किलो व महसूल'], en: ['Production & Sales', 'Harvest, Rate/kg & Revenue'] },
+        { id: 'nav-tab-reports', mr: ['रिपोर्ट व विश्लेषण', 'प्लॉटनुसार उत्पादन आलेख व नफा-तोटा'], en: ['Reports & Analytics', 'Yield Charts & Profit-Loss'] },
+        { id: 'nav-tab-reminders', mr: ['रिमाइंडर', 'फवारणी व सिंचन कामांचे स्मरणपत्र'], en: ['Reminders', 'Tasks & Spray Alerts'] },
+        { id: 'nav-tab-mandi', mr: ['द्राक्ष बाजारभाव', 'APMC व थेट लिलाव दर'], en: ['Mandi Rates', 'APMC Grape Prices'] },
+        { id: 'nav-tab-schemes', mr: ['शासकीय योजना व सबसिडी', 'MahaDBT व शासकीय अनुदान'], en: ['Govt Schemes', 'Subsidies & Grants'] }
     ];
 
     navItems.forEach(item => {
@@ -2040,14 +2041,14 @@ function switchCrop(cropId, notify = true) {
     const sideTab2Title = document.getElementById('sidebar-tab2-title');
     const sideTab2Sub = document.getElementById('sidebar-tab2-sub');
     const sideTab2Icon = document.getElementById('sidebar-tab2-icon');
-    if (sideTab2Title) sideTab2Title.textContent = isMr ? `२. ${cfg.name_mr} व्यवस्थापन` : `2. ${cfg.name_en} Mgmt`;
+    if (sideTab2Title) sideTab2Title.textContent = isMr ? `${cfg.name_mr} व्यवस्थापन` : `${cfg.name_en} Mgmt`;
     if (sideTab2Sub) sideTab2Sub.textContent = isMr ? cfg.tagline_mr : cfg.tagline_en;
     if (sideTab2Icon) sideTab2Icon.setAttribute('data-lucide', cfg.icon);
 
     // Update Sidebar Tab 10
     const sideTab10Title = document.getElementById('sidebar-tab10-title');
     const sideTab10Sub = document.getElementById('sidebar-tab10-sub');
-    if (sideTab10Title) sideTab10Title.textContent = isMr ? `१०. ${cfg.name_mr} बाजारभाव` : `10. ${cfg.name_en} Mandi`;
+    if (sideTab10Title) sideTab10Title.textContent = isMr ? `${cfg.name_mr} बाजारभाव` : `${cfg.name_en} Mandi`;
     if (sideTab10Sub) sideTab10Sub.textContent = isMr ? 'APMC & थेट लिलाव' : 'APMC Live Rates';
 
     // Update Tab 2 View Header
@@ -3814,65 +3815,102 @@ function toggleDashboardTask(el) {
 }
 window.toggleDashboardTask = toggleDashboardTask;
 
-// --- PAGE 5: IRRIGATION IN-PAGE SUBMISSION ---
+// --- OPTION 3: 💧 सिंचन व्यवस्थापन (IRRIGATION IN-PAGE SUBMISSION) ---
 function handleInpageIrrigationSubmit(e) {
     e.preventDefault();
-    const plot = document.getElementById('inpage-irr-plot')?.value || 'प्लॉट A';
+    const plotSelect = document.getElementById('inpage-irr-plot');
+    const plotName = plotSelect ? (plotSelect.options[plotSelect.selectedIndex]?.text || plotSelect.value) : 'प्लॉट A';
     const date = document.getElementById('inpage-irr-date')?.value || '20/09/2026';
     const liters = document.getElementById('inpage-irr-liters')?.value || '5000';
+    const time = document.getElementById('inpage-irr-time')?.value || 'सकाळ';
     const ec = document.getElementById('inpage-irr-ec')?.value || '0.8';
     const ph = document.getElementById('inpage-irr-ph')?.value || '7.2';
-    const note = document.getElementById('inpage-irr-note')?.value || '';
+    const note = document.getElementById('inpage-irr-notes')?.value || document.getElementById('inpage-irr-note')?.value || '';
 
-    const tbody = document.getElementById('inpage-irr-tbody');
+    const tbody = document.getElementById('inpage-irrigation-tbody') || document.getElementById('inpage-irr-tbody');
     if (tbody) {
         const row = document.createElement('tr');
+        const shortPlot = plotName.split(' ')[0] + (plotName.split(' ')[1] ? ' ' + plotName.split(' ')[1] : '');
         row.innerHTML = `
             <td><strong>${date}</strong></td>
-            <td><strong style="color: var(--blue-accent);">${Number(liters).toLocaleString('en-IN')} L</strong></td>
+            <td><span class="badge-status purple">${shortPlot}</span></td>
+            <td><span class="badge-status info">${Number(liters).toLocaleString('en-IN')} L</span></td>
+            <td>${time}</td>
             <td>${ec}</td>
             <td>${ph}</td>
-            <td><span class="badge-status success">${plot} • ${note || 'सिंचन पूर्ण'}</span></td>
+            <td>${note || 'सिंचन पूर्ण'}</td>
         `;
         tbody.prepend(row);
     }
-    showToast(`💧 ${plot} साठी सिंचन नोंद सेव्ह झाली (${Number(liters).toLocaleString('en-IN')} L)`, 'success');
+
+    // Sync with appState for dynamic dashboard & water KPIs
+    appState.irrigationLogs.unshift({
+        id: 'irr-' + Date.now(),
+        plot_id: plotSelect?.value || 'plot-a',
+        log_date: date,
+        duration_hours: 2.0,
+        water_liters: Number(liters) || 5000,
+        water_source: 'ठिबक सिंचन',
+        ec_level: parseFloat(ec) || 0.8,
+        ph_level: parseFloat(ph) || 7.2,
+        nutrients_n: 3.2,
+        nutrients_ca: 4.8,
+        nutrients_mg: 2.1
+    });
+    renderDashboardTab();
+    showToast(`💧 ${plotName} साठी सिंचन नोंद सेव्ह झाली (${Number(liters).toLocaleString('en-IN')} L)`, 'success');
 }
 window.handleInpageIrrigationSubmit = handleInpageIrrigationSubmit;
 
-// --- PAGE 6: FERTILIZER IN-PAGE SUBMISSION ---
+// --- OPTION 4: 🧪 खत व्यवस्थापन (FERTILIZER IN-PAGE SUBMISSION) ---
 function handleInpageFertilizerSubmit(e) {
     e.preventDefault();
-    const plot = document.getElementById('inpage-fert-plot')?.value || 'प्लॉट A';
+    const plotSelect = document.getElementById('inpage-fert-plot');
+    const plotName = plotSelect ? (plotSelect.options[plotSelect.selectedIndex]?.text || plotSelect.value) : 'प्लॉट A';
     const date = document.getElementById('inpage-fert-date')?.value || '20/09/2026';
     const name = document.getElementById('inpage-fert-name')?.value || 'NPK 19:19:19';
-    const qty = document.getElementById('inpage-fert-qty')?.value || '5';
+    const dose = document.getElementById('inpage-fert-dose')?.value || document.getElementById('inpage-fert-qty')?.value || '5';
     const method = document.getElementById('inpage-fert-method')?.value || 'फर्टिगेशन';
-    const note = document.getElementById('inpage-fert-note')?.value || '';
+    const note = document.getElementById('inpage-fert-notes')?.value || document.getElementById('inpage-fert-note')?.value || '';
 
-    const tbody = document.getElementById('inpage-fert-tbody');
+    const tbody = document.getElementById('inpage-fertilizer-tbody') || document.getElementById('inpage-fert-tbody');
     if (tbody) {
         const row = document.createElement('tr');
+        const shortPlot = plotName.split(' ')[0] + (plotName.split(' ')[1] ? ' ' + plotName.split(' ')[1] : '');
         row.innerHTML = `
             <td><strong>${date}</strong></td>
-            <td><strong style="color: var(--emerald-deep);">${name}</strong></td>
-            <td>${qty} किलो</td>
-            <td><span class="badge-status info">${method}</span></td>
-            <td>${plot} • ${note}</td>
+            <td><span class="badge-status purple">${shortPlot}</span></td>
+            <td><strong>${name}</strong></td>
+            <td>${dose} किलो</td>
+            <td><span class="badge-status success">${method}</span></td>
+            <td>${note || 'पाण्यातून दिले'}</td>
         `;
         tbody.prepend(row);
     }
-    showToast(`🧪 ${plot} साठी खत नोंद सेव्ह झाली (${name}, ${qty} kg)`, 'success');
+
+    // Sync with appState for dynamic dashboard
+    appState.fertilizerLogs.unshift({
+        id: 'fert-' + Date.now(),
+        plot_id: plotSelect?.value || 'plot-a',
+        log_date: date,
+        fertilizer_name: name,
+        dose_amount: parseFloat(dose) || 5,
+        application_method: method,
+        cost: (parseFloat(dose) || 5) * 120
+    });
+    renderDashboardTab();
+    showToast(`🧪 ${plotName} साठी खत नोंद सेव्ह झाली (${name}, ${dose} kg)`, 'success');
 }
 window.handleInpageFertilizerSubmit = handleInpageFertilizerSubmit;
 
-// --- PAGE 7: PEST & DISEASE IN-PAGE SUBMISSION ---
+// --- OPTION 5: 🐛 कीड व रोग फवारणी (PEST & DISEASE IN-PAGE SUBMISSION) ---
 function handleInpageSpraySubmit(e) {
     e.preventDefault();
-    const plot = document.getElementById('inpage-spray-plot')?.value || 'प्लॉट A';
+    const plotSelect = document.getElementById('inpage-spray-plot');
+    const plotName = plotSelect ? (plotSelect.options[plotSelect.selectedIndex]?.text || plotSelect.value) : 'प्लॉट A';
     const date = document.getElementById('inpage-spray-date')?.value || '20/09/2026';
     const pest = document.getElementById('inpage-spray-pest')?.value || 'Flea Beetle';
-    const name = document.getElementById('inpage-spray-name')?.value || 'Imidacloprid 17.8 SL';
+    const name = document.getElementById('inpage-spray-chemical')?.value || document.getElementById('inpage-spray-name')?.value || 'Imidacloprid 17.8 SL';
     const dose = document.getElementById('inpage-spray-dose')?.value || '150 ml';
     const method = document.getElementById('inpage-spray-method')?.value || 'पंप';
     const note = document.getElementById('inpage-spray-notes')?.value || '';
@@ -3882,7 +3920,7 @@ function handleInpageSpraySubmit(e) {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td><strong>${date}</strong></td>
-            <td><span class="badge-status purple">${plot}</span></td>
+            <td><span class="badge-status purple">${plotName}</span></td>
             <td><span class="badge-status danger">${pest}</span></td>
             <td><strong>${name}</strong></td>
             <td>${dose}</td>
@@ -3891,7 +3929,19 @@ function handleInpageSpraySubmit(e) {
         `;
         tbody.prepend(row);
     }
-    showToast(`🌿 ${plot} साठी कीड-रोग फवारणी नोंद झाली (${name})`, 'success');
+
+    appState.sprayLogs.unshift({
+        id: 'spray-' + Date.now(),
+        plot_id: plotSelect?.value || 'plot-a',
+        log_date: date,
+        pest_disease_name: pest,
+        chemical_or_fertilizer: name,
+        dose_per_liter: 1.5,
+        total_water_liters: 200,
+        cost: 2400
+    });
+    renderDashboardTab();
+    showToast(`🌿 ${plotName} साठी कीड-रोग फवारणी नोंद झाली (${name})`, 'success');
 }
 window.handleInpageSpraySubmit = handleInpageSpraySubmit;
 
@@ -3904,7 +3954,7 @@ function handleSprayPhotoUpload(input) {
 }
 window.handleSprayPhotoUpload = handleSprayPhotoUpload;
 
-// --- PAGE 8: LABOR MANAGEMENT CALCULATOR & ATTENDANCE ---
+// --- OPTION 6: 👷 मजूर व्यवस्थापन (LABOR MANAGEMENT CALCULATOR, ATTENDANCE & SUBMISSION) ---
 function calculateLaborTotal() {
     const count = parseInt(document.getElementById('inpage-labor-count')?.value) || 0;
     const rate = parseFloat(document.getElementById('inpage-labor-rate')?.value) || 0;
@@ -3922,8 +3972,43 @@ function handleInpageLaborSubmit(e) {
     const type = document.getElementById('inpage-labor-type')?.value || 'छाटणी';
     const count = document.getElementById('inpage-labor-count')?.value || '12';
     const rate = document.getElementById('inpage-labor-rate')?.value || '400';
-    const total = document.getElementById('inpage-labor-total')?.value || '₹ 4,800';
+    const total = document.getElementById('inpage-labor-total')?.value || `₹ ${(Number(count) * Number(rate)).toLocaleString('en-IN')}`;
+    const note = document.getElementById('inpage-labor-note')?.value || '';
 
+    const tbody = document.getElementById('inpage-labor-tbody');
+    if (tbody) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><strong>${date}</strong></td>
+            <td><span class="badge-status info">${type}</span></td>
+            <td>${count} मजूर</td>
+            <td>₹ ${Number(rate).toLocaleString('en-IN')}</td>
+            <td><strong style="color: var(--rose-accent);">${total}</strong></td>
+            <td>${note || 'वेळेवर काम पूर्ण'}</td>
+        `;
+        tbody.prepend(row);
+    }
+
+    const totalCost = (Number(count) || 0) * (Number(rate) || 0);
+    appState.laborLogs.unshift({
+        id: 'lab-' + Date.now(),
+        plot_id: 'plot-a',
+        log_date: date,
+        activity: type,
+        worker_names: `${count} मजूर`,
+        total_cost: totalCost,
+        wage_per_worker: Number(rate) || 400,
+        payment_status: 'Paid'
+    });
+    appState.expenses.unshift({
+        id: 'exp-lab-' + Date.now(),
+        plot_id: 'plot-a',
+        log_date: date,
+        category: 'मजुरी',
+        amount: totalCost,
+        description: `${type} काम (${count} मजूर)`
+    });
+    renderDashboardTab();
     showToast(`👷 ${type} कामाची मजूर नोंद झाली (${count} मजूर • ${total})`, 'success');
 }
 window.handleInpageLaborSubmit = handleInpageLaborSubmit;
@@ -3947,23 +4032,38 @@ function toggleAttendanceItem(chk) {
 }
 window.toggleAttendanceItem = toggleAttendanceItem;
 
-// --- PAGE 9: EXPENSE & INCOME TABS & SUBMISSIONS ---
+// --- OPTION 8: 💰 खर्च व उत्पन्न (EXPENSE & INCOME TABS & SUBMISSIONS) ---
 function switchFinanceTab(tab) {
     const btnExp = document.getElementById('tab-finance-expense');
     const btnInc = document.getElementById('tab-finance-income');
     const formExp = document.getElementById('finance-expense-form-card');
     const formInc = document.getElementById('finance-income-form-card');
+    const tableExp = document.getElementById('finance-expense-table-card');
+    const tableInc = document.getElementById('finance-income-table-card');
+
+    const navExp = document.getElementById('nav-tab-finance');
+    const navInc = document.getElementById('nav-tab-sales');
 
     if (tab === 'expense') {
         btnExp?.classList.add('active');
         btnInc?.classList.remove('active');
         if (formExp) formExp.style.display = 'block';
         if (formInc) formInc.style.display = 'none';
+        if (tableExp) tableExp.style.display = 'block';
+        if (tableInc) tableInc.style.display = 'none';
+
+        navExp?.classList.add('active');
+        navInc?.classList.remove('active');
     } else {
         btnInc?.classList.add('active');
         btnExp?.classList.remove('active');
         if (formExp) formExp.style.display = 'none';
         if (formInc) formInc.style.display = 'block';
+        if (tableExp) tableExp.style.display = 'none';
+        if (tableInc) tableInc.style.display = 'block';
+
+        navInc?.classList.add('active');
+        navExp?.classList.remove('active');
     }
 }
 window.switchFinanceTab = switchFinanceTab;
@@ -3974,7 +4074,7 @@ function handleInpageExpenseSubmit(e) {
     const date = document.getElementById('inpage-expense-date')?.value || '20/09/2026';
     const cat = document.getElementById('inpage-expense-category')?.value || 'औषधे';
     const desc = document.getElementById('inpage-expense-desc')?.value || '';
-    const amount = document.getElementById('inpage-expense-amount')?.value || '0';
+    const amount = parseFloat(document.getElementById('inpage-expense-amount')?.value) || 0;
     const plot = document.getElementById('inpage-expense-plot')?.value || 'प्लॉट A';
     const note = document.getElementById('inpage-expense-note')?.value || '';
 
@@ -3985,22 +4085,60 @@ function handleInpageExpenseSubmit(e) {
             <td><strong>${date}</strong></td>
             <td><span class="kpi-badge warning">${cat}</span></td>
             <td>${desc} ${note ? '• ' + note : ''} (${plot})</td>
-            <td><strong style="color: var(--rose-accent);">₹ ${Number(amount).toLocaleString('en-IN')}</strong></td>
+            <td><strong style="color: var(--rose-accent);">₹ ${amount.toLocaleString('en-IN')}</strong></td>
         `;
         tbody.prepend(row);
     }
-    showToast(`💰 नवीन खर्च नोंदवला: ₹${Number(amount).toLocaleString('en-IN')} (${cat})`, 'success');
+
+    appState.expenses.unshift({
+        id: 'exp-' + Date.now(),
+        plot_id: 'plot-a',
+        log_date: date,
+        category: cat,
+        amount: amount,
+        description: `${desc} ${note ? '• ' + note : ''} (${plot})`
+    });
+    renderDashboardTab();
+    showToast(`💰 नवीन खर्च नोंदवला: ₹${amount.toLocaleString('en-IN')} (${cat})`, 'success');
 }
 window.handleInpageExpenseSubmit = handleInpageExpenseSubmit;
 
 function handleInpageIncomeSubmit(e) {
     e.preventDefault();
-    const buyer = document.getElementById('inpage-income-buyer')?.value || '';
+    const date = document.getElementById('inpage-income-date')?.value || '20/09/2026';
+    const plot = document.getElementById('inpage-income-plot')?.value || 'प्लॉट A';
+    const buyer = document.getElementById('inpage-income-buyer')?.value || 'व्यापारी / खरेदीदार';
     const kg = parseFloat(document.getElementById('inpage-income-kg')?.value) || 0;
     const rate = parseFloat(document.getElementById('inpage-income-rate')?.value) || 0;
+    const note = document.getElementById('inpage-income-note')?.value || '';
     const total = kg * rate;
 
-    showToast(`🍇 द्राक्ष विक्री नोंद झाली! उत्पन्न: ₹${total.toLocaleString('en-IN')} (${buyer})`, 'success');
+    const tbody = document.getElementById('inpage-income-table-body');
+    if (tbody) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><strong>${date}</strong></td>
+            <td><span class="kpi-badge info">${plot}</span></td>
+            <td>${buyer} ${note ? '• ' + note : ''}</td>
+            <td>${kg.toLocaleString('en-IN')} kg</td>
+            <td>₹ ${rate}</td>
+            <td><strong style="color: var(--emerald-deep);">₹ ${total.toLocaleString('en-IN')}</strong></td>
+        `;
+        tbody.prepend(row);
+    }
+
+    appState.sales.unshift({
+        id: 'sale-' + Date.now(),
+        plot_id: 'plot-a',
+        sale_date: date,
+        buyer_name: buyer,
+        grade: note || 'Export Quality',
+        quantity_kg: kg,
+        rate_per_kg: rate,
+        total_revenue: total
+    });
+    renderDashboardTab();
+    showToast(`🍇 विक्री नोंद यशस्वी! उत्पन्न: ₹${total.toLocaleString('en-IN')} (${buyer})`, 'success');
 }
 window.handleInpageIncomeSubmit = handleInpageIncomeSubmit;
 
