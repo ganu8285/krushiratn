@@ -25,15 +25,32 @@
     <!-- Supabase JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20260924_02">
 </head>
 
 <body>
     <!-- =============================================================
          LOGIN SCREEN (Light Cream Luxury Theme & Auto-Fill Roles)
          ============================================================= -->
+    <!-- =============================================================
+         PAGE 1: SPLASH / LOGIN SCREEN
+         Requirements: 9:41 (Status bar), कृषिरत्न, Farm Management System,
+         शेती स्मार्ट... भविष्य जवळून..., शेतकरी | बाग | गुणवत्ता | अधिक नफा,
+         लॉगिन करा (Button), नवीन नोंदणी (Button), मराठी | English, Powered by Farmers, For Farmers
+         ============================================================= -->
     <div class="login-screen-overlay" id="login-screen">
         <div class="login-card" id="login-card">
+            <!-- 9:41 Smartphone Status Bar -->
+            <div class="phone-status-bar">
+                <span>9:41</span>
+                <div class="status-bar-icons">
+                    <i data-lucide="signal" style="width: 13px; height: 13px;"></i>
+                    <i data-lucide="wifi" style="width: 13px; height: 13px;"></i>
+                    <span class="status-battery-pill"><i data-lucide="battery" style="width: 14px; height: 14px;"></i>
+                        100%</span>
+                </div>
+            </div>
+
             <!-- Language Switcher on Login Screen -->
             <div class="login-lang-row">
                 <div class="lang-toggle-btn-group">
@@ -52,18 +69,33 @@
                 <div>
                     <h1 class="brand-title-line">
                         <span class="brand-accent">कृषिरत्न</span>
-                        <span class="brand-subtitle">Krushiratna</span>
+                        <span class="brand-subtitle">Farm Management System</span>
                     </h1>
-                    <span class="brand-sub-badge">🌱 द्राक्ष • कांदा • तूर • मका • डाळिंब • पेरू व्यवस्थापन SaaS</span>
                 </div>
             </div>
 
-            <div class="login-heading-block">
-                <h2 class="login-main-title">लॉगिन करा (Sign In)</h2>
-                <p class="login-subtitle">बागायतदार, शेतकरी व ॲडमिन डॅशबोर्ड व्यवस्थापन</p>
+            <!-- Tagline & Feature Badges -->
+            <div class="splash-tagline">"शेती स्मार्ट... भविष्य जवळून..."</div>
+            <div class="splash-value-pills">
+                <span class="splash-value-chip">👨‍🌾 शेतकरी</span>
+                <span class="splash-value-chip">🍇 बाग</span>
+                <span class="splash-value-chip">⭐ गुणवत्ता</span>
+                <span class="splash-value-chip">💰 अधिक नफा</span>
             </div>
 
-            <!-- Demo Role Selectors -->
+            <!-- Dual Primary Splash Action Buttons -->
+            <div class="splash-action-row">
+                <button type="button" class="btn-splash-action btn-splash-login" id="btn-splash-quick-login">
+                    <i data-lucide="log-in"></i>
+                    <span>लॉगिन करा</span>
+                </button>
+                <button type="button" class="btn-splash-action btn-splash-register" id="btn-splash-open-register">
+                    <i data-lucide="user-plus"></i>
+                    <span>नवीन नोंदणी</span>
+                </button>
+            </div>
+
+            <!-- Quick Auto-Fill Roles for Instant Testing -->
             <div class="demo-cards-grid">
                 <div class="demo-role-card active" id="card-role-farmer">
                     <span class="role-card-title">👨‍🌾 शेतकरी (Farmer Portal)</span>
@@ -98,8 +130,8 @@
                 </button>
             </form>
 
-            <div style="margin-top: 1.25rem; font-size: 0.75rem; color: var(--text-muted); text-align: center;">
-                🌱 सर्वसमावेशक 9 विभाग: पाणी, खत, कीड-रोग, मजूर, नफा-तोटा व स्मरणपत्रे
+            <div class="splash-footer-badge">
+                🌱 Powered by Farmers, For Farmers
             </div>
         </div>
     </div>
@@ -137,140 +169,166 @@
                 </button>
             </div>
 
-            <!-- 9 VERTICAL NAVIGATION TABS -->
+            <!-- VERTICAL NAVIGATION TABS -->
             <div class="sidebar-nav-scroll">
-                <div class="section-micro-heading">मुख्य विभाग (9 TABS)</div>
+                <div class="section-micro-heading">मुख्य विभाग</div>
 
-                <!-- 1. Dashboard -->
+                <!-- 1. माझी शेती -->
                 <button type="button" class="side-nav-btn active" data-target="dashboard" id="nav-tab-dashboard">
                     <div class="side-btn-left">
                         <i data-lucide="layout-dashboard" class="side-btn-icon"></i>
                         <div class="side-btn-text-group">
-                            <span class="side-btn-title">1. डॅशबोर्ड</span>
-                            <span class="side-btn-sub">Dashboard Overview</span>
+                            <span class="side-btn-title">माझी शेती</span>
+                            <span class="side-btn-sub">डॅशबोर्ड, शेती क्षेत्र व आजची कामे</span>
                         </div>
                     </div>
                 </button>
 
-                <!-- 2. Grape / Crop Orchard Management -->
+                <!-- 2. द्राक्ष बाग -->
                 <button type="button" class="side-nav-btn" data-target="grape-orchard" id="nav-tab-grape">
                     <div class="side-btn-left">
-                        <i data-lucide="grape" class="side-btn-icon" id="sidebar-tab2-icon"></i>
+                        <i data-lucide="sprout" class="side-btn-icon"></i>
                         <div class="side-btn-text-group">
-                            <span class="side-btn-title" id="sidebar-tab2-title">2. द्राक्ष बाग व्यवस्थापन</span>
-                            <span class="side-btn-sub" id="sidebar-tab2-sub">Grape Orchard Mgmt</span>
+                            <span class="side-btn-title">द्राक्ष बाग</span>
+                            <span class="side-btn-sub">प्लॉट तपशील, वाण, छाटणी व वाढ</span>
                         </div>
                     </div>
-                    <span class="nav-badge-pill purple" id="badge-plot-count">3 प्लॉट</span>
                 </button>
 
-                <!-- 3. Water Management -->
+                <!-- 3. सिंचन व्यवस्थापन -->
                 <button type="button" class="side-nav-btn" data-target="water-mgmt" id="nav-tab-water">
                     <div class="side-btn-left">
                         <i data-lucide="droplet" class="side-btn-icon"></i>
                         <div class="side-btn-text-group">
-                            <span class="side-btn-title">3. पाणी व्यवस्थापन</span>
-                            <span class="side-btn-sub">Water & EC/pH</span>
+                            <span class="side-btn-title">सिंचन व्यवस्थापन</span>
+                            <span class="side-btn-sub">पाणी लिटर, वेळ, EC व pH नोंदी</span>
                         </div>
                     </div>
-                    <span class="nav-badge-pill emerald">लिटर/EC</span>
                 </button>
 
-                <!-- 4. Fertilizer Management -->
+                <!-- 4. खत व्यवस्थापन -->
                 <button type="button" class="side-nav-btn" data-target="fertilizer-mgmt" id="nav-tab-fertilizer">
                     <div class="side-btn-left">
                         <i data-lucide="flask-conical" class="side-btn-icon"></i>
                         <div class="side-btn-text-group">
-                            <span class="side-btn-title">4. खत व्यवस्थापन</span>
-                            <span class="side-btn-sub">Fertilizer & NPK</span>
+                            <span class="side-btn-title">खत व्यवस्थापन</span>
+                            <span class="side-btn-sub">NPK खतांचे नियोजन व फर्टिगेशन</span>
                         </div>
                     </div>
-                    <span class="nav-badge-pill amber">NPK Live</span>
                 </button>
 
-                <!-- 5. Pest & Disease Management -->
+                <!-- 5. कीड व रोग व्यवस्थापन -->
                 <button type="button" class="side-nav-btn" data-target="pest-disease" id="nav-tab-pest">
                     <div class="side-btn-left">
                         <i data-lucide="bug" class="side-btn-icon"></i>
                         <div class="side-btn-text-group">
-                            <span class="side-btn-title">5. कीड व रोग व्यवस्थापन</span>
-                            <span class="side-btn-sub">Pest & Spraying</span>
+                            <span class="side-btn-title">कीड व रोग व्यवस्थापन</span>
+                            <span class="side-btn-sub">थ्रीप्स, भुरी व फवारणी नोंद</span>
                         </div>
                     </div>
-                    <span class="nav-badge-pill danger">थ्रीप्स/भुरी</span>
                 </button>
 
-                <!-- 6. Labor Management -->
+                <!-- 6. मजूर व्यवस्थापन -->
                 <button type="button" class="side-nav-btn" data-target="labor-mgmt" id="nav-tab-labor">
                     <div class="side-btn-left">
                         <i data-lucide="users" class="side-btn-icon"></i>
                         <div class="side-btn-text-group">
-                            <span class="side-btn-title">6. मजूर व्यवस्थापन</span>
-                            <span class="side-btn-sub">Labor & Attendance</span>
+                            <span class="side-btn-title">मजूर व्यवस्थापन</span>
+                            <span class="side-btn-sub">दैनिक हजेरी, कामाचा प्रकार व मजुरी</span>
                         </div>
                     </div>
                 </button>
 
-                <!-- 7. Expense & Income -->
+                <!-- 7. खर्च व हिशेब -->
                 <button type="button" class="side-nav-btn" data-target="finance-pnl" id="nav-tab-finance">
+                    <div class="side-btn-left">
+                        <i data-lucide="receipt" class="side-btn-icon"></i>
+                        <div class="side-btn-text-group">
+                            <span class="side-btn-title">खर्च व हिशेब</span>
+                            <span class="side-btn-sub">औषधे, खते, मजुरी व वीज बिल खर्च</span>
+                        </div>
+                    </div>
+                </button>
+
+                <!-- 8. उत्पादन व विक्री -->
+                <button type="button" class="side-nav-btn" data-target="finance-pnl" id="nav-tab-sales"
+                    onclick="switchView('finance-pnl'); if(typeof showSalesTab === 'function') showSalesTab();">
                     <div class="side-btn-left">
                         <i data-lucide="indian-rupee" class="side-btn-icon"></i>
                         <div class="side-btn-text-group">
-                            <span class="side-btn-title">7. खर्च व उत्पन्न</span>
-                            <span class="side-btn-sub">Expenses & Sales</span>
+                            <span class="side-btn-title">उत्पादन व विक्री</span>
+                            <span class="side-btn-sub">काढणी वजन, दर प्रति किलो व महसूल</span>
                         </div>
                     </div>
-                    <span class="nav-badge-pill emerald">नफा-तोटा</span>
                 </button>
 
-                <!-- 8. Reports -->
+                <!-- 9. रिपोर्ट व विश्लेषण -->
                 <button type="button" class="side-nav-btn" data-target="reports" id="nav-tab-reports">
                     <div class="side-btn-left">
                         <i data-lucide="bar-chart-3" class="side-btn-icon"></i>
                         <div class="side-btn-text-group">
-                            <span class="side-btn-title">8. अहवाल (Reports)</span>
-                            <span class="side-btn-sub">Cost/Acre & Kg</span>
+                            <span class="side-btn-title">रिपोर्ट व विश्लेषण</span>
+                            <span class="side-btn-sub">प्लॉटनुसार उत्पादन आलेख व नफा-तोटा</span>
                         </div>
                     </div>
                 </button>
 
-                <!-- 9. Reminder -->
+                <!-- 10. रिमाइंडर -->
                 <button type="button" class="side-nav-btn" data-target="reminders" id="nav-tab-reminders">
                     <div class="side-btn-left">
                         <i data-lucide="bell" class="side-btn-icon"></i>
                         <div class="side-btn-text-group">
-                            <span class="side-btn-title">9. स्मरणपत्रे (Reminder)</span>
-                            <span class="side-btn-sub">Alerts & Schedule</span>
+                            <span class="side-btn-title">रिमाइंडर</span>
+                            <span class="side-btn-sub">फवारणी व सिंचन कामांचे स्मरणपत्र</span>
                         </div>
                     </div>
-                    <span class="nav-badge-pill danger" id="badge-reminder-count">6 कामे</span>
                 </button>
 
-                <!-- Section Divider: बाजारभाव व योजना -->
-                <div class="section-micro-heading" id="sidebar-sec-extra">बाजारभाव व योजना</div>
+                <!-- 11. हवामान माहिती -->
+                <button type="button" class="side-nav-btn" id="nav-tab-weather"
+                    onclick="openModal('modal-weather-info')">
+                    <div class="side-btn-left">
+                        <i data-lucide="cloud-sun" class="side-btn-icon"></i>
+                        <div class="side-btn-text-group">
+                            <span class="side-btn-title">हवामान माहिती</span>
+                            <span class="side-btn-sub">तापमान, पाऊस शक्यता व कृषी सल्ला</span>
+                        </div>
+                    </div>
+                </button>
 
-                <!-- 10. Live Mandi & APMC Grape Rates -->
+                <!-- 12. मार्केट भाव -->
                 <button type="button" class="side-nav-btn" data-target="mandi-rates" id="nav-tab-mandi">
                     <div class="side-btn-left">
                         <i data-lucide="trending-up" class="side-btn-icon"></i>
                         <div class="side-btn-text-group">
-                            <span class="side-btn-title" id="sidebar-tab10-title">10. द्राक्ष बाजारभाव</span>
-                            <span class="side-btn-sub" id="sidebar-tab10-sub">Mandi & APMC Rates</span>
+                            <span class="side-btn-title">मार्केट भाव</span>
+                            <span class="side-btn-sub">पिंपळगाव, तासगाव व वाशी APMC भाव</span>
                         </div>
                     </div>
-                    <span class="nav-badge-pill emerald">Live भाव</span>
                 </button>
 
-                <!-- 11. Government Subsidies & Schemes -->
-                <button type="button" class="side-nav-btn" data-target="govt-schemes" id="nav-tab-schemes">
+                <!-- 13. सेटिंग्स -->
+                <button type="button" class="side-nav-btn" id="nav-tab-settings"
+                    onclick="openModal('modal-settings')">
                     <div class="side-btn-left">
-                        <i data-lucide="landmark" class="side-btn-icon"></i>
+                        <i data-lucide="settings" class="side-btn-icon"></i>
                         <div class="side-btn-text-group">
-                            <span class="side-btn-title">11. शासकीय योजना व सबसिडी</span>
-                            <span class="side-btn-sub">MahaDBT & Subsidies</span>
+                            <span class="side-btn-title">सेटिंग्स</span>
+                            <span class="side-btn-sub">भाषा, शेती प्रोफाइल व नोटिफिकेशन</span>
                         </div>
                     </div>
-                    <span class="nav-badge-pill amber">८०% अनुदान</span>
+                </button>
+
+                <!-- 14. बॅकअप / सिंक -->
+                <button type="button" class="side-nav-btn" id="nav-tab-sync"
+                    onclick="openModal('modal-sync-backup')">
+                    <div class="side-btn-left">
+                        <i data-lucide="cloud" class="side-btn-icon"></i>
+                        <div class="side-btn-text-group">
+                            <span class="side-btn-title">बॅकअप / सिंक</span>
+                            <span class="side-btn-sub">Supabase क्लाउड सिंक व डेटा बॅकअप</span>
+                        </div>
+                    </div>
                 </button>
             </div>
 
@@ -305,10 +363,6 @@
             <!-- Top Header Bar -->
             <header class="top-nav-header">
                 <div class="top-header-left">
-                    <button type="button" class="mobile-menu-toggle-btn" id="mobile-toggle-btn"
-                        aria-label="Toggle Sidebar Menu">
-                        <i data-lucide="menu"></i>
-                    </button>
                     <div class="breadcrumb-block">
                         <i data-lucide="layout-dashboard" class="breadcrumb-section-icon" id="breadcrumb-icon"></i>
                         <div>
@@ -382,7 +436,8 @@
                             English</button>
                     </div>
 
-                    <div class="supabase-status-pill" id="supabase-status-pill" title="Supabase Cloud Live Connected (Click to Refresh)">
+                    <div class="supabase-status-pill" id="supabase-status-pill"
+                        title="Supabase Cloud Live Connected (Click to Refresh)">
                         <span class="status-dot"></span>
                         <span id="supabase-status-text">Supabase: <strong>Live Connected</strong></span>
                     </div>
@@ -394,159 +449,258 @@
                 </div>
             </header>
 
-            <!-- MAIN VIEW CONTAINER (Hosts All 9 Views) -->
+            <!-- MAIN VIEW CONTAINER (Hosts All Views) -->
             <main class="main-content">
 
                 <!-- =========================================================
-                     VIEW 1: DASHBOARD (डॅशबोर्ड)
-                     Requirements: एकूण क्षेत्र, बाग/प्लॉट संख्या, आजची कामे, खर्च व उत्पन्न, पाण्याचा वापर
+                     PAGE 2: HOME DASHBOARD (मुख्य डॅशबोर्ड)
+                     Requirements: कृषिरत्न (Header with hamburger menu), नमस्कार, शेतकरी मित्र!,
+                     आजची तारीख : 20 सप्टेंबर 2026, "चांगले नियोजन म्हणजे जास्त उत्पादन",
+                     महत्त्वाची माहिती या हंगामात (2026-27), एकूण क्षेत्र: 10.0 एकर, प्लॉट संख्या: 5,
+                     आजचे काम: 3, आजचा खर्च: ₹ 2,450, एकूण उत्पादन: 12,500 किलो, एकूण विक्री: ₹ 3,75,000,
+                     आजचे काम: सकाळी प्लॉट A - सिंचन (Checked), प्लॉट B - फवारणी, मजूर हजेरी,
+                     Bottom Navigation: होम, प्लॉट, रिमाइंडर, रिपोर्ट, मेनू
                      ========================================================= -->
                 <section class="app-view active" id="view-dashboard">
                     <div class="view-header">
                         <div class="view-header-left">
-                            <h1 id="dash-header-title">🌿 द्राक्ष बाग मुख्य डॅशबोर्ड</h1>
-                            <p class="view-header-desc" id="dash-header-desc">सह्याद्री द्राक्ष ऑर्चर्ड्स - आजच्या शेती
-                                कामांची व परिस्थितीची थेट नोंद</p>
+                            <div>
+                                <h1 id="dash-header-title">🌿 कृषिरत्न मुख्य डॅशबोर्ड</h1>
+                                <p class="view-header-desc" id="dash-header-desc">सह्याद्री द्राक्ष ऑर्चर्ड्स - शेती
+                                    स्मार्ट... भविष्य जवळून...</p>
+                            </div>
                         </div>
                         <div class="view-header-actions">
-                            <button class="header-btn btn-primary" id="btn-dash-quick-irrigation">
+                            <button class="header-btn btn-primary" onclick="switchView('water-mgmt')">
                                 <i data-lucide="droplet"></i> सिंचन नोंद
                             </button>
-                            <button class="header-btn btn-secondary" id="btn-dash-quick-spray">
+                            <button class="header-btn btn-secondary" onclick="switchView('pest-disease')">
                                 <i data-lucide="bug"></i> फवारणी नोंद
                             </button>
                         </div>
                     </div>
 
-                    <!-- Quick Crop Switcher Bar (Interactive 6 Crop Switcher) -->
-                    <div class="crop-quick-switch-bar">
-                        <div class="crop-bar-title">
-                            <span class="crop-bar-label"><i data-lucide="layers"></i> <span
-                                    id="crop-bar-title-text">सक्रिय पीक निवडा (Select Crop)</span></span>
-                            <span class="crop-bar-sub" id="crop-bar-sub-text">द्राक्ष • कांदा • तूर • मका • डाळिंब •
-                                पेरू (सर्व 6 पिकांसाठी स्वतंत्र व्यवस्थापन)</span>
+                    <!-- Welcome Farmer Banner with Quote -->
+                    <div class="dash-welcome-banner">
+                        <div class="dash-welcome-top">
+                            <div class="dash-farmer-greeting">
+                                <span>🌾</span>
+                                <span id="dash-greeting-text">नमस्कार, शेतकरी मित्र!</span>
+                            </div>
+                            <div class="dash-current-date-badge">
+                                <i data-lucide="calendar"></i>
+                                <span id="dash-live-date">आजची तारीख : 20 सप्टेंबर 2026</span>
+                            </div>
                         </div>
-                        <div class="crop-pills-grid" id="dashboard-crop-pills">
-                            <!-- Populated dynamically by app.js -->
+                        <div class="dash-quote-box">
+                            <span>❝</span>
+                            <span id="dash-inspirational-quote">चांगले नियोजन म्हणजे जास्त उत्पादन</span>
+                            <span>❞</span>
                         </div>
                     </div>
 
-                    <!-- 5 Core Dashboard Metrics -->
+                    <!-- Section: महत्त्वाची माहिती या हंगामात (2026-27) -->
+                    <div class="dash-season-section-heading">
+                        <div class="dash-season-title">
+                            <i data-lucide="sprout" style="color: var(--emerald-primary);"></i>
+                            <span>महत्त्वाची माहिती या हंगामात (2026-27)</span>
+                        </div>
+                        <span class="badge-status success">हंगाम सक्रिय</span>
+                    </div>
+
+                    <!-- 6 Core Requested Dashboard Metric Cards -->
                     <div class="kpi-grid">
-                        <!-- 1. एकूण क्षेत्र -->
-                        <div class="kpi-card">
+                        <!-- 1. एकूण क्षेत्र: 10.0 एकर -->
+                        <div class="kpi-card" onclick="switchView('grape-orchard')" style="cursor: pointer;">
                             <div class="kpi-card-top">
                                 <div class="kpi-icon-wrap emerald"><i data-lucide="map-pin"></i></div>
                                 <span class="kpi-badge positive">सक्रिय बाग</span>
                             </div>
                             <div class="kpi-label">एकूण क्षेत्र (Total Area)</div>
                             <div class="kpi-value-row">
-                                <span class="kpi-number" id="dash-total-acres">10.5</span>
-                                <span class="kpi-unit">एकर (Acres)</span>
+                                <span class="kpi-number" id="dash-total-acres">10.0</span>
+                                <span class="kpi-unit">एकर</span>
                             </div>
                             <div class="kpi-subtext">नाशिक विभाग, महाराष्ट्र</div>
                         </div>
 
-                        <!-- 2. बाग/प्लॉट संख्या -->
-                        <div class="kpi-card">
+                        <!-- 2. प्लॉट संख्या: 5 -->
+                        <div class="kpi-card" onclick="switchView('grape-orchard')" style="cursor: pointer;">
                             <div class="kpi-card-top">
                                 <div class="kpi-icon-wrap purple"><i data-lucide="grape"></i></div>
-                                <span class="kpi-badge">वाणनिहाय</span>
+                                <span class="kpi-badge purple">प्लॉट्स</span>
                             </div>
-                            <div class="kpi-label">बाग / प्लॉट संख्या (Plots)</div>
+                            <div class="kpi-label">प्लॉट संख्या (Plots)</div>
                             <div class="kpi-value-row">
-                                <span class="kpi-number" id="dash-plot-count">3</span>
+                                <span class="kpi-number" id="dash-plot-count">5</span>
                                 <span class="kpi-unit">प्लॉट्स</span>
                             </div>
-                            <div class="kpi-subtext">सोनका, मणिक चमन, थॉमसन</div>
+                            <div class="kpi-subtext">प्लॉट A ते E (थॉम्पसन, सोनका इ.)</div>
                         </div>
 
-                        <!-- 3. आजची कामे -->
-                        <div class="kpi-card">
+                        <!-- 3. आजचे काम: 3 -->
+                        <div class="kpi-card" onclick="switchView('reminders')" style="cursor: pointer;">
                             <div class="kpi-card-top">
                                 <div class="kpi-icon-wrap amber"><i data-lucide="check-circle-2"></i></div>
-                                <span class="kpi-badge warning">प्रलंबित कामे</span>
+                                <span class="kpi-badge warning" id="dash-tasks-badge">आजचे काम</span>
                             </div>
-                            <div class="kpi-label">आजची कामे (Today's Tasks)</div>
+                            <div class="kpi-label">आजचे काम (Today's Work)</div>
                             <div class="kpi-value-row">
-                                <span class="kpi-number" id="dash-pending-tasks">4</span>
-                                <span class="kpi-unit">कामे बाकी</span>
+                                <span class="kpi-number" id="dash-pending-tasks">3</span>
+                                <span class="kpi-unit">कामे</span>
                             </div>
-                            <div class="kpi-subtext">फवारणी, खत व सिंचन नियोजन</div>
+                            <div class="kpi-subtext">सिंचन, फवारणी व हजेरी</div>
                         </div>
 
-                        <!-- 4. खर्च व उत्पन्न -->
-                        <div class="kpi-card">
+                        <!-- 4. आजचा खर्च: ₹ 2,450 -->
+                        <div class="kpi-card" onclick="switchView('finance-pnl')" style="cursor: pointer;">
+                            <div class="kpi-card-top">
+                                <div class="kpi-icon-wrap rose"><i data-lucide="receipt"></i></div>
+                                <span class="kpi-badge danger">दैनिक खर्च</span>
+                            </div>
+                            <div class="kpi-label">आजचा खर्च (Today's Expense)</div>
+                            <div class="kpi-value-row">
+                                <span class="kpi-number" id="dash-today-expense">₹ 2,450</span>
+                            </div>
+                            <div class="kpi-subtext">औषधे व दैनंदिन मजुरी खर्च</div>
+                        </div>
+
+                        <!-- 5. एकूण उत्पादन: 12,500 किलो -->
+                        <div class="kpi-card" onclick="switchView('reports')" style="cursor: pointer;">
+                            <div class="kpi-card-top">
+                                <div class="kpi-icon-wrap blue"><i data-lucide="scale"></i></div>
+                                <span class="kpi-badge info">काढणी उत्पादन</span>
+                            </div>
+                            <div class="kpi-label">एकूण उत्पादन (Production)</div>
+                            <div class="kpi-value-row">
+                                <span class="kpi-number" id="dash-total-yield">12,500</span>
+                                <span class="kpi-unit">किलो</span>
+                            </div>
+                            <div class="kpi-subtext">प्लॉट A काढणी (12.5 टन)</div>
+                        </div>
+
+                        <!-- 6. एकूण विक्री: ₹ 3,75,000 -->
+                        <div class="kpi-card" onclick="switchView('finance-pnl')" style="cursor: pointer;">
                             <div class="kpi-card-top">
                                 <div class="kpi-icon-wrap emerald"><i data-lucide="indian-rupee"></i></div>
-                                <span class="kpi-badge positive" id="dash-profit-margin">+63% नफा</span>
+                                <span class="kpi-badge positive">एकूण महसूल</span>
                             </div>
-                            <div class="kpi-label">खर्च व उत्पन्न (P & L)</div>
+                            <div class="kpi-label">एकूण विक्री (Total Sales)</div>
                             <div class="kpi-value-row">
-                                <span class="kpi-number" id="dash-net-profit">₹3,64,600</span>
+                                <span class="kpi-number" id="dash-total-sales">₹ 3,75,000</span>
                             </div>
-                            <div class="kpi-subtext" id="dash-exp-inc-sub">उत्पन्न ₹5.8L | खर्च ₹2.15L</div>
-                        </div>
-
-                        <!-- 5. पाण्याचा वापर -->
-                        <div class="kpi-card">
-                            <div class="kpi-card-top">
-                                <div class="kpi-icon-wrap blue"><i data-lucide="droplets"></i></div>
-                                <span class="kpi-badge info">ठिबक सिंचन</span>
-                            </div>
-                            <div class="kpi-label">पाण्याचा वापर (Water Usage)</div>
-                            <div class="kpi-value-row">
-                                <span class="kpi-number" id="dash-water-usage">1,35,000</span>
-                                <span class="kpi-unit">लिटर</span>
-                            </div>
-                            <div class="kpi-subtext">सरासरी EC 0.85 • pH 6.8</div>
+                            <div class="kpi-subtext">सरासरी दर ₹ 75 - 85 / kg</div>
                         </div>
                     </div>
 
-                    <!-- Dashboard Content Split -->
+                    <!-- Dashboard Content Split: Today's Tasks & Quick Activities -->
                     <div class="grid-2col">
-                        <!-- Quick Reminder Checklist -->
+                        <!-- Today's Tasks Interactive Checklist -->
                         <div class="card">
                             <div class="card-header">
                                 <div class="card-title-group">
-                                    <h3><i data-lucide="bell" style="color: var(--amber-accent);"></i> आजची तातडीची कामे
-                                        (Urgent Reminders)</h3>
+                                    <h3><i data-lucide="check-square" style="color: var(--emerald-primary);"></i> आजचे
+                                        काम (Today's Tasks)</h3>
+                                    <div class="card-subtitle">कामे पूर्ण झाल्यावर टिक करा</div>
                                 </div>
                                 <button type="button" class="filter-pill" onclick="switchView('reminders')">सर्व
-                                    पहा</button>
+                                    कामे</button>
                             </div>
                             <div class="card-body">
-                                <div class="reminders-list" id="dash-reminders-preview">
-                                    <!-- Dynamic Reminders inserted here -->
+                                <div class="today-tasks-checklist" id="today-tasks-checklist">
+                                    <!-- 1. सकाळी प्लॉट A - सिंचन (Checked) -->
+                                    <div class="today-task-item checked" data-task-id="task-1"
+                                        onclick="toggleDashboardTask(this)">
+                                        <div class="today-task-left">
+                                            <div class="task-checkbox-custom"><i data-lucide="check"
+                                                    style="width: 14px; height: 14px;"></i></div>
+                                            <div>
+                                                <span class="today-task-title">सकाळी प्लॉट A - सिंचन</span>
+                                                <div style="font-size: 0.72rem; color: var(--text-muted);">5,000 L ठिबक
+                                                    • EC 0.8 • NPK फर्टिगेशन</div>
+                                            </div>
+                                        </div>
+                                        <span class="badge-status success">पूर्ण (Done)</span>
+                                    </div>
+
+                                    <!-- 2. प्लॉट B - फवारणी -->
+                                    <div class="today-task-item" data-task-id="task-2"
+                                        onclick="toggleDashboardTask(this)">
+                                        <div class="today-task-left">
+                                            <div class="task-checkbox-custom"><i data-lucide="check"
+                                                    style="width: 14px; height: 14px;"></i></div>
+                                            <div>
+                                                <span class="today-task-title">प्लॉट B - फवारणी</span>
+                                                <div style="font-size: 0.72rem; color: var(--text-muted);">Flea Beetle
+                                                    प्रतिबंधक • Imidacloprid 150ml</div>
+                                            </div>
+                                        </div>
+                                        <span class="badge-status warning">प्रलंबित (Pending)</span>
+                                    </div>
+
+                                    <!-- 3. मजूर हजेरी -->
+                                    <div class="today-task-item" data-task-id="task-3"
+                                        onclick="toggleDashboardTask(this)">
+                                        <div class="today-task-left">
+                                            <div class="task-checkbox-custom"><i data-lucide="check"
+                                                    style="width: 14px; height: 14px;"></i></div>
+                                            <div>
+                                                <span class="today-task-title">मजूर हजेरी</span>
+                                                <div style="font-size: 0.72rem; color: var(--text-muted);">12 मजूर छाटणी
+                                                    • प्रति मजुरी ₹ 400</div>
+                                            </div>
+                                        </div>
+                                        <span class="badge-status warning">प्रलंबित (Pending)</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Orchard Quick Health & Activity -->
+                        <!-- Quick Shortcuts to All 10 Pages -->
                         <div class="card">
                             <div class="card-header">
                                 <div class="card-title-group">
-                                    <h3><i data-lucide="activity" style="color: var(--emerald-primary);"></i> द्राक्ष
-                                        बाग स्थिती व नुकतीच कामे</h3>
+                                    <h3><i data-lucide="compass" style="color: var(--amber-accent);"></i> जलद विभाग
+                                        नेव्हिगेशन</h3>
+                                    <div class="card-subtitle">कोणत्याही विभागावर थेट जा</div>
                                 </div>
-                                <button type="button" class="filter-pill" onclick="switchView('grape-orchard')">प्लॉट
-                                    तपशील</button>
+                                <button type="button" class="filter-pill" onclick="switchView('main-menu')">मेनू
+                                    उघडा</button>
                             </div>
                             <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table-custom">
-                                        <thead>
-                                            <tr>
-                                                <th>तारीख</th>
-                                                <th>प्रकार</th>
-                                                <th>तपशील</th>
-                                                <th>प्लॉट</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="dash-recent-activities">
-                                            <!-- Dynamically populated -->
-                                        </tbody>
-                                    </table>
+                                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem;">
+                                    <button type="button" class="btn-secondary header-btn"
+                                        onclick="switchView('grape-orchard')" style="justify-content: flex-start;">
+                                        <i data-lucide="sprout"></i> <span>प्लॉट तपशील</span>
+                                    </button>
+                                    <button type="button" class="btn-secondary header-btn"
+                                        onclick="switchView('water-mgmt')" style="justify-content: flex-start;">
+                                        <i data-lucide="droplet"></i> <span>सिंचन व्यवस्थापन</span>
+                                    </button>
+                                    <button type="button" class="btn-secondary header-btn"
+                                        onclick="switchView('fertilizer-mgmt')" style="justify-content: flex-start;">
+                                        <i data-lucide="flask-conical"></i> <span>खत व्यवस्थापन</span>
+                                    </button>
+                                    <button type="button" class="btn-secondary header-btn"
+                                        onclick="switchView('pest-disease')" style="justify-content: flex-start;">
+                                        <i data-lucide="bug"></i> <span>कीड व रोग</span>
+                                    </button>
+                                    <button type="button" class="btn-secondary header-btn"
+                                        onclick="switchView('labor-mgmt')" style="justify-content: flex-start;">
+                                        <i data-lucide="users"></i> <span>मजूर हजेरी</span>
+                                    </button>
+                                    <button type="button" class="btn-secondary header-btn"
+                                        onclick="switchView('finance-pnl')" style="justify-content: flex-start;">
+                                        <i data-lucide="indian-rupee"></i> <span>खर्च व उत्पन्न</span>
+                                    </button>
+                                    <button type="button" class="btn-secondary header-btn"
+                                        onclick="switchView('reports')" style="justify-content: flex-start;">
+                                        <i data-lucide="bar-chart-3"></i> <span>रिपोर्ट व विश्लेषण</span>
+                                    </button>
+                                    <button type="button" class="btn-secondary header-btn"
+                                        onclick="switchView('mandi-rates')" style="justify-content: flex-start;">
+                                        <i data-lucide="trending-up"></i> <span>मार्केट भाव</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -555,25 +709,280 @@
 
 
                 <!-- =========================================================
-                     VIEW 2: 🍇 द्राक्ष बाग व्यवस्थापन (Grape Orchard Management)
-                     Requirements: प्लॉटनुसार माहिती, वाण, लागवड अंतर, छाटणी तारीख, घड/काडी व्यवस्थापन, अपेक्षित उत्पादन
+                     PAGE 3: MAIN MENU (मुख्य मेनू)
+                     Requirements: <- मेनू, माझी शेती, द्राक्ष बाग, सिंचन व्यवस्थापन, खत व्यवस्थापन,
+                     कीड व रोग व्यवस्थापन, मजूर व्यवस्थापन, खर्च व हिशेब, उत्पादन व विक्री,
+                     रिपोर्ट व विश्लेषण, रिमाइंडर, हवामान माहिती, मार्केट भाव, सेटिंग्स, बॅकअप / सिंक,
+                     Bottom Navigation: होम, प्लॉट, रिमाइंडर, रिपोर्ट, मेनू
+                     ========================================================= -->
+                <section class="app-view" id="view-main-menu">
+                    <div class="view-header">
+                        <div class="view-header-left">
+                            <button type="button" class="back-nav-btn" onclick="switchView('dashboard')"
+                                title="मागे जा (डॅशबोर्ड)">
+                                <i data-lucide="arrow-left"></i>
+                            </button>
+                            <div>
+                                <h1>मेनू (Main Menu)</h1>
+                                <p class="view-header-desc">कृषिरत्न संपूर्ण शेती व्यवस्थापन विभाग व साधने</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 14 Categorized Menu Cards -->
+                    <div class="main-menu-grid">
+                        <!-- 1. माझी शेती -->
+                        <div class="menu-module-card" onclick="switchView('dashboard')">
+                            <div class="menu-module-icon-wrap emerald"><i data-lucide="home"></i></div>
+                            <div class="menu-module-info">
+                                <span class="menu-module-title">माझी शेती</span>
+                                <span class="menu-module-desc">डॅशबोर्ड, शेती क्षेत्र व आजची कामे</span>
+                            </div>
+                        </div>
+
+                        <!-- 2. द्राक्ष बाग -->
+                        <div class="menu-module-card" onclick="switchView('grape-orchard')">
+                            <div class="menu-module-icon-wrap purple"><i data-lucide="grape"></i></div>
+                            <div class="menu-module-info">
+                                <span class="menu-module-title">द्राक्ष बाग</span>
+                                <span class="menu-module-desc">प्लॉट तपशील, वाण, छाटणी व वाढ</span>
+                            </div>
+                        </div>
+
+                        <!-- 3. सिंचन व्यवस्थापन -->
+                        <div class="menu-module-card" onclick="switchView('water-mgmt')">
+                            <div class="menu-module-icon-wrap blue"><i data-lucide="droplet"></i></div>
+                            <div class="menu-module-info">
+                                <span class="menu-module-title">सिंचन व्यवस्थापन</span>
+                                <span class="menu-module-desc">पाणी लिटर, वेळ, EC व pH नोंदी</span>
+                            </div>
+                        </div>
+
+                        <!-- 4. खत व्यवस्थापन -->
+                        <div class="menu-module-card" onclick="switchView('fertilizer-mgmt')">
+                            <div class="menu-module-icon-wrap amber"><i data-lucide="flask-conical"></i></div>
+                            <div class="menu-module-info">
+                                <span class="menu-module-title">खत व्यवस्थापन</span>
+                                <span class="menu-module-desc">NPK खतांचे नियोजन व फर्टिगेशन</span>
+                            </div>
+                        </div>
+
+                        <!-- 5. कीड व रोग व्यवस्थापन -->
+                        <div class="menu-module-card" onclick="switchView('pest-disease')">
+                            <div class="menu-module-icon-wrap rose"><i data-lucide="bug"></i></div>
+                            <div class="menu-module-info">
+                                <span class="menu-module-title">कीड व रोग व्यवस्थापन</span>
+                                <span class="menu-module-desc">थ्रीप्स, भुरी व फवारणी नोंद</span>
+                            </div>
+                        </div>
+
+                        <!-- 6. मजूर व्यवस्थापन -->
+                        <div class="menu-module-card" onclick="switchView('labor-mgmt')">
+                            <div class="menu-module-icon-wrap emerald"><i data-lucide="users"></i></div>
+                            <div class="menu-module-info">
+                                <span class="menu-module-title">मजूर व्यवस्थापन</span>
+                                <span class="menu-module-desc">दैनिक हजेरी, कामाचा प्रकार व मजुरी</span>
+                            </div>
+                        </div>
+
+                        <!-- 7. खर्च व हिशेब -->
+                        <div class="menu-module-card" onclick="switchView('finance-pnl')">
+                            <div class="menu-module-icon-wrap rose"><i data-lucide="receipt"></i></div>
+                            <div class="menu-module-info">
+                                <span class="menu-module-title">खर्च व हिशेब</span>
+                                <span class="menu-module-desc">औषधे, खते, मजुरी व वीज बिल खर्च</span>
+                            </div>
+                        </div>
+
+                        <!-- 8. उत्पादन व विक्री -->
+                        <div class="menu-module-card" onclick="switchView('finance-pnl'); showSalesTab();">
+                            <div class="menu-module-icon-wrap emerald"><i data-lucide="indian-rupee"></i></div>
+                            <div class="menu-module-info">
+                                <span class="menu-module-title">उत्पादन व विक्री</span>
+                                <span class="menu-module-desc">काढणी वजन, दर प्रति किलो व महसूल</span>
+                            </div>
+                        </div>
+
+                        <!-- 9. रिपोर्ट व विश्लेषण -->
+                        <div class="menu-module-card" onclick="switchView('reports')">
+                            <div class="menu-module-icon-wrap blue"><i data-lucide="bar-chart-3"></i></div>
+                            <div class="menu-module-info">
+                                <span class="menu-module-title">रिपोर्ट व विश्लेषण</span>
+                                <span class="menu-module-desc">प्लॉटनुसार उत्पादन आलेख व नफा-तोटा</span>
+                            </div>
+                        </div>
+
+                        <!-- 10. रिमाइंडर -->
+                        <div class="menu-module-card" onclick="switchView('reminders')">
+                            <div class="menu-module-icon-wrap amber"><i data-lucide="bell"></i></div>
+                            <div class="menu-module-info">
+                                <span class="menu-module-title">रिमाइंडर</span>
+                                <span class="menu-module-desc">फवारणी व सिंचन कामांचे स्मरणपत्र</span>
+                            </div>
+                        </div>
+
+                        <!-- 11. हवामान माहिती -->
+                        <div class="menu-module-card" onclick="openModal('modal-weather-info')">
+                            <div class="menu-module-icon-wrap blue"><i data-lucide="cloud-sun"></i></div>
+                            <div class="menu-module-info">
+                                <span class="menu-module-title">हवामान माहिती</span>
+                                <span class="menu-module-desc">तापमान, पाऊस शक्यता व कृषी सल्ला</span>
+                            </div>
+                        </div>
+
+                        <!-- 12. मार्केट भाव -->
+                        <div class="menu-module-card" onclick="switchView('mandi-rates')">
+                            <div class="menu-module-icon-wrap emerald"><i data-lucide="trending-up"></i></div>
+                            <div class="menu-module-info">
+                                <span class="menu-module-title">मार्केट भाव</span>
+                                <span class="menu-module-desc">पिंपळगाव, तासगाव व वाशी APMC भाव</span>
+                            </div>
+                        </div>
+
+                        <!-- 13. सेटिंग्स -->
+                        <div class="menu-module-card" onclick="openModal('modal-settings')">
+                            <div class="menu-module-icon-wrap purple"><i data-lucide="settings"></i></div>
+                            <div class="menu-module-info">
+                                <span class="menu-module-title">सेटिंग्स</span>
+                                <span class="menu-module-desc">भाषा, शेती प्रोफाइल व नोटिफिकेशन</span>
+                            </div>
+                        </div>
+
+                        <!-- 14. बॅकअप / सिंक -->
+                        <div class="menu-module-card" onclick="openModal('modal-sync-backup')">
+                            <div class="menu-module-icon-wrap emerald"><i data-lucide="cloud"></i></div>
+                            <div class="menu-module-info">
+                                <span class="menu-module-title">बॅकअप / सिंक</span>
+                                <span class="menu-module-desc">Supabase क्लाउड सिंक व डेटा बॅकअप</span>
+                            </div>
+                        </div>
+                    </div>
+                </section> <!-- =========================================================
+                     PAGE 4: PLOT DETAILS (प्लॉट तपशील)
+                     Requirements: <- प्लॉट तपशील | + नवीन प्लॉट,
+                     प्लॉट निवडा: प्लॉट A, क्षेत्र: 2.0 एकर, वाण: Thompson (थॉम्पसन),
+                     लागवड तारीख: 10 जाने 2022, लागवड अंतर: 10 x 6 फूट, प्रशिक्षण पद्धत: Y Trellis,
+                     छाटणी तारीख: 15 ऑक्टो 2025, अपेक्षित उत्पादन: 10-12 टन/एकर, स्थिती: वाढीच्या अवस्थेत,
+                     Buttons: प्लॉट संपादित करा, नोंदी पहा, Icons: कामाची नोंद, फोटो, इतिहास,
+                     Bottom Navigation: होम, प्लॉट, रिमाइंडर, रिपोर्ट, मेनू
                      ========================================================= -->
                 <section class="app-view" id="view-grape-orchard">
                     <div class="view-header">
                         <div class="view-header-left">
-                            <h1 id="crop-tab2-header-title">🍇 द्राक्ष बाग व्यवस्थापन (Grape Orchard Management)</h1>
-                            <p class="view-header-desc" id="crop-tab2-header-desc">प्लॉटनुसार वाण, लागवड अंतर, छाटणी
-                                तारखा, घड/काडी व्यवस्थापन व
-                                अपेक्षित उत्पादन</p>
+                            <button type="button" class="back-nav-btn" onclick="switchView('dashboard')"
+                                title="मागे जा">
+                                <i data-lucide="arrow-left"></i>
+                            </button>
+                            <div>
+                                <h1 id="crop-tab2-header-title">🍇 प्लॉट तपशील (Plot Details)</h1>
+                                <p class="view-header-desc" id="crop-tab2-header-desc">द्राक्ष बाग प्लॉटनिहाय वाण, लागवड
+                                    अंतर, छाटणी तारीख व अपेक्षित उत्पादन</p>
+                            </div>
                         </div>
                         <div class="view-header-actions">
                             <button class="header-btn btn-primary" id="btn-open-add-plot">
-                                <i data-lucide="plus-circle"></i> नवीन प्लॉट जोडा
+                                <i data-lucide="plus-circle"></i> + नवीन प्लॉट
                             </button>
                         </div>
                     </div>
 
-                    <!-- Orchard Plots Cards Grid -->
+                    <!-- Plot Selector Row: प्लॉट निवडा: प्लॉट A, B, C, D, E -->
+                    <div class="plot-selector-row">
+                        <span class="plot-selector-label"><i data-lucide="layers"
+                                style="width: 16px; height: 16px; color: var(--emerald-primary);"></i> प्लॉट
+                            निवडा:</span>
+                        <button type="button" class="plot-pill-btn active" data-plot-code="plot-a"
+                            onclick="selectActivePlot('plot-a')">प्लॉट A (थॉम्पसन)</button>
+                        <button type="button" class="plot-pill-btn" data-plot-code="plot-b"
+                            onclick="selectActivePlot('plot-b')">प्लॉट B (सुपर सोनका)</button>
+                        <button type="button" class="plot-pill-btn" data-plot-code="plot-c"
+                            onclick="selectActivePlot('plot-c')">प्लॉट C (मणिक चमन)</button>
+                        <button type="button" class="plot-pill-btn" data-plot-code="plot-d"
+                            onclick="selectActivePlot('plot-d')">प्लॉट D (शरद)</button>
+                        <button type="button" class="plot-pill-btn" data-plot-code="plot-e"
+                            onclick="selectActivePlot('plot-e')">प्लॉट E (रेड ग्लोब)</button>
+                    </div>
+
+                    <!-- Highlight Detail Card for Selected Plot (Page 4 Main Spec Card) -->
+                    <div class="plot-highlight-card" id="plot-main-highlight-card">
+                        <div class="plot-highlight-header">
+                            <div class="plot-title-row">
+                                <span class="plot-title-name" id="plot-view-name">प्लॉट A (साऊथ ब्लॉक)</span>
+                                <span class="plot-status-tag" id="plot-view-status">वाढीच्या अवस्थेत</span>
+                            </div>
+                            <span class="badge-status purple" id="plot-view-code">PLOT #A-01</span>
+                        </div>
+
+                        <!-- 8 Precise Specs Grid -->
+                        <div class="plot-specs-grid">
+                            <div class="plot-spec-item">
+                                <div class="plot-spec-label">क्षेत्र (Area)</div>
+                                <div class="plot-spec-value" id="plot-view-acres">2.0 एकर</div>
+                            </div>
+                            <div class="plot-spec-item">
+                                <div class="plot-spec-label">द्राक्ष वाण (Variety)</div>
+                                <div class="plot-spec-value" id="plot-view-variety">Thompson (थॉम्पसन)</div>
+                            </div>
+                            <div class="plot-spec-item">
+                                <div class="plot-spec-label">लागवड तारीख (Planting)</div>
+                                <div class="plot-spec-value" id="plot-view-plantdate">10 जाने 2022</div>
+                            </div>
+                            <div class="plot-spec-item">
+                                <div class="plot-spec-label">लागवड अंतर (Spacing)</div>
+                                <div class="plot-spec-value" id="plot-view-spacing">10 x 6 फूट</div>
+                            </div>
+                            <div class="plot-spec-item">
+                                <div class="plot-spec-label">प्रशिक्षण पद्धत (Trellis)</div>
+                                <div class="plot-spec-value" id="plot-view-trellis">Y Trellis</div>
+                            </div>
+                            <div class="plot-spec-item">
+                                <div class="plot-spec-label">छाटणी तारीख (Pruning)</div>
+                                <div class="plot-spec-value" id="plot-view-pruning">15 ऑक्टो 2025</div>
+                            </div>
+                            <div class="plot-spec-item">
+                                <div class="plot-spec-label">अपेक्षित उत्पादन (Yield)</div>
+                                <div class="plot-spec-value" id="plot-view-yield">10-12 टन/एकर (12,500 kg)</div>
+                            </div>
+                            <div class="plot-spec-item">
+                                <div class="plot-spec-label">सद्य स्थिती (Condition)</div>
+                                <div class="plot-spec-value" id="plot-view-condition"
+                                    style="color: var(--emerald-primary);">वाढीच्या अवस्थेत</div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons & Quick Action Icons -->
+                        <div class="plot-actions-bar">
+                            <div class="plot-action-btns-left">
+                                <button type="button" class="header-btn btn-primary" onclick="openEditPlotModal()">
+                                    <i data-lucide="edit"></i> प्लॉट संपादित करा
+                                </button>
+                                <button type="button" class="header-btn btn-secondary" onclick="switchView('reports')">
+                                    <i data-lucide="file-text"></i> नोंदी पहा
+                                </button>
+                            </div>
+                            <div class="plot-icon-strip">
+                                <button type="button" class="plot-icon-btn" onclick="switchView('water-mgmt')"
+                                    title="कामाची नोंद">
+                                    <i data-lucide="clipboard-list"></i> कामाची नोंद
+                                </button>
+                                <button type="button" class="plot-icon-btn" onclick="openModal('modal-plot-photos')"
+                                    title="फोटो">
+                                    <i data-lucide="camera"></i> फोटो
+                                </button>
+                                <button type="button" class="plot-icon-btn" onclick="openModal('modal-plot-history')"
+                                    title="इतिहास">
+                                    <i data-lucide="history"></i> इतिहास
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- All 5 Plots Cards Grid -->
+                    <div
+                        style="font-size: 0.95rem; font-weight: 800; margin: 1.5rem 0 0.85rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.4rem;">
+                        <i data-lucide="grid" style="color: var(--emerald-primary);"></i>
+                        <span>सर्व ५ प्लॉट विहंगावलोकन (All 5 Vineyard Blocks)</span>
+                    </div>
                     <div class="plot-cards-grid" id="grape-plots-container">
                         <!-- Dynamic Plot Cards inserted here -->
                     </div>
@@ -584,113 +993,209 @@
                      VIEW 3: 💧 पाणी व्यवस्थापन (Water & Irrigation Management)
                      Requirements: आजचे सिंचन, पाणी किती लिटर, EC / pH, पाण्यातून मिळणारे N, Ca, Mg इ.
                      ========================================================= -->
+                <!-- =========================================================
+                     PAGE 5: IRRIGATION MANAGEMENT (सिंचन व्यवस्थापन)
+                     Requirements: <- सिंचन व्यवस्थापन,
+                     प्लॉट: प्लॉट A, तारीख: 20/09/2026, पाण्याचे प्रमाण (लिटर): 5,000,
+                     वेळ: सकाळ (Selected), संध्याकाळ, EC (mS/cm): 0.8, pH: 7.2,
+                     टीप: फर्टिगेशन - NPK दिले, नोंद करा (Button),
+                     अलिकडील नोंदी | पहा सर्व:
+                     18/09/2026 | 5,000 L | 0.8 | 7.1
+                     16/09/2026 | 4,500 L | 0.9 | 7.3
+                     14/09/2026 | 5,000 L | 0.8 | 7.0,
+                     Bottom Navigation: होम, प्लॉट, रिमाइंडर, रिपोर्ट, मेनू
+                     ========================================================= -->
                 <section class="app-view" id="view-water-mgmt">
                     <div class="view-header">
                         <div class="view-header-left">
-                            <h1>💧 पाणी व सिंचन व्यवस्थापन (Water Management)</h1>
-                            <p class="view-header-desc">आजचे सिंचन, पाणी लिटर गणना, EC/pH नियंत्रण व पाण्यातून मिळणारे
-                                अन्नद्रव्ये (N, Ca, Mg)</p>
-                        </div>
-                        <div class="view-header-actions">
-                            <button class="header-btn btn-primary" id="btn-open-add-irrigation">
-                                <i data-lucide="plus-circle"></i> सिंचन नोंद करा
+                            <button type="button" class="back-nav-btn" onclick="switchView('dashboard')"
+                                title="मागे जा">
+                                <i data-lucide="arrow-left"></i>
                             </button>
+                            <div>
+                                <h1>💧 सिंचन व्यवस्थापन (Irrigation Management)</h1>
+                                <p class="view-header-desc">दैनिक पाणी वापर, ठिबक सिंचन वेळ, EC व pH नियंत्रण</p>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Water & Nutrient Analytics -->
+                    <!-- Direct In-Page Interactive Irrigation Form -->
+                    <div class="inpage-form-card">
+                        <div class="inpage-form-header">
+                            <div class="inpage-form-title">
+                                <i data-lucide="droplet" style="color: var(--blue-accent);"></i>
+                                <span>नवीन सिंचन नोंद (Add Irrigation Log)</span>
+                            </div>
+                            <span class="badge-status info">ठिबक सिंचन</span>
+                        </div>
+                        <form id="form-inpage-irrigation" onsubmit="handleInpageIrrigationSubmit(event)">
+                            <div class="inpage-form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">प्लॉट निवडा (Plot) *</label>
+                                    <select id="inpage-irr-plot" class="form-control" required>
+                                        <option value="plot-a" selected>प्लॉट A (थॉम्पसन)</option>
+                                        <option value="plot-b">प्लॉट B (सुपर सोनका)</option>
+                                        <option value="plot-c">प्लॉट C (मणिक चमन)</option>
+                                        <option value="plot-d">प्लॉट D (शरद)</option>
+                                        <option value="plot-e">प्लॉट E (रेड ग्लोब)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">तारीख (Date) *</label>
+                                    <input type="date" id="inpage-irr-date" class="form-control" value="2026-09-20"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">पाण्याचे प्रमाण (लिटर) *</label>
+                                    <input type="number" id="inpage-irr-liters" class="form-control" value="5000"
+                                        placeholder="उदा. 5000" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">वेळ (Time of Day) *</label>
+                                    <div class="form-toggle-pill-group">
+                                        <button type="button" class="form-toggle-pill active" id="irr-time-morning"
+                                            onclick="setIrrigationTime('सकाळ')">सकाळ (Morning)</button>
+                                        <button type="button" class="form-toggle-pill" id="irr-time-evening"
+                                            onclick="setIrrigationTime('संध्याकाळ')">संध्याकाळ (Evening)</button>
+                                    </div>
+                                    <input type="hidden" id="inpage-irr-time" value="सकाळ">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">विद्युत वाहकता EC (mS/cm)</label>
+                                    <input type="number" step="0.1" id="inpage-irr-ec" class="form-control" value="0.8"
+                                        placeholder="उदा. 0.8">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">सामू pH</label>
+                                    <input type="number" step="0.1" id="inpage-irr-ph" class="form-control" value="7.2"
+                                        placeholder="उदा. 7.2">
+                                </div>
+                                <div class="form-group" style="grid-column: 1 / -1;">
+                                    <label class="form-label">टीप (Notes / Fertigation)</label>
+                                    <div style="display: flex; gap: 0.75rem;">
+                                        <input type="text" id="inpage-irr-notes" class="form-control"
+                                            value="फर्टिगेशन - NPK दिले" placeholder="उदा. फर्टिगेशन - NPK दिले">
+                                        <button type="submit" class="btn-form-submit">
+                                            <i data-lucide="check-circle-2"></i>
+                                            <span>नोंद करा</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Water Quality & Nutrients Status -->
+                    <div class="card" style="margin-bottom: 1.5rem;">
+                        <div class="card-header">
+                            <div class="card-title-group">
+                                <h3><i data-lucide="gauge"></i> सिंचन पाणी गुणवत्ता विश्लेषण</h3>
+                                <div class="card-subtitle">सुरक्षित पातळी: EC &lt; 1.2 mS/cm | pH: 6.5 - 7.5</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="water-gauge-container">
+                                <div class="water-meter-box">
+                                    <div class="kpi-label">विद्युत वाहकता (EC Level)</div>
+                                    <div class="gauge-val-large" id="water-avg-ec">0.8</div>
+                                    <div class="gauge-status-tag"
+                                        style="background: var(--emerald-subtle); color: var(--emerald-primary);">
+                                        सुरक्षित पातळी (&lt; 1.2)</div>
+                                </div>
+                                <div class="water-meter-box">
+                                    <div class="kpi-label">सामू पातळी (pH Level)</div>
+                                    <div class="gauge-val-large" id="water-avg-ph" style="color: var(--amber-accent);">
+                                        7.2</div>
+                                    <div class="gauge-status-tag"
+                                        style="background: var(--amber-subtle); color: var(--amber-accent);">आदर्श सामू
+                                        (6.5 - 7.5)</div>
+                                </div>
+                                <div class="water-meter-box" style="flex: 1.5;">
+                                    <div class="kpi-label">पाण्यातील पोषक द्रव्ये (N, Ca, Mg)</div>
+                                    <div class="nutrient-pill-row">
+                                        <div class="nutrient-pill">
+                                            <div class="sym">नायट्रोजन (N)</div>
+                                            <div class="qty">3.2 kg</div>
+                                        </div>
+                                        <div class="nutrient-pill">
+                                            <div class="sym">कॅल्शियम (Ca)</div>
+                                            <div class="qty">4.8 kg</div>
+                                        </div>
+                                        <div class="nutrient-pill">
+                                            <div class="sym">मॅग्नेशियम (Mg)</div>
+                                            <div class="qty">2.1 kg</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Entries Table: अलिकडील नोंदी | पहा सर्व -->
                     <div class="card">
                         <div class="card-header">
                             <div class="card-title-group">
-                                <h3><i data-lucide="gauge"></i> सिंचन पाणी गुणवत्ता व अन्नद्रव्य विश्लेषण</h3>
-                                <div class="card-subtitle">द्राक्ष बागेसाठी योग्य EC (< 1.2 dS/m) व pH (6.5 - 7.5)
-                                        पातळी</div>
-                                </div>
+                                <h3><i data-lucide="list"></i> अलिकडील नोंदी (Recent Irrigation Records)</h3>
+                                <div class="card-subtitle">तारीख • पाण्याचे प्रमाण • EC • pH</div>
                             </div>
-                            <div class="card-body">
-                                <div class="water-gauge-container">
-                                    <!-- EC Gauge -->
-                                    <div class="water-meter-box">
-                                        <div class="kpi-label">विद्युत वाहकता (EC Level)</div>
-                                        <div class="gauge-val-large" id="water-avg-ec">0.85</div>
-                                        <div class="gauge-status-tag"
-                                            style="background: var(--emerald-subtle); color: var(--emerald-primary);">
-                                            सुरक्षित पातळी (&lt; 1.2 dS/m)</div>
-                                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.4rem;">
-                                            मुळांच्या सुरक्षित अन्नद्रव्य शोषणासाठी आदर्श</div>
-                                    </div>
-
-                                    <!-- pH Gauge -->
-                                    <div class="water-meter-box">
-                                        <div class="kpi-label">सामू पातळी (pH Level)</div>
-                                        <div class="gauge-val-large" id="water-avg-ph"
-                                            style="color: var(--amber-accent);">6.8</div>
-                                        <div class="gauge-status-tag"
-                                            style="background: var(--amber-subtle); color: var(--amber-accent);">आदर्श
-                                            सामू (6.5 - 7.2)</div>
-                                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.4rem;">
-                                            फॉस्फरस व सूक्ष्म अन्नद्रव्य उपलब्धता सर्वोत्तम</div>
-                                    </div>
-
-                                    <!-- Nutrients from Water (N, Ca, Mg) -->
-                                    <div class="water-meter-box" style="flex: 1.5;">
-                                        <div class="kpi-label">पाण्यातून मिळणारे अन्नद्रव्ये (Nutrients via Water)</div>
-                                        <div class="nutrient-pill-row">
-                                            <div class="nutrient-pill">
-                                                <div class="sym">नायट्रोजन (N)</div>
-                                                <div class="qty" id="water-nutrient-n">3.2 kg</div>
-                                                <span style="font-size: 0.68rem; color: var(--text-muted);">/ 45,000
-                                                    L</span>
-                                            </div>
-                                            <div class="nutrient-pill">
-                                                <div class="sym">कॅल्शियम (Ca)</div>
-                                                <div class="qty" id="water-nutrient-ca">4.8 kg</div>
-                                                <span style="font-size: 0.68rem; color: var(--text-muted);">मणी
-                                                    कणखरता</span>
-                                            </div>
-                                            <div class="nutrient-pill">
-                                                <div class="sym">मॅग्नेशियम (Mg)</div>
-                                                <div class="qty" id="water-nutrient-mg">2.1 kg</div>
-                                                <span
-                                                    style="font-size: 0.68rem; color: var(--text-muted);">हरितद्रव्य</span>
-                                            </div>
-                                        </div>
-                                        <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 0.65rem;">
-                                            💡 पाण्यातून मिळणारे अन्नद्रव्ये खतांच्या खतावणी शेड्यूलमध्ये वजा करावीत.
-                                        </div>
-                                    </div>
-                                </div>
+                            <button type="button" class="filter-pill" onclick="switchView('reports')">पहा सर्व</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table-custom">
+                                    <thead>
+                                        <tr>
+                                            <th>तारीख</th>
+                                            <th>प्लॉट</th>
+                                            <th>पाण्याचे प्रमाण</th>
+                                            <th>वेळ</th>
+                                            <th>EC (mS/cm)</th>
+                                            <th>pH</th>
+                                            <th>टीप / खतावणी</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="inpage-irrigation-tbody">
+                                        <tr>
+                                            <td><strong>20/09/2026</strong></td>
+                                            <td><span class="badge-status purple">प्लॉट A</span></td>
+                                            <td><span class="badge-status info">5,000 L</span></td>
+                                            <td>सकाळ</td>
+                                            <td>0.8</td>
+                                            <td>7.2</td>
+                                            <td>फर्टिगेशन - NPK दिले</td>
+                                        </tr>
+                                        <tr>
+                                            <td>18/09/2026</td>
+                                            <td><span class="badge-status purple">प्लॉट A</span></td>
+                                            <td>5,000 L</td>
+                                            <td>सकाळ</td>
+                                            <td>0.8</td>
+                                            <td>7.1</td>
+                                            <td>नियमित सिंचन</td>
+                                        </tr>
+                                        <tr>
+                                            <td>16/09/2026</td>
+                                            <td><span class="badge-status purple">प्लॉट A</span></td>
+                                            <td>4,500 L</td>
+                                            <td>संध्याकाळ</td>
+                                            <td>0.9</td>
+                                            <td>7.3</td>
+                                            <td>बुरशीनाशक ड्रेंचिंग</td>
+                                        </tr>
+                                        <tr>
+                                            <td>14/09/2026</td>
+                                            <td><span class="badge-status purple">प्लॉट A</span></td>
+                                            <td>5,000 L</td>
+                                            <td>सकाळ</td>
+                                            <td>0.8</td>
+                                            <td>7.0</td>
+                                            <td>ठिबक सिंचन</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-
-                        <!-- Irrigation Logs Table -->
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-title-group">
-                                    <h3><i data-lucide="list"></i> सिंचन व पाणी नोंदी (Irrigation Records)</h3>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table-custom">
-                                        <thead>
-                                            <tr>
-                                                <th>तारीख</th>
-                                                <th>प्लॉट</th>
-                                                <th>सिंचन वेळ (तास)</th>
-                                                <th>पाणी प्रमाण (लिटर)</th>
-                                                <th>पाण्याचा स्त्रोत</th>
-                                                <th>EC / pH</th>
-                                                <th>मिळणारे N-Ca-Mg</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="water-logs-table-body">
-                                            <!-- Dynamically Populated -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+                    </div>
                 </section>
 
 
@@ -698,25 +1203,104 @@
                      VIEW 4: 🧪 खत व्यवस्थापन (Fertilizer Management)
                      Requirements: खताचे नाव, मात्रा, तारीख, प्लॉट, Fertigation record, NPK गणना
                      ========================================================= -->
+                <!-- =========================================================
+                     PAGE 6: FERTILIZER MANAGEMENT (खत व्यवस्थापन)
+                     Requirements: <- खत व्यवस्थापन,
+                     प्लॉट: प्लॉट A, तारीख: 20/09/2026, खताचे नाव: NPK 19:19:19,
+                     मात्रा (प्रति एकर): 5 किलो, पद्धत: मुळाशी, फर्टिगेशन (Selected),
+                     टीप: पाण्यातून दिले, नोंद करा (Button),
+                     गेली नोंदी | पहा सर्व:
+                     15/09/2026 | MAP | 2 kg
+                     10/09/2026 | Calcium Nitrate | 3 kg
+                     05/09/2026 | SOP | 5 kg,
+                     Bottom Navigation: होम, प्लॉट, रिमाइंडर, रिपोर्ट, मेनू
+                     ========================================================= -->
                 <section class="app-view" id="view-fertilizer-mgmt">
                     <div class="view-header">
                         <div class="view-header-left">
-                            <h1>🧪 खत व्यवस्थापन (Fertilizer & Fertigation Management)</h1>
-                            <p class="view-header-desc">खताचे नाव, मात्रा, तारीख, प्लॉट, फर्टिगेशन नोंद व थेट N-P-K
-                                कॅल्क्युलेटर गणना</p>
-                        </div>
-                        <div class="view-header-actions">
-                            <button class="header-btn btn-primary" id="btn-open-add-fertilizer">
-                                <i data-lucide="plus-circle"></i> खत नोंद करा
+                            <button type="button" class="back-nav-btn" onclick="switchView('dashboard')"
+                                title="मागे जा">
+                                <i data-lucide="arrow-left"></i>
                             </button>
+                            <div>
+                                <h1>🧪 खत व्यवस्थापन (Fertilizer Management)</h1>
+                                <p class="view-header-desc">खतांचे वेळापत्रक, ड्रिप फर्टिगेशन व N-P-K अन्नद्रव्य संतुलन
+                                </p>
+                            </div>
                         </div>
                     </div>
 
+                    <!-- Direct In-Page Interactive Fertilizer Form -->
+                    <div class="inpage-form-card">
+                        <div class="inpage-form-header">
+                            <div class="inpage-form-title">
+                                <i data-lucide="flask-conical" style="color: var(--amber-accent);"></i>
+                                <span>नवीन खत नोंद (Add Fertilizer Record)</span>
+                            </div>
+                            <span class="badge-status amber">NPK फर्टिगेशन</span>
+                        </div>
+                        <form id="form-inpage-fertilizer" onsubmit="handleInpageFertilizerSubmit(event)">
+                            <div class="inpage-form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">प्लॉट निवडा (Plot) *</label>
+                                    <select id="inpage-fert-plot" class="form-control" required>
+                                        <option value="plot-a" selected>प्लॉट A (थॉम्पसन)</option>
+                                        <option value="plot-b">प्लॉट B (सुपर सोनका)</option>
+                                        <option value="plot-c">प्लॉट C (मणिक चमन)</option>
+                                        <option value="plot-d">प्लॉट D (शरद)</option>
+                                        <option value="plot-e">प्लॉट E (रेड ग्लोब)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">तारीख (Date) *</label>
+                                    <input type="date" id="inpage-fert-date" class="form-control" value="2026-09-20"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">खताचे नाव (Fertilizer Name) *</label>
+                                    <input type="text" id="inpage-fert-name" class="form-control" value="NPK 19:19:19"
+                                        placeholder="उदा. NPK 19:19:19" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">मात्रा (प्रति एकर) *</label>
+                                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                        <input type="number" step="0.5" id="inpage-fert-dose" class="form-control"
+                                            value="5" required>
+                                        <span style="font-weight: 700; color: var(--text-muted);">किलो</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">पद्धत (Application Method) *</label>
+                                    <div class="form-toggle-pill-group">
+                                        <button type="button" class="form-toggle-pill" id="fert-method-soil"
+                                            onclick="setFertilizerMethod('मुळाशी')">मुळाशी (Soil)</button>
+                                        <button type="button" class="form-toggle-pill active"
+                                            id="fert-method-fertigation"
+                                            onclick="setFertilizerMethod('फर्टिगेशन')">फर्टिगेशन (Fertigation)</button>
+                                    </div>
+                                    <input type="hidden" id="inpage-fert-method" value="फर्टिगेशन">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">टीप (Notes)</label>
+                                    <input type="text" id="inpage-fert-notes" class="form-control"
+                                        value="पाण्यातून दिले" placeholder="उदा. पाण्यातून दिले">
+                                </div>
+                                <div class="form-group"
+                                    style="grid-column: 1 / -1; display: flex; justify-content: flex-end;">
+                                    <button type="submit" class="btn-form-submit">
+                                        <i data-lucide="check-circle-2"></i>
+                                        <span>नोंद करा</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
                     <!-- Live NPK Summary Card -->
-                    <div class="npk-calculator-card">
+                    <div class="npk-calculator-card" style="margin-bottom: 1.5rem;">
                         <div class="card-title-group">
                             <h3><i data-lucide="calculator" style="color: var(--purple-accent);"></i> या हंगामातील
-                                प्रत्यक्ष N-P-K पुरवठा गणना (Live Elemental kg)</h3>
+                                प्रत्यक्ष N-P-K पुरवठा गणना</h3>
                             <div class="card-subtitle">द्राक्ष वेलीस खतांच्या मात्रेतून मिळालेले प्रत्यक्ष नायट्रोजन,
                                 स्फुरद व पालाश प्रमाण</div>
                         </div>
@@ -745,12 +1329,14 @@
                         </div>
                     </div>
 
-                    <!-- Fertilizer Logs Table -->
+                    <!-- Past Entries Table: गेली नोंदी | पहा सर्व -->
                     <div class="card">
                         <div class="card-header">
                             <div class="card-title-group">
-                                <h3><i data-lucide="flask-round"></i> खत व फर्टिगेशन नोंदी (Fertigation Records)</h3>
+                                <h3><i data-lucide="history"></i> गेली नोंदी (Past Fertilizer Records)</h3>
+                                <div class="card-subtitle">तारीख • खताचे नाव • मात्रा • पद्धत</div>
                             </div>
+                            <button type="button" class="filter-pill" onclick="switchView('reports')">पहा सर्व</button>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -760,15 +1346,44 @@
                                             <th>तारीख</th>
                                             <th>प्लॉट</th>
                                             <th>खताचे नाव</th>
-                                            <th>वापर मात्रा</th>
-                                            <th>अर्ज पद्धत</th>
-                                            <th>NPK प्रमाण</th>
-                                            <th>प्रत्यक्ष N-P-K (kg)</th>
-                                            <th>खर्च (₹)</th>
+                                            <th>मात्रा (प्रति एकर)</th>
+                                            <th>पद्धत</th>
+                                            <th>टीप</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="fertilizer-logs-table-body">
-                                        <!-- Dynamically Populated -->
+                                    <tbody id="inpage-fertilizer-tbody">
+                                        <tr>
+                                            <td><strong>20/09/2026</strong></td>
+                                            <td><span class="badge-status purple">प्लॉट A</span></td>
+                                            <td><strong>NPK 19:19:19</strong></td>
+                                            <td>5 किलो</td>
+                                            <td><span class="badge-status success">फर्टिगेशन</span></td>
+                                            <td>पाण्यातून दिले</td>
+                                        </tr>
+                                        <tr>
+                                            <td>15/09/2026</td>
+                                            <td><span class="badge-status purple">प्लॉट A</span></td>
+                                            <td>MAP (12:61:00)</td>
+                                            <td>2 kg</td>
+                                            <td><span class="badge-status success">फर्टिगेशन</span></td>
+                                            <td>पांढरी मुळी वाढ</td>
+                                        </tr>
+                                        <tr>
+                                            <td>10/09/2026</td>
+                                            <td><span class="badge-status purple">प्लॉट A</span></td>
+                                            <td>Calcium Nitrate</td>
+                                            <td>3 kg</td>
+                                            <td><span class="badge-status success">फर्टिगेशन</span></td>
+                                            <td>मणी मजबुतीसाठी</td>
+                                        </tr>
+                                        <tr>
+                                            <td>05/09/2026</td>
+                                            <td><span class="badge-status purple">प्लॉट A</span></td>
+                                            <td>SOP (00:00:50)</td>
+                                            <td>5 kg</td>
+                                            <td><span class="badge-status success">फर्टिगेशन</span></td>
+                                            <td>पालाश पुरवठा</td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -778,171 +1393,117 @@
 
 
                 <!-- =========================================================
-                     VIEW 5: 🐛 कीड व रोग व्यवस्थापन (Pest & Disease Management)
-                     Requirements: Flea beetle, Thrips इ., रोग/किडीची नोंद, फवारणी, औषधाचे नाव व मात्रा, पुढील फवारणीची तारीख
+                     PAGE 7: PEST & DISEASE MANAGEMENT (कीड व रोग व्यवस्थापन)
+                     Requirements: <- कीड व रोग व्यवस्थापन,
+                     प्लॉट: प्लॉट A, तारीख: 20/09/2026, किड/रोग: Flea Beetle (पान कुरतडणारी),
+                     औषधाचे नाव: Imidacloprid 17.8 SL, मात्रा (प्रति एकर): 150 ml,
+                     फवारणी पद्धत: पंप, टीप: प्रादुर्भाव कमी दिसतो, फोटो जोडा, नोंद करा (Button),
+                     गेली नोंदी | पहा सर्व:
+                     10/09/2026 | Thrips | Spinosad
+                     01/09/2026 | Powdery Mildew | Sulphur,
+                     Bottom Navigation: होम, प्लॉट, रिमाइंडर, रिपोर्ट, मेनू
                      ========================================================= -->
                 <section class="app-view" id="view-pest-disease">
                     <div class="view-header">
                         <div class="view-header-left">
-                            <h1>🐛 कीड व रोग व्यवस्थापन (Pest & Disease Management)</h1>
-                            <p class="view-header-desc">उदबत्या (Flea beetle), थ्रीप्स (Thrips), केवडा, भुरी नोंद,
-                                फवारणी, औषध मात्रा व पुढील तारीख</p>
-                        </div>
-                        <div class="view-header-actions">
-                            <button class="header-btn btn-primary" id="btn-open-add-spray">
-                                <i data-lucide="plus-circle"></i> फवारणी नोंद करा
+                            <button type="button" class="back-nav-btn" onclick="switchView('dashboard')"
+                                title="मागे जा">
+                                <i data-lucide="arrow-left"></i>
                             </button>
+                            <div>
+                                <h1>🐛 कीड व रोग व्यवस्थापन (Pest & Disease Management)</h1>
+                                <p class="view-header-desc">उदबत्या (Flea beetle), थ्रीप्स (Thrips), भुरी व फवारणी
+                                    नियोजन</p>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Common Pests & Diseases Reference Bar (Crop Specific) -->
-                    <div class="kpi-grid" id="pest-advisory-cards-container">
-                        <div class="kpi-card">
-                            <div class="kpi-card-top">
-                                <div class="kpi-icon-wrap rose"><i data-lucide="shield-alert"></i></div>
-                                <span class="kpi-badge danger">जागृत रहा</span>
+                    <!-- Direct In-Page Interactive Pest Spray Form -->
+                    <div class="inpage-form-card">
+                        <div class="inpage-form-header">
+                            <div class="inpage-form-title">
+                                <i data-lucide="bug" style="color: var(--rose-accent);"></i>
+                                <span>नवीन फवारणी नोंद (Add Spray Log)</span>
                             </div>
-                            <div class="kpi-label">उदबत्या (Flea Beetle)</div>
-                            <div class="kpi-value-row">
-                                <span style="font-size: 1.1rem; font-weight: 700;">फुटवे अवस्था धोकेदायक</span>
-                            </div>
-                            <div class="kpi-subtext">कोवळे डोळे व पाने कुरतडणे</div>
+                            <span class="badge-status danger">कीड नियंत्रण</span>
                         </div>
-
-                        <div class="kpi-card">
-                            <div class="kpi-card-top">
-                                <div class="kpi-icon-wrap amber"><i data-lucide="bug"></i></div>
-                                <span class="kpi-badge warning">फुलोरा व मणी अवस्था</span>
+                        <form id="form-inpage-spray" onsubmit="handleInpageSpraySubmit(event)">
+                            <div class="inpage-form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">प्लॉट निवडा (Plot) *</label>
+                                    <select id="inpage-spray-plot" class="form-control" required>
+                                        <option value="plot-a" selected>प्लॉट A (थॉम्पसन)</option>
+                                        <option value="plot-b">प्लॉट B (सुपर सोनका)</option>
+                                        <option value="plot-c">प्लॉट C (मणिक चमन)</option>
+                                        <option value="plot-d">प्लॉट D (शरद)</option>
+                                        <option value="plot-e">प्लॉट E (रेड ग्लोब)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">तारीख (Date) *</label>
+                                    <input type="date" id="inpage-spray-date" class="form-control" value="2026-09-20"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">किड / रोग (Pest / Disease) *</label>
+                                    <input type="text" id="inpage-spray-pest" class="form-control"
+                                        value="Flea Beetle (पान कुरतडणारी)" placeholder="उदा. Flea Beetle" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">औषधाचे नाव (Chemical / Bio) *</label>
+                                    <input type="text" id="inpage-spray-chemical" class="form-control"
+                                        value="Imidacloprid 17.8 SL" placeholder="उदा. Imidacloprid 17.8 SL" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">मात्रा (प्रति एकर) *</label>
+                                    <input type="text" id="inpage-spray-dose" class="form-control" value="150 ml"
+                                        placeholder="उदा. 150 ml" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">फवारणी पद्धत (Method) *</label>
+                                    <select id="inpage-spray-method" class="form-control" required>
+                                        <option value="पंप" selected>पंप (Knapsack / Battery Pump)</option>
+                                        <option value="ट्रॅक्टर ब्लोअर">ट्रॅक्टर ब्लोअर (Tractor Blower)</option>
+                                        <option value="एसटीपी">एसटीपी पंप (HTP Sprayer)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">टीप (Observation)</label>
+                                    <input type="text" id="inpage-spray-notes" class="form-control"
+                                        value="प्रादुर्भाव कमी दिसतो" placeholder="उदा. प्रादुर्भाव कमी दिसतो">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">फोटो जोडा (Attach Photo)</label>
+                                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                        <label for="spray-photo-upload" class="header-btn btn-secondary"
+                                            style="cursor: pointer; margin: 0; padding: 0.45rem 0.8rem; font-size: 0.82rem;">
+                                            <i data-lucide="camera"></i> <span>फोटो निवडा</span>
+                                        </label>
+                                        <input type="file" id="spray-photo-upload" accept="image/*"
+                                            style="display: none;" onchange="handleSprayPhotoUpload(this)">
+                                        <span id="spray-photo-filename"
+                                            style="font-size: 0.74rem; color: var(--text-muted);">पान कुरतडणे.jpg</span>
+                                    </div>
+                                </div>
+                                <div class="form-group"
+                                    style="grid-column: 1 / -1; display: flex; justify-content: flex-end;">
+                                    <button type="submit" class="btn-form-submit">
+                                        <i data-lucide="check-circle-2"></i>
+                                        <span>नोंद करा</span>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="kpi-label">थ्रीप्स (Thrips)</div>
-                            <div class="kpi-value-row">
-                                <span style="font-size: 1.1rem; font-weight: 700;">मण्यांवर खपली पडणे</span>
-                            </div>
-                            <div class="kpi-subtext">Spinotoram / Regent फवारणी</div>
-                        </div>
-
-                        <div class="kpi-card">
-                            <div class="kpi-card-top">
-                                <div class="kpi-icon-wrap blue"><i data-lucide="cloud-rain"></i></div>
-                                <span class="kpi-badge info">ढगाळ हवामान</span>
-                            </div>
-                            <div class="kpi-label">केवडा (Downy Mildew)</div>
-                            <div class="kpi-value-row">
-                                <span style="font-size: 1.1rem; font-weight: 700;">पानांवर तेलकट डाग</span>
-                            </div>
-                            <div class="kpi-subtext">Profiler / Aliette प्रतिबंधक</div>
-                        </div>
-
-                        <div class="kpi-card">
-                            <div class="kpi-card-top">
-                                <div class="kpi-icon-wrap purple"><i data-lucide="wind"></i></div>
-                                <span class="kpi-badge">कोरडे व थंड हवामान</span>
-                            </div>
-                            <div class="kpi-label">भुरी (Powdery Mildew)</div>
-                            <div class="kpi-value-row">
-                                <span style="font-size: 1.1rem; font-weight: 700;">पानांवर पांढरी पावडर</span>
-                            </div>
-                            <div class="kpi-subtext">Luna / सल्फर डस्टिंग</div>
-                        </div>
+                        </form>
                     </div>
 
-                    <!-- Spraying Records Table -->
+                    <!-- Past Spray Entries: गेली नोंदी | पहा सर्व -->
                     <div class="card">
                         <div class="card-header">
                             <div class="card-title-group">
-                                <h3><i data-lucide="spray-can"></i> फवारणी व कीड/रोग नियंत्रण नोंदी (Spray Logs)</h3>
+                                <h3><i data-lucide="history"></i> गेली नोंदी (Past Spraying Records)</h3>
+                                <div class="card-subtitle">तारीख • कीड/रोग • औषध • मात्रा</div>
                             </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table-custom">
-                                    <thead>
-                                        <tr>
-                                            <th>फवारणी तारीख</th>
-                                            <th>प्लॉट</th>
-                                            <th>लक्ष्य कीड / रोग</th>
-                                            <th>औषधाचे नाव</th>
-                                            <th>मात्रा (प्रति लिटर)</th>
-                                            <th>एकूण पाणी (L)</th>
-                                            <th>पुढील फवारणी तारीख</th>
-                                            <th>खर्च (₹)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="pest-spray-table-body">
-                                        <!-- Dynamically Populated -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-
-                <!-- =========================================================
-                     VIEW 6: 👷 मजूर व्यवस्थापन (Labor Management)
-                     Requirements: कामगारांची नोंद, रोजंदारी, केलेले काम, उपस्थिती, एकूण मजुरी खर्च
-                     ========================================================= -->
-                <section class="app-view" id="view-labor-mgmt">
-                    <div class="view-header">
-                        <div class="view-header-left">
-                            <h1>👷 मजूर व्यवस्थापन (Labor & Workforce Management)</h1>
-                            <p class="view-header-desc">कामगारांची नोंद, रोजंदारी दर, केलेले काम (छाटणी, विरळणी,
-                                डिपिंग), उपस्थिती व मजुरी खर्च</p>
-                        </div>
-                        <div class="view-header-actions">
-                            <button class="header-btn btn-primary" id="btn-open-add-labor">
-                                <i data-lucide="plus-circle"></i> मजूर हजेरी नोंद करा
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Labor Metrics -->
-                    <div class="kpi-grid">
-                        <div class="kpi-card">
-                            <div class="kpi-card-top">
-                                <div class="kpi-icon-wrap emerald"><i data-lucide="users"></i></div>
-                                <span class="kpi-badge positive">आजची हजेरी</span>
-                            </div>
-                            <div class="kpi-label">एकूण कामगार उपस्थिती</div>
-                            <div class="kpi-value-row">
-                                <span class="kpi-number" id="labor-total-headcount">14</span>
-                                <span class="kpi-unit">मजूर</span>
-                            </div>
-                            <div class="kpi-subtext" id="labor-gender-split">8 पुरुष (₹450) • 6 महिला (₹350)</div>
-                        </div>
-
-                        <div class="kpi-card">
-                            <div class="kpi-card-top">
-                                <div class="kpi-icon-wrap amber"><i data-lucide="wallet"></i></div>
-                                <span class="kpi-badge warning">हंगाम एकूण</span>
-                            </div>
-                            <div class="kpi-label">एकूण मजुरी खर्च (Total Labor)</div>
-                            <div class="kpi-value-row">
-                                <span class="kpi-number" id="labor-total-cost">₹58,400</span>
-                            </div>
-                            <div class="kpi-subtext">छाटणी, बांधणी व विरळणी मजुरी</div>
-                        </div>
-
-                        <div class="kpi-card">
-                            <div class="kpi-card-top">
-                                <div class="kpi-icon-wrap purple"><i data-lucide="scissors"></i></div>
-                                <span class="kpi-badge purple">सध्याचे काम</span>
-                            </div>
-                            <div class="kpi-label">चालू मुख्य काम</div>
-                            <div class="kpi-value-row">
-                                <span style="font-size: 1.25rem; font-weight: 700;">काडी बांधणी व विरळणी</span>
-                            </div>
-                            <div class="kpi-subtext">प्लॉट 1 व प्लॉट 2 मध्ये प्रगतीपथावर</div>
-                        </div>
-                    </div>
-
-                    <!-- Labor Logs Table -->
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title-group">
-                                <h3><i data-lucide="clipboard-list"></i> दैनिक मजूर हजेरी व काम नोंद (Attendance Roster)
-                                </h3>
-                            </div>
+                            <button type="button" class="filter-pill" onclick="switchView('reports')">पहा सर्व</button>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -951,17 +1512,42 @@
                                         <tr>
                                             <th>तारीख</th>
                                             <th>प्लॉट</th>
-                                            <th>केलेले काम</th>
-                                            <th>कामगारांची नावे / तपशील</th>
-                                            <th>पुरुष मजूर</th>
-                                            <th>महिला मजूर</th>
-                                            <th>रोजंदारी दर</th>
-                                            <th>एकूण खर्च (₹)</th>
-                                            <th>पेमेंट स्थिती</th>
+                                            <th>किड / रोग</th>
+                                            <th>औषधाचे नाव</th>
+                                            <th>मात्रा (प्रति एकर)</th>
+                                            <th>फवारणी पद्धत</th>
+                                            <th>टीप</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="labor-logs-table-body">
-                                        <!-- Dynamically Populated -->
+                                    <tbody id="inpage-pest-tbody">
+                                        <tr>
+                                            <td><strong>20/09/2026</strong></td>
+                                            <td><span class="badge-status purple">प्लॉट A</span></td>
+                                            <td><span class="badge-status danger">Flea Beetle (पान कुरतडणारी)</span>
+                                            </td>
+                                            <td><strong>Imidacloprid 17.8 SL</strong></td>
+                                            <td>150 ml</td>
+                                            <td>पंप</td>
+                                            <td>प्रादुर्भाव कमी दिसतो</td>
+                                        </tr>
+                                        <tr>
+                                            <td>10/09/2026</td>
+                                            <td><span class="badge-status purple">प्लॉट A</span></td>
+                                            <td><span class="badge-status warning">Thrips (थ्रीप्स)</span></td>
+                                            <td>Spinosad 45 SC</td>
+                                            <td>60 ml</td>
+                                            <td>ट्रॅक्टर ब्लोअर</td>
+                                            <td>मणी सेटिंग संरक्षण</td>
+                                        </tr>
+                                        <tr>
+                                            <td>01/09/2026</td>
+                                            <td><span class="badge-status purple">प्लॉट A</span></td>
+                                            <td><span class="badge-status warning">Powdery Mildew (भुरी)</span></td>
+                                            <td>Sulphur 80 WDG</td>
+                                            <td>500 gm</td>
+                                            <td>पंप</td>
+                                            <td>प्रतिबंधक फवारणी</td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -971,161 +1557,138 @@
 
 
                 <!-- =========================================================
-                     VIEW 7: 💰 खर्च व उत्पन्न (Expense & Income / Financials)
-                     Requirements: खते, औषधे, मजुरी, पाणी/वीज, वाहतूक, इतर खर्च, विक्री व नफा
+                     PAGE 8: 👷 मजूर व्यवस्थापन (Labor Management)
+                     Requirements:
+                     <- मजूर व्यवस्थापन
+                     तारीख: 20/09/2026
+                     कामाचे प्रकार: छाटणी
+                     मजुरांची संख्या: 12
+                     प्रति मजुरी (₹): 400
+                     एकूण खर्च: ₹ 4,800
+                     टीप: वेळेवर काम पूर्ण
+                     नोंद करा (Button)
+                     आजची हजेरी
+                     राजू पवार (Checked)
+                     सुनिता शिंदे (Checked)
+                     गणेश जाधव (Checked)
+                     विठ्ठल गावडे (Checked)
                      ========================================================= -->
-                <section class="app-view" id="view-finance-pnl">
+                <section class="app-view" id="view-labor-mgmt">
                     <div class="view-header">
                         <div class="view-header-left">
-                            <h1>💰 खर्च व उत्पन्न (Expense & Income Financials)</h1>
-                            <p class="view-header-desc">खते, औषधे, मजुरी, वीज, वाहतूक इ. 6 खर्च प्रवाह आणि द्राक्ष
-                                विक्री उत्पन्न व निव्वळ नफा</p>
+                            <button type="button" class="back-btn-pill" onclick="switchView('view-main-menu')">
+                                <i data-lucide="arrow-left"></i>
+                                <span>मागे (Back)</span>
+                            </button>
+                            <h1 style="margin: 0; font-size: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                                👷 मजूर व्यवस्थापन
+                            </h1>
                         </div>
                         <div class="view-header-actions">
-                            <button class="header-btn btn-secondary" id="btn-open-add-expense">
-                                <i data-lucide="minus-circle"></i> खर्च नोंद करा
-                            </button>
-                            <button class="header-btn btn-primary" id="btn-open-add-sale">
-                                <i data-lucide="plus-circle"></i> द्राक्ष विक्री नोंद करा
-                            </button>
+                            <span class="season-badge"><i data-lucide="users"></i> हजेरी व मजुरी खर्च</span>
                         </div>
                     </div>
 
-                    <!-- Financial Summary Cards -->
-                    <div class="kpi-grid">
-                        <div class="kpi-card">
-                            <div class="kpi-card-top">
-                                <div class="kpi-icon-wrap emerald"><i data-lucide="trending-up"></i></div>
-                                <span class="kpi-badge positive">एकूण आवक</span>
-                            </div>
-                            <div class="kpi-label">एकूण द्राक्ष विक्री (Total Sales)</div>
-                            <div class="kpi-value-row">
-                                <span class="kpi-number" id="fin-total-revenue">₹5,80,000</span>
-                            </div>
-                            <div class="kpi-subtext">एकूण 7,250 kg विक्री @ ₹80/kg</div>
+                    <!-- Direct In-Page Form Card -->
+                    <div class="inpage-form-card">
+                        <div class="inpage-form-title">
+                            <i data-lucide="user-check"></i> मजूर काम व मजुरी नोंद करा
                         </div>
-
-                        <div class="kpi-card">
-                            <div class="kpi-card-top">
-                                <div class="kpi-icon-wrap rose"><i data-lucide="trending-down"></i></div>
-                                <span class="kpi-badge danger">एकूण जावक</span>
+                        <form id="inpage-labor-form" onsubmit="handleInpageLaborSubmit(event)">
+                            <div class="inpage-form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">तारीख *</label>
+                                    <input type="text" id="inpage-labor-date" class="form-control" value="20/09/2026"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">कामाचे प्रकार *</label>
+                                    <select id="inpage-labor-type" class="form-control" required>
+                                        <option value="छाटणी" selected>छाटणी</option>
+                                        <option value="काडी बांधणी">काडी बांधणी</option>
+                                        <option value="डिपिंग / विरळणी">डिपिंग / विरळणी</option>
+                                        <option value="फवारणी">फवारणी</option>
+                                        <option value="काढणी व पॅकिंग">काढणी व पॅकिंग</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">मजुरांची संख्या *</label>
+                                    <input type="number" id="inpage-labor-count" class="form-control" value="12" min="1"
+                                        required oninput="calculateLaborTotal()">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">प्रति मजुरी (₹) *</label>
+                                    <input type="number" id="inpage-labor-rate" class="form-control" value="400" min="0"
+                                        required oninput="calculateLaborTotal()">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">एकूण खर्च (₹) [स्वयंचलित]</label>
+                                    <input type="text" id="inpage-labor-total" class="form-control" value="₹ 4,800"
+                                        readonly
+                                        style="font-weight: 700; color: var(--emerald-deep); background: #FAFDF7;">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">टीप</label>
+                                    <input type="text" id="inpage-labor-note" class="form-control"
+                                        value="वेळेवर काम पूर्ण">
+                                </div>
                             </div>
-                            <div class="kpi-label">एकूण खर्च (Total Expenses)</div>
-                            <div class="kpi-value-row">
-                                <span class="kpi-number" id="fin-total-expense">₹2,15,400</span>
+                            <div class="inpage-form-actions">
+                                <button type="submit" class="btn-primary header-btn"
+                                    style="padding: 0.65rem 1.6rem; font-size: 0.95rem;">
+                                    <i data-lucide="check-circle-2"></i> नोंद करा
+                                </button>
                             </div>
-                            <div class="kpi-subtext">सर्व 6 विभागांचा एकूण खर्च</div>
-                        </div>
-
-                        <div class="kpi-card">
-                            <div class="kpi-card-top">
-                                <div class="kpi-icon-wrap amber"><i data-lucide="coins"></i></div>
-                                <span class="kpi-badge positive">निव्वळ शिल्लक</span>
-                            </div>
-                            <div class="kpi-label">निव्वळ नफा (Net Profit)</div>
-                            <div class="kpi-value-row">
-                                <span class="kpi-number" id="fin-net-profit">₹3,64,600</span>
-                            </div>
-                            <div class="kpi-subtext" id="fin-margin-label">नफा मार्जिन: 62.8%</div>
-                        </div>
+                        </form>
                     </div>
 
-                    <!-- 6 Categorized Expense Streams Breakdown -->
-                    <div class="card">
+                    <!-- Attendance Roster Section -->
+                    <div class="card" style="margin-top: 1.25rem;">
                         <div class="card-header">
                             <div class="card-title-group">
-                                <h3><i data-lucide="pie-chart"></i> 6 मुख्य खर्च विभाग (6 Categorized Expense Streams)
-                                </h3>
+                                <h3><i data-lucide="clipboard-check"></i> आजची हजेरी (20/09/2026)</h3>
+                                <div class="card-subtitle">उपस्थित कामगारांचे हजेरी मार्क करा</div>
                             </div>
+                            <span class="kpi-badge positive" id="attendance-count-badge">4/4 उपस्थित</span>
                         </div>
                         <div class="card-body">
-                            <div class="kpi-grid"
-                                style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom: 0;">
-                                <div class="season-box">
-                                    <div class="detail-label">1. खते (Fertilizers)</div>
-                                    <div class="kpi-number" style="font-size: 1.45rem;" id="cat-exp-fertilizers">₹48,500
+                            <div class="labor-attendance-grid" id="labor-attendance-list">
+                                <label class="attendance-check-card checked">
+                                    <input type="checkbox" checked onchange="toggleAttendanceItem(this)">
+                                    <div class="worker-avatar">रा</div>
+                                    <div class="worker-info">
+                                        <div class="worker-name">राजू पवार</div>
+                                        <div class="worker-role">कुशल मजूर • छाटणी</div>
                                     </div>
-                                </div>
-                                <div class="season-box">
-                                    <div class="detail-label">2. औषधे (Chemicals/Pest)</div>
-                                    <div class="kpi-number" style="font-size: 1.45rem;" id="cat-exp-sprays">₹52,800
+                                    <span class="attendance-status">हजर</span>
+                                </label>
+                                <label class="attendance-check-card checked">
+                                    <input type="checkbox" checked onchange="toggleAttendanceItem(this)">
+                                    <div class="worker-avatar">सु</div>
+                                    <div class="worker-info">
+                                        <div class="worker-name">सुनिता शिंदे</div>
+                                        <div class="worker-role">मजूर • काडी बांधणी</div>
                                     </div>
-                                </div>
-                                <div class="season-box">
-                                    <div class="detail-label">3. मजुरी (Labor)</div>
-                                    <div class="kpi-number" style="font-size: 1.45rem;" id="cat-exp-labor">₹58,400</div>
-                                </div>
-                                <div class="season-box">
-                                    <div class="detail-label">4. पाणी व वीज (Water/Power)</div>
-                                    <div class="kpi-number" style="font-size: 1.45rem;" id="cat-exp-water">₹18,200</div>
-                                </div>
-                                <div class="season-box">
-                                    <div class="detail-label">5. वाहतूक व क्रेट्स (Transport)</div>
-                                    <div class="kpi-number" style="font-size: 1.45rem;" id="cat-exp-transport">₹22,500
+                                    <span class="attendance-status">हजर</span>
+                                </label>
+                                <label class="attendance-check-card checked">
+                                    <input type="checkbox" checked onchange="toggleAttendanceItem(this)">
+                                    <div class="worker-avatar">ग</div>
+                                    <div class="worker-info">
+                                        <div class="worker-name">गणेश जाधव</div>
+                                        <div class="worker-role">कुशल मजूर • फवारणी/छाटणी</div>
                                     </div>
-                                </div>
-                                <div class="season-box">
-                                    <div class="detail-label">6. इतर खर्च (Miscellaneous)</div>
-                                    <div class="kpi-number" style="font-size: 1.45rem;" id="cat-exp-other">₹15,000</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Harvest Sales & Expenses Dual Tables -->
-                    <div class="grid-2col">
-                        <!-- Harvest Sales Table -->
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-title-group">
-                                    <h3 id="fin-sales-heading"><i data-lucide="shopping-cart"></i> द्राक्ष विक्री नोंदी
-                                        (Sales)</h3>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table-custom">
-                                        <thead>
-                                            <tr>
-                                                <th>तारीख</th>
-                                                <th>व्यापारी</th>
-                                                <th>प्रत (Grade)</th>
-                                                <th>वजन (kg)</th>
-                                                <th>दर / kg</th>
-                                                <th>एकूण उत्पन्न</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="fin-sales-table-body">
-                                            <!-- Dynamically Populated -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Expenses List Table -->
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-title-group">
-                                    <h3><i data-lucide="receipt"></i> खर्च नोंदी (Expenses Log)</h3>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table-custom">
-                                        <thead>
-                                            <tr>
-                                                <th>तारीख</th>
-                                                <th>विभाग</th>
-                                                <th>तपशील</th>
-                                                <th>रक्कम (₹)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="fin-expenses-table-body">
-                                            <!-- Dynamically Populated -->
-                                        </tbody>
-                                    </table>
-                                </div>
+                                    <span class="attendance-status">हजर</span>
+                                </label>
+                                <label class="attendance-check-card checked">
+                                    <input type="checkbox" checked onchange="toggleAttendanceItem(this)">
+                                    <div class="worker-avatar">वि</div>
+                                    <div class="worker-info">
+                                        <div class="worker-name">विठ्ठल गावडे</div>
+                                        <div class="worker-role">कुशल मजूर • छाटणी</div>
+                                    </div>
+                                    <span class="attendance-status">हजर</span>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -1133,125 +1696,328 @@
 
 
                 <!-- =========================================================
-                     VIEW 8: 📊 Reports (अहवाल व विश्लेषण)
-                     Requirements: प्रति एकर खर्च, प्रति किलो उत्पादन खर्च, प्लॉटनुसार उत्पादन, नफा-तोटा, हंगामाची तुलना
+                     PAGE 9: 💰 खर्च व उत्पन्न (Expense & Income)
+                     Requirements:
+                     <- खर्च व उत्पन्न
+                     Tabs: खर्च (Selected), उत्पन्न
+                     तारीख: 20/09/2026
+                     खर्चाचा प्रकार: औषधे
+                     वर्णन: Lox 2% (कीटकनाशक)
+                     रक्कम (₹): 1,250
+                     प्लॉट: प्लॉट A
+                     टीप: 100 ml
+                     नोंद करा (Button)
+                     अलिकडील खर्च | पहा सर्व
+                     20/09/2026 | औषधे | ₹ 1,250
+                     18/09/2026 | मजुरी | ₹ 4,800
+                     16/09/2026 | खते | ₹ 2,600
+                     14/09/2026 | वीज/पाणी | ₹ 1,200
                      ========================================================= -->
-                <section class="app-view" id="view-reports">
+                <section class="app-view" id="view-finance-pnl">
                     <div class="view-header">
                         <div class="view-header-left">
-                            <h1>📊 अहवाल व विश्लेषण (Reports & Intelligence)</h1>
-                            <p class="view-header-desc">प्रति एकर खर्च, प्रति किलो उत्पादन खर्च, प्लॉटनुसार उत्पादन आणि
-                                हंगामाची तुलना</p>
+                            <button type="button" class="back-btn-pill" onclick="switchView('view-main-menu')">
+                                <i data-lucide="arrow-left"></i>
+                                <span>मागे (Back)</span>
+                            </button>
+                            <h1 style="margin: 0; font-size: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                                💰 खर्च व उत्पन्न
+                            </h1>
                         </div>
                         <div class="view-header-actions">
-                            <button class="header-btn btn-secondary" onclick="window.print()">
-                                <i data-lucide="printer"></i> अहवाल प्रिंट करा
-                            </button>
+                            <span class="season-badge"><i data-lucide="receipt"></i> आर्थिक हिशोब</span>
                         </div>
                     </div>
 
-                    <!-- Core Intelligence KPIs -->
-                    <div class="report-hero-grid">
-                        <div class="report-hero-card">
-                            <div class="report-hero-title">प्रति एकर उत्पादन खर्च (Cost Per Acre)</div>
-                            <div class="report-hero-number" id="rep-cost-per-acre">₹20,514</div>
-                            <div style="font-size: 0.75rem; color: var(--text-muted);">एकूण खर्च ₹2,15,400 / 10.5 एकर
-                            </div>
-                        </div>
-
-                        <div class="report-hero-card">
-                            <div class="report-hero-title">प्रति किलो उत्पादन खर्च (Cost Per Kg)</div>
-                            <div class="report-hero-number" id="rep-cost-per-kg" style="color: var(--amber-accent);">
-                                ₹29.71</div>
-                            <div style="font-size: 0.75rem; color: var(--text-muted);">सरासरी विक्री दर ₹80.00/kg
-                                (मार्जिन ₹50.29/kg)</div>
-                        </div>
-
-                        <div class="report-hero-card">
-                            <div class="report-hero-title">प्लॉटनुसार सरासरी उत्पादन (Avg Yield)</div>
-                            <div class="report-hero-number" id="rep-avg-yield" style="color: var(--emerald-primary);">
-                                14.2</div>
-                            <div style="font-size: 0.75rem; color: var(--text-muted);">टन प्रति एकर (Tonnes / Acre)
-                            </div>
-                        </div>
-
-                        <div class="report-hero-card">
-                            <div class="report-hero-title">निव्वळ नफा मार्जिन (Net Margin)</div>
-                            <div class="report-hero-number" id="rep-net-margin" style="color: var(--purple-accent);">
-                                62.8%</div>
-                            <div style="font-size: 0.75rem; color: var(--text-muted);">उच्च दर्जाच्या एक्सपोर्ट व
-                                स्थानिक द्राक्ष विक्रीतून</div>
-                        </div>
+                    <!-- Tabs: खर्च (Selected), उत्पन्न -->
+                    <div class="filter-pills" style="margin-bottom: 1.25rem;">
+                        <button type="button" class="filter-pill active" id="tab-finance-expense"
+                            onclick="switchFinanceTab('expense')">
+                            <i data-lucide="minus-circle" style="width: 14px; height: 14px;"></i> खर्च (Expense)
+                        </button>
+                        <button type="button" class="filter-pill" id="tab-finance-income"
+                            onclick="switchFinanceTab('income')">
+                            <i data-lucide="plus-circle" style="width: 14px; height: 14px;"></i> उत्पन्न (Income)
+                        </button>
                     </div>
 
-                    <!-- Seasons Comparison: खरड vs गोड/फळ छाटणी हंगाम -->
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title-group">
-                                <h3><i data-lucide="calendar-range"></i> हंगामाची तुलना (Season Comparison: खरड हंगाम vs
-                                    गोड/फळ हंगाम)</h3>
-                            </div>
+                    <!-- Direct In-Page Form Card -->
+                    <div class="inpage-form-card" id="finance-expense-form-card">
+                        <div class="inpage-form-title">
+                            <i data-lucide="plus-circle"></i> नवीन खर्च नोंदवा
                         </div>
-                        <div class="card-body">
-                            <div class="season-compare-grid">
-                                <div class="season-box">
-                                    <h4>🌱 1. खरड / एप्रिल छाटणी हंगाम (Foundation Season)</h4>
-                                    <ul
-                                        style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.85rem;">
-                                        <li><strong>कालावधी:</strong> एप्रिल ते सप्टेंबर (पायाभूत वाढ)</li>
-                                        <li><strong>मुख्य उद्दिष्ट:</strong> निरोगी, जाड काडी तयार करणे व डोळे
-                                            घडनिर्मितीक्षम बनवणे</li>
-                                        <li><strong>पाण्याचा वापर:</strong> 55% एकूण वार्षिक वापर</li>
-                                        <li><strong>खतांचा वापर:</strong> नायट्रोजन व स्फुरद (मुळांची व शाकीय वाढ)</li>
-                                        <li><strong>हंगाम खर्च:</strong> ₹85,000 (एकूण खर्चाच्या 39%)</li>
-                                    </ul>
+                        <form id="inpage-expense-form" onsubmit="handleInpageExpenseSubmit(event)">
+                            <div class="inpage-form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">तारीख *</label>
+                                    <input type="text" id="inpage-expense-date" class="form-control" value="20/09/2026"
+                                        required>
                                 </div>
-
-                                <div class="season-box"
-                                    style="background: var(--emerald-subtle); border-color: rgba(21,128,61,0.25);">
-                                    <h4 style="color: var(--emerald-deep);">🍇 2. गोड / ऑक्टोबर फळ छाटणी हंगाम (Fruit
-                                        Season)</h4>
-                                    <ul
-                                        style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.85rem;">
-                                        <li><strong>कालावधी:</strong> ऑक्टोबर ते मार्च (फळ धारणा व काढणी)</li>
-                                        <li><strong>मुख्य उद्दिष्ट:</strong> एकसारखी घड संख्या, मणी फुगवण, साखर (TSS
-                                            18°+) व उच्च दर्जा उत्पादन</li>
-                                        <li><strong>पाण्याचा वापर:</strong> नियंत्रित सिंचन (45% वापर)</li>
-                                        <li><strong>खतांचा वापर:</strong> पालाश (K), मॅग्नेशियम, कॅल्शियम व सूक्ष्म
-                                            अन्नद्रव्ये</li>
-                                        <li><strong>हंगाम खर्च:</strong> ₹1,30,400 (उत्पादन व मजुरी खर्च)</li>
-                                    </ul>
+                                <div class="form-group">
+                                    <label class="form-label">खर्चाचा प्रकार *</label>
+                                    <select id="inpage-expense-category" class="form-control" required>
+                                        <option value="औषधे" selected>औषधे (Sprays/Chemicals)</option>
+                                        <option value="मजुरी">मजुरी (Labor)</option>
+                                        <option value="खते">खते (Fertilizers)</option>
+                                        <option value="वीज/पाणी">वीज/पाणी (Power/Water)</option>
+                                        <option value="वाहतूक">वाहतूक (Transport)</option>
+                                        <option value="इतर">इतर खर्च (Miscellaneous)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">वर्णन *</label>
+                                    <input type="text" id="inpage-expense-desc" class="form-control"
+                                        value="Lox 2% (कीटकनाशक)" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">रक्कम (₹) *</label>
+                                    <input type="number" id="inpage-expense-amount" class="form-control" value="1250"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">प्लॉट *</label>
+                                    <select id="inpage-expense-plot" class="form-control" required>
+                                        <option value="प्लॉट A" selected>प्लॉट A</option>
+                                        <option value="प्लॉट B">प्लॉट B</option>
+                                        <option value="प्लॉट C">प्लॉट C</option>
+                                        <option value="प्लॉट D">प्लॉट D</option>
+                                        <option value="प्लॉट E">प्लॉट E</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">टीप</label>
+                                    <input type="text" id="inpage-expense-note" class="form-control" value="100 ml">
                                 </div>
                             </div>
-                        </div>
+                            <div class="inpage-form-actions">
+                                <button type="submit" class="btn-primary header-btn"
+                                    style="padding: 0.65rem 1.6rem; font-size: 0.95rem;">
+                                    <i data-lucide="check-circle-2"></i> नोंद करा
+                                </button>
+                            </div>
+                        </form>
                     </div>
 
-                    <!-- Plot-wise Yield & Profit Statement -->
-                    <div class="card">
+                    <!-- Income Form (Hidden by default, shown when Income Tab is clicked) -->
+                    <div class="inpage-form-card" id="finance-income-form-card" style="display: none;">
+                        <div class="inpage-form-title">
+                            <i data-lucide="dollar-sign"></i> नवीन द्राक्ष विक्री / उत्पन्न नोंदवा
+                        </div>
+                        <form id="inpage-income-form" onsubmit="handleInpageIncomeSubmit(event)">
+                            <div class="inpage-form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">विक्री तारीख *</label>
+                                    <input type="text" id="inpage-income-date" class="form-control" value="20/09/2026"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">प्लॉट *</label>
+                                    <select id="inpage-income-plot" class="form-control" required>
+                                        <option value="प्लॉट A" selected>प्लॉट A</option>
+                                        <option value="प्लॉट B">प्लॉट B</option>
+                                        <option value="प्लॉट C">प्लॉट C</option>
+                                        <option value="प्लॉट D">प्लॉट D</option>
+                                        <option value="प्लॉट E">प्लॉट E</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">व्यापारी / खरेदीदार *</label>
+                                    <input type="text" id="inpage-income-buyer" class="form-control"
+                                        value="सह्याद्री फार्म्स / अमोल ट्रेडर्स" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">विक्री वजन (kg) *</label>
+                                    <input type="number" id="inpage-income-kg" class="form-control" value="2500"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">दर / kg (₹) *</label>
+                                    <input type="number" id="inpage-income-rate" class="form-control" value="85"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">टीप / ग्रेड</label>
+                                    <input type="text" id="inpage-income-note" class="form-control"
+                                        value="Export Quality (A+)">
+                                </div>
+                            </div>
+                            <div class="inpage-form-actions">
+                                <button type="submit" class="btn-primary header-btn"
+                                    style="padding: 0.65rem 1.6rem; font-size: 0.95rem;">
+                                    <i data-lucide="check-circle-2"></i> उत्पन्न नोंद करा
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Recent Expenses Table Section -->
+                    <div class="card" style="margin-top: 1.25rem;">
                         <div class="card-header">
                             <div class="card-title-group">
-                                <h3><i data-lucide="layers"></i> प्लॉटनुसार उत्पादन व नफा-तोटा विश्लेषण</h3>
+                                <h3><i data-lucide="receipt"></i> अलिकडील खर्च</h3>
                             </div>
+                            <a href="javascript:void(0)" class="view-all-link">पहा सर्व</a>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table-custom">
                                     <thead>
                                         <tr>
-                                            <th>प्लॉट नाव</th>
-                                            <th>वाण</th>
-                                            <th>क्षेत्र (एकर)</th>
-                                            <th>अपेक्षित उत्पादन</th>
-                                            <th>प्रत्यक्ष विक्री (kg)</th>
-                                            <th>उत्पन्न (₹)</th>
-                                            <th>खर्च (₹)</th>
-                                            <th>निव्वळ नफा (₹)</th>
+                                            <th>तारीख</th>
+                                            <th>खर्चाचा प्रकार</th>
+                                            <th>तपशील / वर्णन</th>
+                                            <th>रक्कम (₹)</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="reports-plot-table-body">
-                                        <!-- Dynamically Populated -->
+                                    <tbody id="inpage-expenses-table-body">
+                                        <tr>
+                                            <td><strong>20/09/2026</strong></td>
+                                            <td><span class="kpi-badge"
+                                                    style="background:#e0e7ff; color:#3730a3;">औषधे</span></td>
+                                            <td>Lox 2% (कीटकनाशक) • 100 ml (प्लॉट A)</td>
+                                            <td><strong style="color: var(--rose-accent);">₹ 1,250</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>18/09/2026</strong></td>
+                                            <td><span class="kpi-badge warning">मजुरी</span></td>
+                                            <td>छाटणी व बांधणी काम (12 मजूर)</td>
+                                            <td><strong style="color: var(--rose-accent);">₹ 4,800</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>16/09/2026</strong></td>
+                                            <td><span class="kpi-badge positive">खते</span></td>
+                                            <td>NPK 19:19:19 व MAP फर्टिगेशन</td>
+                                            <td><strong style="color: var(--rose-accent);">₹ 2,600</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>14/09/2026</strong></td>
+                                            <td><span class="kpi-badge info">वीज/पाणी</span></td>
+                                            <td>विहिरीचे वीज बिल व ठिबक मेंटेनन्स</td>
+                                            <td><strong style="color: var(--rose-accent);">₹ 1,200</strong></td>
+                                        </tr>
                                     </tbody>
                                 </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- =========================================================
+                     PAGE 10: 📊 अहवाल व विश्लेषण (Reports & Analysis)
+                     Requirements:
+                     <- रिपोर्ट व विश्लेषण
+                     हंगाम निवडा: 2026 - 27
+                     Tabs: उत्पादन, खर्च, नफा, प्लॉटनुसार (Selected)
+                     प्लॉटनुसार उत्पादन (किलो)
+                     Bar Chart Data (A: 12,500, B: 10,200, C: 8,750, D: 6,300, E: 9,800)
+                     एकंदर सारांश
+                     एकूण उत्पादन: 47,550 किलो
+                     एकूण खर्च: ₹ 4,25,000
+                     एकूण विक्री: ₹ 7,15,000
+                     नफा: ₹ 2,90,000
+                     Buttons: PDF डाउनलोड, शेअर करा
+                     ========================================================= -->
+                <section class="app-view" id="view-reports">
+                    <div class="view-header">
+                        <div class="view-header-left">
+                            <button type="button" class="back-btn-pill" onclick="switchView('view-main-menu')">
+                                <i data-lucide="arrow-left"></i>
+                                <span>मागे (Back)</span>
+                            </button>
+                            <h1 style="margin: 0; font-size: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                                📊 रिपोर्ट व विश्लेषण
+                            </h1>
+                        </div>
+                        <div class="view-header-actions" style="display: flex; gap: 0.5rem; align-items: center;">
+                            <label
+                                style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin: 0;">हंगाम
+                                निवडा:</label>
+                            <select id="reports-season-select" class="form-control"
+                                style="width: auto; padding: 0.4rem 0.8rem; font-weight: 700; background: var(--surface);">
+                                <option value="2026-27" selected>2026 - 27</option>
+                                <option value="2025-26">2025 - 26</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Tabs: उत्पादन, खर्च, नफा, प्लॉटनुसार (Selected) -->
+                    <div class="filter-pills" style="margin-bottom: 1.25rem;">
+                        <button type="button" class="filter-pill" id="tab-rep-production"
+                            onclick="switchReportsTab('production')">उत्पादन</button>
+                        <button type="button" class="filter-pill" id="tab-rep-expense"
+                            onclick="switchReportsTab('expense')">खर्च</button>
+                        <button type="button" class="filter-pill" id="tab-rep-profit"
+                            onclick="switchReportsTab('profit')">नफा</button>
+                        <button type="button" class="filter-pill active" id="tab-rep-plotwise"
+                            onclick="switchReportsTab('plotwise')">प्लॉटनुसार (Plot-wise)</button>
+                    </div>
+
+                    <!-- Bar Chart Card: प्लॉटनुसार उत्पादन (किलो) -->
+                    <div class="card" style="margin-bottom: 1.25rem;">
+                        <div class="card-header">
+                            <div class="card-title-group">
+                                <h3><i data-lucide="bar-chart-3"></i> प्लॉटनुसार उत्पादन (किलो)</h3>
+                                <div class="card-subtitle">हंगाम 2026 - 27 प्लॉटनिहाय द्राक्ष उत्पादन तुलना (A ते E)
+                                </div>
+                            </div>
+                            <span class="kpi-badge positive">एकूण 47,550 kg</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="report-bar-chart-container"
+                                style="position: relative; height: 320px; width: 100%;">
+                                <canvas id="report-bar-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- एकंदर सारांश (Overall Summary) -->
+                    <div class="card" style="margin-bottom: 1.25rem;">
+                        <div class="card-header">
+                            <div class="card-title-group">
+                                <h3><i data-lucide="pie-chart"></i> एकंदर सारांश (Overall Summary)</h3>
+                                <div class="card-subtitle">हंगाम 2026 - 27 सर्व 5 प्लॉट्सचे एकत्रित आर्थिक व उत्पादन
+                                    ताळेबंद</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="reports-summary-grid">
+                                <div class="summary-metric-card">
+                                    <div class="summary-metric-label">एकूण उत्पादन</div>
+                                    <div class="summary-metric-val" style="color: var(--emerald-primary);">47,550 <span
+                                            style="font-size: 0.9rem; font-weight: 500;">किलो</span></div>
+                                    <div class="summary-metric-sub">5 प्लॉट्स (10.0 एकर)</div>
+                                </div>
+                                <div class="summary-metric-card">
+                                    <div class="summary-metric-label">एकूण खर्च</div>
+                                    <div class="summary-metric-val" style="color: var(--rose-accent);">₹ 4,25,000</div>
+                                    <div class="summary-metric-sub">खते, औषधे, मजुरी व इतर</div>
+                                </div>
+                                <div class="summary-metric-card">
+                                    <div class="summary-metric-label">एकूण विक्री</div>
+                                    <div class="summary-metric-val" style="color: #2563EB;">₹ 7,15,000</div>
+                                    <div class="summary-metric-sub">एक्सपोर्ट व लोकल मार्केट</div>
+                                </div>
+                                <div class="summary-metric-card"
+                                    style="border: 2px solid rgba(22, 163, 74, 0.4); background: #F0FDF4;">
+                                    <div class="summary-metric-label">निव्वळ नफा</div>
+                                    <div class="summary-metric-val"
+                                        style="color: var(--emerald-deep); font-size: 1.65rem;">₹ 2,90,000</div>
+                                    <div class="summary-metric-sub">नफा मार्जिन: 40.5%</div>
+                                </div>
+                            </div>
+
+                            <!-- Buttons: PDF डाउनलोड, शेअर करा -->
+                            <div class="reports-action-row"
+                                style="margin-top: 1.5rem; display: flex; gap: 0.75rem; justify-content: flex-end; flex-wrap: wrap;">
+                                <button type="button" class="btn-primary header-btn" onclick="downloadReportPDF()"
+                                    style="padding: 0.65rem 1.4rem;">
+                                    <i data-lucide="file-text"></i> PDF डाउनलोड
+                                </button>
+                                <button type="button" class="btn-secondary header-btn" onclick="shareReport()"
+                                    style="padding: 0.65rem 1.4rem;">
+                                    <i data-lucide="share-2"></i> शेअर करा
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -2308,6 +3074,237 @@
             </form>
         </div>
     </div>
+
+    <!-- 9. Modal: नवीन नोंदणी (Farmer Registration) -->
+    <div class="modal-overlay" id="modal-register">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title"><i data-lucide="user-plus"></i> कृषिरत्न नवीन नोंदणी (New Registration)</div>
+                <button type="button" class="modal-close-btn" data-close-modal="modal-register"><i
+                        data-lucide="x"></i></button>
+            </div>
+            <form id="form-register-user" onsubmit="handleRegistrationSubmit(event)">
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">शेतकऱ्याचे नाव (Farmer Name) *</label>
+                            <input type="text" id="reg-farmer-name" class="form-control" placeholder="उदा. अमोल पवार"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">मोबाईल नंबर (Mobile Number) *</label>
+                            <input type="tel" id="reg-mobile" class="form-control" placeholder="उदा. 9876543210"
+                                pattern="[0-9]{10}" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">गाव / तालुका (Village / Taluka) *</label>
+                            <input type="text" id="reg-village" class="form-control"
+                                placeholder="उदा. पिंपळगाव बसवंत, जि. नाशिक" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">एकूण शेती क्षेत्र (Total Acres) *</label>
+                            <input type="number" id="reg-acreage" class="form-control" step="0.5" value="10.0" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">द्राक्ष वाण (Grape Variety) *</label>
+                            <select id="reg-variety" class="form-control" required>
+                                <option value="Thompson Seedless" selected>Thompson Seedless (थॉम्पसन)</option>
+                                <option value="Super Sonaka">Super Sonaka (सुपर सोनाका)</option>
+                                <option value="Manik Chaman">Manik Chaman (माणिक चमन)</option>
+                                <option value="Sharad Seedless">Sharad Seedless (काळी द्राक्षे)</option>
+                                <option value="Jumbo">Jumbo (जंबो)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">प्लॉट संख्या (Number of Plots) *</label>
+                            <input type="number" id="reg-plots-count" class="form-control" value="5" min="1" max="20"
+                                required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary header-btn" data-close-modal="modal-register">रद्द
+                        करा</button>
+                    <button type="submit" class="btn-primary header-btn">नोंदणी पूर्ण करा व सुरू करा</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 10. Modal: हवामान माहिती (Weather Information) -->
+    <div class="modal-overlay" id="modal-weather-info">
+        <div class="modal-card" style="max-width: 600px;">
+            <div class="modal-header">
+                <div class="modal-title"><i data-lucide="cloud-sun"></i> हवामान माहिती व 7 दिवसांचा अंदाज</div>
+                <button type="button" class="modal-close-btn" data-close-modal="modal-weather-info"><i
+                        data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="kpi-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 1rem;">
+                    <div class="kpi-card" style="padding: 0.85rem;">
+                        <div class="kpi-label">तापमान</div>
+                        <div class="kpi-number" style="font-size: 1.35rem; color: #f59e0b;">29°C</div>
+                        <div class="kpi-subtext">किमान 19°C • कमाल 31°C</div>
+                    </div>
+                    <div class="kpi-card" style="padding: 0.85rem;">
+                        <div class="kpi-label">आर्द्रता (Humidity)</div>
+                        <div class="kpi-number" style="font-size: 1.35rem; color: #0284c7;">68%</div>
+                        <div class="kpi-subtext">भुरी व डाऊनीसाठी अनुकूल</div>
+                    </div>
+                    <div class="kpi-card" style="padding: 0.85rem;">
+                        <div class="kpi-label">वाऱ्याचा वेग</div>
+                        <div class="kpi-number" style="font-size: 1.35rem; color: #10b981;">11 km/h</div>
+                        <div class="kpi-subtext">फवारणीसाठी अनुकूल</div>
+                    </div>
+                </div>
+                <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem; color: var(--text-primary);"><i
+                        data-lucide="calendar"></i> 7 दिवसांचा हवामान अंदाज (पिंपळगाव परिसर)</h4>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.85rem;">
+                    <div
+                        style="display: flex; justify-content: space-between; padding: 0.5rem 0.75rem; background: var(--surface); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                        <span><strong>आज (20 सप्टे)</strong> - निरभ्र आकाश</span>
+                        <span>29°C / 19°C • पाऊस 0%</span>
+                    </div>
+                    <div
+                        style="display: flex; justify-content: space-between; padding: 0.5rem 0.75rem; background: var(--surface); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                        <span><strong>उद्या (21 सप्टे)</strong> - हलके ढगाळ वातावरण</span>
+                        <span>30°C / 20°C • पाऊस 10%</span>
+                    </div>
+                    <div
+                        style="display: flex; justify-content: space-between; padding: 0.5rem 0.75rem; background: var(--surface); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                        <span><strong>22 सप्टे</strong> - दुपारनंतर हलकी सर</span>
+                        <span style="color: var(--amber-accent);">28°C / 20°C • पाऊस 40%</span>
+                    </div>
+                    <div
+                        style="display: flex; justify-content: space-between; padding: 0.5rem 0.75rem; background: var(--surface); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                        <span><strong>23 सप्टे</strong> - स्वच्छ ऊन व कोरडी हवा</span>
+                        <span>31°C / 19°C • पाऊस 0%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-primary header-btn" data-close-modal="modal-weather-info">समजले
+                    (Close)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 11. Modal: सेटिंग्स (Settings) -->
+    <div class="modal-overlay" id="modal-settings">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title"><i data-lucide="settings"></i> प्रणाली सेटिंग्स (Settings)</div>
+                <button type="button" class="modal-close-btn" data-close-modal="modal-settings"><i
+                        data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">शेती / फार्मचे नाव</label>
+                    <input type="text" id="setting-farm-name" class="form-control" value="कृषिरत्न फार्म (नाशिक)">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">डिफॉल्ट भाषा (Language)</label>
+                    <select id="setting-language" class="form-control" onchange="switchLanguage(this.value)">
+                        <option value="mr" selected>मराठी (Marathi)</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">हंगाम वर्ष (Season)</label>
+                    <input type="text" class="form-control" value="2026 - 2027" readonly>
+                </div>
+                <div class="form-group">
+                    <label
+                        style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem; font-weight: 600;">
+                        <input type="checkbox" id="setting-daily-reminders" checked>
+                        <span>रोज सकाळी 7 वाजता SMS/व्हॉट्सॲप कामांचे रिमाइंडर पाठवा</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary header-btn" data-close-modal="modal-settings">रद्द
+                    करा</button>
+                <button type="button" class="btn-primary header-btn" onclick="saveSettings()">सेटिंग्स सेव्ह
+                    करा</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 12. Modal: बॅकअप / सिंक (Backup & Cloud Sync) -->
+    <div class="modal-overlay" id="modal-sync-backup">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title"><i data-lucide="cloud-upload"></i> डेटा बॅकअप व क्लाउड सिंक</div>
+                <button type="button" class="modal-close-btn" data-close-modal="modal-sync-backup"><i
+                        data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div
+                    style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1rem;">
+                    <div
+                        style="display: flex; align-items: center; gap: 0.5rem; color: var(--emerald-deep); font-weight: 700; margin-bottom: 0.35rem;">
+                        <i data-lucide="check-circle"></i> क्लाउड सिंक स्थिती: सक्रिय (Online)
+                    </div>
+                    <div style="font-size: 0.82rem; color: var(--text-secondary);">
+                        शेवटचा सिंक: 20 सप्टेंबर 2026, 09:41 AM • 100% डेटा सुरक्षित
+                    </div>
+                </div>
+                <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                    आपला सर्व शेती डेटा (प्लॉट, सिंचन, खत, फवारणी, मजूर हिशोब व विक्री) फोनमध्ये ऑफलाइन तसेच सुरक्षित
+                    क्लाउड डेटाबेसमध्ये साठवला जातो.
+                </p>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <button type="button" class="btn-primary header-btn" onclick="triggerManualSync()"
+                        style="justify-content: center;">
+                        <i data-lucide="refresh-cw"></i> आता त्वरित सिंक करा (Sync Now)
+                    </button>
+                    <button type="button" class="btn-secondary header-btn" onclick="downloadBackupJSON()"
+                        style="justify-content: center;">
+                        <i data-lucide="download"></i> फोनमध्ये स्थानिक बॅकअप फाइल डाउनलोड करा (.json)
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary header-btn" data-close-modal="modal-sync-backup">बंद
+                    करा</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =============================================================
+         BOTTOM NAVIGATION BAR: होम, प्लॉट, रिमाइंडर, रिपोर्ट, मेनू
+         ============================================================= -->
+    <nav class="bottom-nav-bar" id="bottom-nav-bar">
+        <button type="button" class="bottom-nav-item active" data-nav-target="view-dashboard"
+            onclick="handleBottomNavClick(this, 'view-dashboard')">
+            <i data-lucide="home"></i>
+            <span>होम</span>
+        </button>
+        <button type="button" class="bottom-nav-item" data-nav-target="view-grape-orchard"
+            onclick="handleBottomNavClick(this, 'view-grape-orchard')">
+            <i data-lucide="layers"></i>
+            <span>प्लॉट</span>
+        </button>
+        <button type="button" class="bottom-nav-item" data-nav-target="view-reminders"
+            onclick="handleBottomNavClick(this, 'view-reminders')">
+            <i data-lucide="bell"></i>
+            <span>रिमाइंडर</span>
+        </button>
+        <button type="button" class="bottom-nav-item" data-nav-target="view-reports"
+            onclick="handleBottomNavClick(this, 'view-reports')">
+            <i data-lucide="bar-chart-3"></i>
+            <span>रिपोर्ट</span>
+        </button>
+        <button type="button" class="bottom-nav-item" data-nav-target="view-main-menu"
+            onclick="handleBottomNavClick(this, 'view-main-menu')">
+            <i data-lucide="menu"></i>
+            <span>मेनू</span>
+        </button>
+    </nav>
 
     <!-- TOAST NOTIFICATION CONTAINER -->
     <div class="toast-container" id="toast-container"></div>

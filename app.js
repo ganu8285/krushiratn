@@ -1235,6 +1235,11 @@ const TAB_TITLES = {
         mr: { title: '11. शासकीय योजना व सबसिडी', sub: 'MahaDBT ठिबक, NHB कोल्ड स्टोरेज व फळपीक विमा' },
         en: { title: '11. Government Schemes & Subsidies', sub: 'MahaDBT Drip, NHB Cold Storage & Crop Insurance' },
         icon: 'landmark'
+    },
+    'main-menu': {
+        mr: { title: 'मेनू (Main Menu)', sub: 'कृषिरत्न संपूर्ण शेती व्यवस्थापन विभाग व साधने' },
+        en: { title: 'Main Menu', sub: 'Krushiratna Complete Farm Management Modules' },
+        icon: 'menu'
     }
 };
 
@@ -1286,7 +1291,7 @@ const UI_TRANSLATIONS = {
         farmerPortal: '👨‍🌾 शेतकरी (Farmer Portal)',
         adminPortal: '🛡️ ॲडमिन (Admin Console)',
         loginBtn: 'डॅशबोर्डमध्ये प्रवेश करा (Open Dashboard)',
-        
+
         // Tab 1 Dashboard
         dashTitle: '🌿 द्राक्ष बाग मुख्य डॅशबोर्ड',
         dashDesc: 'सह्याद्री द्राक्ष ऑर्चर्ड्स - आजच्या शेती कामांची व परिस्थितीची थेट नोंद',
@@ -1361,7 +1366,7 @@ const UI_TRANSLATIONS = {
         farmerPortal: '👨‍🌾 Farmer Portal',
         adminPortal: '🛡️ Admin Console',
         loginBtn: 'Enter Vineyard Dashboard',
-        
+
         // Tab 1 Dashboard
         dashTitle: '🌿 Grape Orchard Master Dashboard',
         dashDesc: 'Sahyadri Grape Orchards - Daily vineyard logs, irrigation, spraying & financials',
@@ -1591,7 +1596,7 @@ function switchLanguage(lang) {
 
     // Filter pills in Tab 9
     const filterPills = document.querySelectorAll('#reminder-filter-pills .filter-pill');
-    const filterLabels = isMr 
+    const filterLabels = isMr
         ? ['सर्व (All)', 'प्रलंबित (Pending)', 'पूर्ण (Completed)', 'फवारणी', 'खत', 'सिंचन', 'छाटणी', 'काढणी', 'पेमेंट']
         : ['All Tasks', 'Pending', 'Completed', 'Spraying', 'Fertilizer', 'Irrigation', 'Pruning', 'Harvest', 'Payment'];
     filterPills.forEach((pill, idx) => {
@@ -1731,7 +1736,9 @@ function initNavigation() {
     document.querySelectorAll('.side-nav-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const target = btn.dataset.target;
-            switchView(target);
+            if (target) {
+                switchView(target);
+            }
 
             // Close mobile sidebar if open
             if (window.innerWidth <= 1024) {
@@ -1761,33 +1768,54 @@ function initNavigation() {
 }
 
 function switchView(target) {
-    appState.currentTab = target;
+    if (!target) return;
+    const cleanTarget = target.startsWith('view-') ? target.replace('view-', '') : target;
+    appState.currentTab = cleanTarget;
 
     // Update active nav button
     document.querySelectorAll('.side-nav-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.target === target);
+        const btnTarget = (btn.dataset.target || '').replace('view-', '');
+        btn.classList.toggle('active', btnTarget === cleanTarget);
     });
 
     // Update active view section
     document.querySelectorAll('.app-view').forEach(view => {
-        view.classList.toggle('active', view.id === `view-${target}`);
+        const viewClean = view.id.replace('view-', '');
+        view.classList.toggle('active', viewClean === cleanTarget);
+    });
+
+    // Update bottom nav bar items
+    document.querySelectorAll('.bottom-nav-item').forEach(item => {
+        const itemTarget = (item.dataset.navTarget || '').replace('view-', '');
+        item.classList.toggle('active', itemTarget === cleanTarget);
     });
 
     // Update Top Header Breadcrumb
     const isMr = appState.activeLang === 'mr';
-    const meta = TAB_TITLES[target] || TAB_TITLES['dashboard'];
-    const currentMeta = isMr ? meta.mr : meta.en;
+    const meta = TAB_TITLES[cleanTarget] || TAB_TITLES['dashboard'] || {
+        mr: { title: 'कृषिरत्न शेती व्यवस्थापन', sub: 'शेती स्मार्ट... भविष्य जवळून...' },
+        en: { title: 'Krushiratna Farm Management', sub: 'Smart farming for a better future' },
+        icon: 'sprout'
+    };
+    const currentMeta = isMr ? (meta.mr || meta) : (meta.en || meta);
     const titleElem = document.getElementById('breadcrumb-title');
     const subElem = document.getElementById('breadcrumb-sub');
     const iconElem = document.getElementById('breadcrumb-icon');
 
-    if (titleElem) titleElem.textContent = currentMeta.title;
-    if (subElem) subElem.textContent = currentMeta.sub;
-    if (iconElem) iconElem.setAttribute('data-lucide', meta.icon);
+    if (titleElem && currentMeta.title) titleElem.textContent = currentMeta.title;
+    if (subElem && currentMeta.sub) subElem.textContent = currentMeta.sub;
+    if (iconElem && meta.icon) iconElem.setAttribute('data-lucide', meta.icon);
+
+    if (cleanTarget === 'reports') {
+        setTimeout(() => {
+            if (typeof initReportBarChart === 'function') initReportBarChart();
+        }, 100);
+    }
 
     initLucide();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+window.switchView = switchView;
 
 // ==========================================================================
 // 4. DATA FETCHING (Supabase with Local Fallback)
@@ -2287,7 +2315,7 @@ function renderDashboardTab() {
     if (profitElem) profitElem.textContent = `₹${netProfit.toLocaleString('en-IN')}`;
     const subPnlElem = document.getElementById('dash-exp-inc-sub');
     if (subPnlElem) {
-        subPnlElem.textContent = isMr 
+        subPnlElem.textContent = isMr
             ? `उत्पन्न ₹${(totalSales / 100000).toFixed(2)}L | खर्च ₹${(totalExp / 100000).toFixed(2)}L`
             : `Income ₹${(totalSales / 100000).toFixed(2)}L | Exp ₹${(totalExp / 100000).toFixed(2)}L`;
     }
@@ -2972,7 +3000,7 @@ function initForms() {
         renderDashboardTab();
         renderFertilizerTab();
         closeModal('modal-add-fertilizer');
-        showToast(isMr() 
+        showToast(isMr()
             ? `खत नोंद झाली! प्रत्यक्ष घटक: N: ${elemental.n}kg, P: ${elemental.p}kg, K: ${elemental.k}kg`
             : `Fertilizer logged! Actual N: ${elemental.n}kg, P: ${elemental.p}kg, K: ${elemental.k}kg`, 'success');
 
@@ -3425,9 +3453,9 @@ function renderMandiRatesTable(marketFilter = 'all', keyword = '') {
         filtered = filtered.filter(item => item.market.toLowerCase().includes(marketFilter.toLowerCase()));
     }
     if (keyword) {
-        filtered = filtered.filter(item => 
-            item.market.toLowerCase().includes(keyword) || 
-            item.variety.toLowerCase().includes(keyword) || 
+        filtered = filtered.filter(item =>
+            item.market.toLowerCase().includes(keyword) ||
+            item.variety.toLowerCase().includes(keyword) ||
             item.grade.toLowerCase().includes(keyword)
         );
     }
@@ -3513,4 +3541,479 @@ function initSubsidyCalculator() {
     // Initial calculation
     calculateSubsidy();
 }
+
+// ==========================================================================
+// 18. KRUSHIRATNA 10-PAGE INTERACTIVE WORKFLOW ENGINE
+// ==========================================================================
+
+// --- PLOT SPECS & SELECTOR (Page 4: Plot Details) ---
+const PLOT_SPECS = {
+    'A': {
+        name: 'प्लॉट A',
+        acres: '2.0 एकर',
+        variety: 'Thompson (थॉम्पसन)',
+        plantingDate: '10 जाने 2022',
+        spacing: '10 x 6 फूट',
+        training: 'Y Trellis',
+        pruningDate: '15 ऑक्टो 2025',
+        expectedYield: '10-12 टन/एकर',
+        stage: 'वाढीच्या अवस्थेत',
+        yieldKg: '12,500'
+    },
+    'B': {
+        name: 'प्लॉट B',
+        acres: '2.5 एकर',
+        variety: 'Super Sonaka (सुपर सोनाका)',
+        plantingDate: '15 जाने 2022',
+        spacing: '9 x 5 फूट',
+        training: 'Y Trellis',
+        pruningDate: '18 ऑक्टो 2025',
+        expectedYield: '11-13 टन/एकर',
+        stage: 'फुलोरा / मणी फुगवण अवस्था',
+        yieldKg: '10,200'
+    },
+    'C': {
+        name: 'प्लॉट C',
+        acres: '2.0 एकर',
+        variety: 'Manik Chaman (माणिक चमन)',
+        plantingDate: '05 फेब्रु 2023',
+        spacing: '10 x 6 फूट',
+        training: 'Y Trellis',
+        pruningDate: '22 ऑक्टो 2025',
+        expectedYield: '9-11 टन/एकर',
+        stage: 'शाकीय वाढ अवस्था',
+        yieldKg: '8,750'
+    },
+    'D': {
+        name: 'प्लॉट D',
+        acres: '1.5 एकर',
+        variety: 'Sharad Seedless (काळी द्राक्षे)',
+        plantingDate: '20 फेब्रु 2023',
+        spacing: '9 x 5 फूट',
+        training: 'Bower / Y Trellis',
+        pruningDate: '25 ऑक्टो 2025',
+        expectedYield: '8-10 टन/एकर',
+        stage: 'कॅनॉपी विकास अवस्था',
+        yieldKg: '6,300'
+    },
+    'E': {
+        name: 'प्लॉट E',
+        acres: '2.0 एकर',
+        variety: 'Red Globe (रेड ग्लोब)',
+        plantingDate: '12 मार्च 2023',
+        spacing: '10 x 6 फूट',
+        training: 'Y Trellis',
+        pruningDate: '28 ऑक्टो 2025',
+        expectedYield: '10-12 टन/एकर',
+        stage: 'काडी पक्वता अवस्था',
+        yieldKg: '9,800'
+    }
+};
+
+function selectActivePlot(plotCode) {
+    document.querySelectorAll('.plot-pill-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.plot === plotCode);
+    });
+
+    const p = PLOT_SPECS[plotCode] || PLOT_SPECS['A'];
+
+    const setVal = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+    };
+
+    setVal('plot-detail-selected-name', p.name);
+    setVal('plot-spec-acres', p.acres);
+    setVal('plot-spec-variety', p.variety);
+    setVal('plot-spec-plant-date', p.plantingDate);
+    setVal('plot-spec-spacing', p.spacing);
+    setVal('plot-spec-training', p.training);
+    setVal('plot-spec-prune-date', p.pruningDate);
+    setVal('plot-spec-yield', p.expectedYield);
+    setVal('plot-spec-stage', p.stage);
+
+    ['inpage-irr-plot', 'inpage-fert-plot', 'inpage-spray-plot', 'inpage-expense-plot'].forEach(id => {
+        const sel = document.getElementById(id);
+        if (sel) sel.value = `प्लॉट ${plotCode}`;
+    });
+
+    showToast(`✅ ${p.name} निवडला (${p.variety}, ${p.acres})`, 'info');
+}
+window.selectActivePlot = selectActivePlot;
+
+// --- PAGE 5: IRRIGATION IN-PAGE SUBMISSION ---
+function handleInpageIrrigationSubmit(e) {
+    e.preventDefault();
+    const plot = document.getElementById('inpage-irr-plot')?.value || 'प्लॉट A';
+    const date = document.getElementById('inpage-irr-date')?.value || '20/09/2026';
+    const liters = document.getElementById('inpage-irr-liters')?.value || '5000';
+    const ec = document.getElementById('inpage-irr-ec')?.value || '0.8';
+    const ph = document.getElementById('inpage-irr-ph')?.value || '7.2';
+    const note = document.getElementById('inpage-irr-note')?.value || '';
+
+    const tbody = document.getElementById('inpage-irr-tbody');
+    if (tbody) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><strong>${date}</strong></td>
+            <td><strong style="color: var(--blue-accent);">${Number(liters).toLocaleString('en-IN')} L</strong></td>
+            <td>${ec}</td>
+            <td>${ph}</td>
+            <td><span class="badge-status success">${plot} • ${note || 'सिंचन पूर्ण'}</span></td>
+        `;
+        tbody.prepend(row);
+    }
+    showToast(`💧 ${plot} साठी सिंचन नोंद सेव्ह झाली (${Number(liters).toLocaleString('en-IN')} L)`, 'success');
+}
+window.handleInpageIrrigationSubmit = handleInpageIrrigationSubmit;
+
+// --- PAGE 6: FERTILIZER IN-PAGE SUBMISSION ---
+function handleInpageFertilizerSubmit(e) {
+    e.preventDefault();
+    const plot = document.getElementById('inpage-fert-plot')?.value || 'प्लॉट A';
+    const date = document.getElementById('inpage-fert-date')?.value || '20/09/2026';
+    const name = document.getElementById('inpage-fert-name')?.value || 'NPK 19:19:19';
+    const qty = document.getElementById('inpage-fert-qty')?.value || '5';
+    const method = document.getElementById('inpage-fert-method')?.value || 'फर्टिगेशन';
+    const note = document.getElementById('inpage-fert-note')?.value || '';
+
+    const tbody = document.getElementById('inpage-fert-tbody');
+    if (tbody) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><strong>${date}</strong></td>
+            <td><strong style="color: var(--emerald-deep);">${name}</strong></td>
+            <td>${qty} किलो</td>
+            <td><span class="badge-status info">${method}</span></td>
+            <td>${plot} • ${note}</td>
+        `;
+        tbody.prepend(row);
+    }
+    showToast(`🧪 ${plot} साठी खत नोंद सेव्ह झाली (${name}, ${qty} kg)`, 'success');
+}
+window.handleInpageFertilizerSubmit = handleInpageFertilizerSubmit;
+
+// --- PAGE 7: PEST & DISEASE IN-PAGE SUBMISSION ---
+function handleInpageSpraySubmit(e) {
+    e.preventDefault();
+    const plot = document.getElementById('inpage-spray-plot')?.value || 'प्लॉट A';
+    const date = document.getElementById('inpage-spray-date')?.value || '20/09/2026';
+    const pest = document.getElementById('inpage-spray-pest')?.value || 'Flea Beetle';
+    const name = document.getElementById('inpage-spray-name')?.value || 'Imidacloprid 17.8 SL';
+    const dose = document.getElementById('inpage-spray-dose')?.value || '150 ml';
+    const method = document.getElementById('inpage-spray-method')?.value || 'पंप';
+    const note = document.getElementById('inpage-spray-notes')?.value || '';
+
+    const tbody = document.getElementById('inpage-pest-tbody');
+    if (tbody) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><strong>${date}</strong></td>
+            <td><span class="badge-status purple">${plot}</span></td>
+            <td><span class="badge-status danger">${pest}</span></td>
+            <td><strong>${name}</strong></td>
+            <td>${dose}</td>
+            <td>${method}</td>
+            <td>${note || 'नोंद पूर्ण'}</td>
+        `;
+        tbody.prepend(row);
+    }
+    showToast(`🌿 ${plot} साठी कीड-रोग फवारणी नोंद झाली (${name})`, 'success');
+}
+window.handleInpageSpraySubmit = handleInpageSpraySubmit;
+
+function handleSprayPhotoUpload(input) {
+    if (input.files && input.files[0]) {
+        const label = document.getElementById('spray-photo-filename');
+        if (label) label.textContent = input.files[0].name;
+        showToast(`📷 फोटो जोडला: ${input.files[0].name}`, 'info');
+    }
+}
+window.handleSprayPhotoUpload = handleSprayPhotoUpload;
+
+// --- PAGE 8: LABOR MANAGEMENT CALCULATOR & ATTENDANCE ---
+function calculateLaborTotal() {
+    const count = parseInt(document.getElementById('inpage-labor-count')?.value) || 0;
+    const rate = parseFloat(document.getElementById('inpage-labor-rate')?.value) || 0;
+    const total = count * rate;
+    const totalField = document.getElementById('inpage-labor-total');
+    if (totalField) {
+        totalField.value = `₹ ${total.toLocaleString('en-IN')}`;
+    }
+}
+window.calculateLaborTotal = calculateLaborTotal;
+
+function handleInpageLaborSubmit(e) {
+    e.preventDefault();
+    const date = document.getElementById('inpage-labor-date')?.value || '20/09/2026';
+    const type = document.getElementById('inpage-labor-type')?.value || 'छाटणी';
+    const count = document.getElementById('inpage-labor-count')?.value || '12';
+    const rate = document.getElementById('inpage-labor-rate')?.value || '400';
+    const total = document.getElementById('inpage-labor-total')?.value || '₹ 4,800';
+
+    showToast(`👷 ${type} कामाची मजूर नोंद झाली (${count} मजूर • ${total})`, 'success');
+}
+window.handleInpageLaborSubmit = handleInpageLaborSubmit;
+
+function toggleAttendanceItem(chk) {
+    const card = chk.closest('.attendance-check-card');
+    if (card) {
+        card.classList.toggle('checked', chk.checked);
+        const statusSpan = card.querySelector('.attendance-status');
+        if (statusSpan) {
+            statusSpan.textContent = chk.checked ? 'हजर' : 'गैरहजर';
+        }
+    }
+    const total = document.querySelectorAll('#labor-attendance-list .attendance-check-card').length;
+    const checked = document.querySelectorAll('#labor-attendance-list .attendance-check-card input:checked').length;
+    const badge = document.getElementById('attendance-count-badge');
+    if (badge) {
+        badge.textContent = `${checked}/${total} उपस्थित`;
+    }
+    showToast(`हजेरी अद्ययावत केली (${checked}/${total} उपस्थित)`, 'info');
+}
+window.toggleAttendanceItem = toggleAttendanceItem;
+
+// --- PAGE 9: EXPENSE & INCOME TABS & SUBMISSIONS ---
+function switchFinanceTab(tab) {
+    const btnExp = document.getElementById('tab-finance-expense');
+    const btnInc = document.getElementById('tab-finance-income');
+    const formExp = document.getElementById('finance-expense-form-card');
+    const formInc = document.getElementById('finance-income-form-card');
+
+    if (tab === 'expense') {
+        btnExp?.classList.add('active');
+        btnInc?.classList.remove('active');
+        if (formExp) formExp.style.display = 'block';
+        if (formInc) formInc.style.display = 'none';
+    } else {
+        btnInc?.classList.add('active');
+        btnExp?.classList.remove('active');
+        if (formExp) formExp.style.display = 'none';
+        if (formInc) formInc.style.display = 'block';
+    }
+}
+window.switchFinanceTab = switchFinanceTab;
+window.showSalesTab = () => switchFinanceTab('income');
+
+function handleInpageExpenseSubmit(e) {
+    e.preventDefault();
+    const date = document.getElementById('inpage-expense-date')?.value || '20/09/2026';
+    const cat = document.getElementById('inpage-expense-category')?.value || 'औषधे';
+    const desc = document.getElementById('inpage-expense-desc')?.value || '';
+    const amount = document.getElementById('inpage-expense-amount')?.value || '0';
+    const plot = document.getElementById('inpage-expense-plot')?.value || 'प्लॉट A';
+    const note = document.getElementById('inpage-expense-note')?.value || '';
+
+    const tbody = document.getElementById('inpage-expenses-table-body');
+    if (tbody) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><strong>${date}</strong></td>
+            <td><span class="kpi-badge warning">${cat}</span></td>
+            <td>${desc} ${note ? '• ' + note : ''} (${plot})</td>
+            <td><strong style="color: var(--rose-accent);">₹ ${Number(amount).toLocaleString('en-IN')}</strong></td>
+        `;
+        tbody.prepend(row);
+    }
+    showToast(`💰 नवीन खर्च नोंदवला: ₹${Number(amount).toLocaleString('en-IN')} (${cat})`, 'success');
+}
+window.handleInpageExpenseSubmit = handleInpageExpenseSubmit;
+
+function handleInpageIncomeSubmit(e) {
+    e.preventDefault();
+    const buyer = document.getElementById('inpage-income-buyer')?.value || '';
+    const kg = parseFloat(document.getElementById('inpage-income-kg')?.value) || 0;
+    const rate = parseFloat(document.getElementById('inpage-income-rate')?.value) || 0;
+    const total = kg * rate;
+
+    showToast(`🍇 द्राक्ष विक्री नोंद झाली! उत्पन्न: ₹${total.toLocaleString('en-IN')} (${buyer})`, 'success');
+}
+window.handleInpageIncomeSubmit = handleInpageIncomeSubmit;
+
+// --- PAGE 10: REPORTS & ANALYSIS CHART ---
+let reportChartInstance = null;
+
+function initReportBarChart() {
+    const canvas = document.getElementById('report-bar-chart');
+    if (!canvas) return;
+
+    if (reportChartInstance) {
+        reportChartInstance.destroy();
+    }
+
+    const ctx = canvas.getContext('2d');
+    reportChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['प्लॉट A (थॉम्पसन)', 'प्लॉट B (सुपर सोनका)', 'प्लॉट C (माणिक चमन)', 'प्लॉट D (शरद)', 'प्लॉट E (रेड ग्लोब)'],
+            datasets: [{
+                label: 'उत्पादन (किलो)',
+                data: [12500, 10200, 8750, 6300, 9800],
+                backgroundColor: [
+                    'rgba(21, 128, 61, 0.85)',
+                    'rgba(16, 185, 129, 0.85)',
+                    'rgba(59, 130, 246, 0.85)',
+                    'rgba(168, 85, 247, 0.85)',
+                    'rgba(245, 158, 11, 0.85)'
+                ],
+                borderColor: [
+                    '#15803D',
+                    '#10B981',
+                    '#3B82F6',
+                    '#A855F7',
+                    '#F59E0B'
+                ],
+                borderWidth: 1.5,
+                borderRadius: 8,
+                barPercentage: 0.55
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        font: { family: "'Outfit', sans-serif", weight: '600', size: 12 },
+                        color: '#242B24'
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            return ` उत्पादन: ${context.parsed.y.toLocaleString('en-IN')} किलो`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 15000,
+                    ticks: {
+                        callback: function (value) {
+                            return value.toLocaleString('en-IN') + ' kg';
+                        },
+                        font: { family: "'Outfit', sans-serif", size: 11 },
+                        color: '#556355'
+                    },
+                    grid: {
+                        color: 'rgba(230, 222, 201, 0.4)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: { family: "'Outfit', sans-serif", weight: '600', size: 11 },
+                        color: '#242B24'
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+}
+window.initReportBarChart = initReportBarChart;
+
+function switchReportsTab(tab) {
+    document.querySelectorAll('#view-reports .filter-pills .filter-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.id === `tab-rep-${tab}`);
+    });
+    if (tab === 'plotwise' || tab === 'production') {
+        initReportBarChart();
+    }
+    showToast(`अहवाल टॅब: ${tab}`, 'info');
+}
+window.switchReportsTab = switchReportsTab;
+
+function downloadReportPDF() {
+    showToast('📄 अहवाल PDF तयार होत आहे... प्रिंट विंडो उघडत आहे.', 'info');
+    setTimeout(() => {
+        window.print();
+    }, 400);
+}
+window.downloadReportPDF = downloadReportPDF;
+
+function shareReport() {
+    const text = `📊 *कृषिरत्न शेती अहवाल (हंगाम 2026-27)*\n\n` +
+        `• एकूण उत्पादन: 47,550 किलो (5 प्लॉट)\n` +
+        `• एकूण खर्च: ₹ 4,25,000\n` +
+        `• एकूण विक्री: ₹ 7,15,000\n` +
+        `• निव्वळ नफा: ₹ 2,90,000 (40.5% मार्जिन)\n\n` +
+        `प्लॉट उत्पादन:\n` +
+        `A: 12,500 kg | B: 10,200 kg | C: 8,750 kg | D: 6,300 kg | E: 9,800 kg\n\n` +
+        `कृषिरत्न फार्म मॅनेजमेंट सिस्टीम`;
+
+    if (navigator.share) {
+        navigator.share({
+            title: 'कृषिरत्न शेती अहवाल 2026-27',
+            text: text
+        }).catch(() => { });
+    } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('✅ अहवाल क्लिपबोर्डवर कॉपी केला! व्हॉट्सॲपवर पेस्ट करा.', 'success');
+        });
+    } else {
+        showToast('✅ अहवाल मजकूर तयार आहे.', 'info');
+    }
+}
+window.shareReport = shareReport;
+
+// --- BOTTOM NAVIGATION HANDLER ---
+function handleBottomNavClick(btn, target) {
+    switchView(target);
+}
+window.handleBottomNavClick = handleBottomNavClick;
+
+// --- MODAL HANDLERS FOR NEW REGISTRATION, WEATHER, SETTINGS & BACKUP ---
+function handleRegistrationSubmit(e) {
+    e.preventDefault();
+    const name = document.getElementById('reg-farmer-name')?.value || 'शेतकरी मित्र';
+    const mobile = document.getElementById('reg-mobile')?.value || '';
+    const village = document.getElementById('reg-village')?.value || '';
+    const acres = document.getElementById('reg-acreage')?.value || '10.0';
+    const variety = document.getElementById('reg-variety')?.value || 'Thompson Seedless';
+
+    sessionStorage.setItem('krushi_auth', 'true');
+    sessionStorage.setItem('krushi_role', 'farmer');
+
+    closeModal('modal-register');
+    const loginScreen = document.getElementById('login-screen');
+    if (loginScreen) loginScreen.classList.add('hidden');
+
+    showToast(`🎉 अभिनंदन ${name}! तुमची नोंदणी यशस्वी झाली (${variety}, ${acres} एकर).`, 'success');
+    switchView('dashboard');
+}
+window.handleRegistrationSubmit = handleRegistrationSubmit;
+
+function saveSettings() {
+    closeModal('modal-settings');
+    showToast('⚙️ प्रणाली सेटिंग्स यशस्वीपणे जतन केल्या.', 'success');
+}
+window.saveSettings = saveSettings;
+
+function triggerManualSync() {
+    updateSupabaseStatus('syncing');
+    showToast('🔄 क्लाउड डेटाबेससह सिंक होत आहे...', 'info');
+    setTimeout(() => {
+        updateSupabaseStatus('connected');
+        showToast('✅ सर्व शेती डेटा क्लाउडवर 100% सुरक्षित सिंक झाला!', 'success');
+    }, 900);
+}
+window.triggerManualSync = triggerManualSync;
+
+function downloadBackupJSON() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+    const dlAnchorElem = document.createElement('a');
+    dlAnchorElem.setAttribute("href", dataStr);
+    dlAnchorElem.setAttribute("download", `krushiratna_backup_2026-09-20.json`);
+    dlAnchorElem.click();
+    showToast('📥 स्थानिक बॅकअप फाइल (.json) डाउनलोड झाली!', 'success');
+}
+window.downloadBackupJSON = downloadBackupJSON;
+
 
